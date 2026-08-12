@@ -1,0 +1,116 @@
+<section class="maeve-social">
+  <div class="wrap">
+    <div class="social-head reveal">
+      <h2>{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}<p>{{ section.settings.subheading }}</p>{%- endif -%}
+    </div>
+  </div>
+  <div class="social-track" id="socialTrack-{{ section.id }}">
+    {%- assign fbimgs = "zonnebloemen-spray.png,korenveld-stokjes.png,amandelbloesem-spray.png,korenveld-spray.png" | split: "," -%}
+    {%- for block in section.blocks -%}
+      {%- assign fbi = forloop.index0 | modulo: 4 -%}
+      <div class="sp-clip" {{ block.shopify_attributes }}>
+        {%- if block.settings.video != blank -%}
+          {{ block.settings.video | video_tag: controls: true, preload: 'none', loop: false, class: 'sp-media' }}
+          <button type="button" class="sp-play" aria-label="Afspelen"></button>
+        {%- else -%}
+          <img class="sp-media" src="{% if block.settings.poster %}{{ block.settings.poster | image_url: width: 600 }}{% else %}{{ fbimgs[fbi] | asset_url }}{% endif %}" alt="{{ block.settings.caption | escape }}" loading="lazy">
+          {%- if block.settings.video_url != blank -%}
+            <a class="sp-play" href="{{ block.settings.video_url }}" target="_blank" rel="noopener" aria-label="Afspelen"></a>
+          {%- else -%}
+            <button type="button" class="sp-play" aria-label="Afspelen"></button>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if block.settings.caption != blank -%}<span class="sp-cap">{{ block.settings.caption }}</span>{%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  <div class="wrap">
+    <div class="social-progress"><span class="social-progress-bar" id="socialBar-{{ section.id }}"></span></div>
+  </div>
+</section>
+
+{% stylesheet %}
+.maeve-social { padding: 64px 0; }
+.maeve-social .social-head { margin-bottom: 28px; }
+.maeve-social .social-head h2 { font-family: var(--serif); font-size: clamp(30px, 4vw, 50px); line-height: 1.05; color: var(--ink); }
+.maeve-social .social-head h2 em { font-style: italic; }
+.maeve-social .social-head p { color: var(--ink-soft); margin-top: 10px; max-width: 56ch; }
+.social-track { display: flex; gap: 18px; overflow-x: auto; padding: 0 36px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.social-track::-webkit-scrollbar { display: none; }
+.sp-clip { position: relative; flex: 0 0 clamp(220px, 24vw, 300px); aspect-ratio: 9 / 16; background: linear-gradient(180deg, var(--sand), var(--sand-deep)); overflow: hidden; scroll-snap-align: start; }
+.sp-media { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sp-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 58px; height: 58px; border: 0; border-radius: 50%; background: rgba(255,255,255,.92); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform .2s, background .2s; box-shadow: 0 6px 20px rgba(33,29,24,.25); }
+.sp-play::after { content: ''; margin-left: 4px; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--ink); }
+.sp-clip:hover .sp-play { transform: translate(-50%,-50%) scale(1.08); }
+.sp-play.is-hidden { display: none; }
+.sp-cap { position: absolute; left: 14px; bottom: 14px; right: 14px; color: #fff; font-size: 13px; font-family: var(--sans); text-shadow: 0 1px 6px rgba(0,0,0,.5); pointer-events: none; }
+.social-progress { height: 4px; background: var(--sand-deep); border-radius: 4px; margin-top: 24px; overflow: hidden; }
+.social-progress-bar { display: block; height: 100%; width: 25%; border-radius: 4px; background: linear-gradient(90deg, var(--clay), #E2B98E); transition: width .1s linear; }
+@media (max-width: 700px) {
+  .maeve-social { padding: 48px 0; }
+  .maeve-social .social-head { margin-bottom: 24px; }
+  .maeve-social .social-head h2 { font-size: 26px; }
+  .social-track { padding: 0 20px 4px; gap: 10px; }
+  .sp-clip { flex-basis: 52%; }
+  .sp-play { width: 46px; height: 46px; }
+  .sp-play::after { border-width: 7px 0 7px 12px; }
+  .sp-cap { font-size: 12px; left: 10px; right: 10px; bottom: 10px; }
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('.maeve-social').forEach(function (root) {
+  var track = root.querySelector('.social-track');
+  var bar = root.querySelector('.social-progress-bar');
+  function upd() {
+    if (!track || !bar) return;
+    var max = track.scrollWidth - track.clientWidth;
+    var ratio = max > 0 ? track.scrollLeft / max : 0;
+    var vis = track.clientWidth / track.scrollWidth;
+    var w = Math.max(vis, 0.12) * 100;
+    bar.style.width = w + '%';
+    bar.style.marginLeft = (ratio * (100 - w)) + '%';
+  }
+  if (track) { track.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd(); }
+  root.querySelectorAll('.sp-play').forEach(function (btn) {
+    if (btn.tagName === 'A') return;
+    btn.addEventListener('click', function () {
+      var vid = btn.parentNode.querySelector('video');
+      if (vid) { vid.play(); btn.classList.add('is-hidden'); var cap = btn.parentNode.querySelector('.sp-cap'); if (cap) cap.style.display = 'none'; }
+    });
+  });
+});
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Social proof",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Geliefd door <em>200.000+</em> klanten." },
+    { "type": "text", "id": "subheading", "label": "Subtekst" }
+  ],
+  "blocks": [
+    {
+      "type": "clip",
+      "name": "Video",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video (geüpload)" },
+        { "type": "image_picker", "id": "poster", "label": "Posterafbeelding (indien geen video)" },
+        { "type": "url", "id": "video_url", "label": "Externe video-link (optioneel)" },
+        { "type": "text", "id": "caption", "label": "Bijschrift" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Social proof",
+    "blocks": [
+      { "type": "clip", "settings": { "caption": "“Staat zó mooi op mijn dressoir.”" } },
+      { "type": "clip", "settings": { "caption": "“De print loopt echt rondom door.”" } },
+      { "type": "clip", "settings": { "caption": "“Mijn vrouw was sprakeloos.”" } },
+      { "type": "clip", "settings": { "caption": "“Kwaliteit als de grote merken.”" } }
+    ]
+  }]
+}
+{% endschema %}

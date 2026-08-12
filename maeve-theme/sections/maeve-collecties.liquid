@@ -1,0 +1,84 @@
+<section class="gallery-wall" id="wall">
+  <div class="deg-marker reveal" style="margin-bottom:0; padding-top:0;">
+    <span class="deg">{{ section.settings.deg_label }}</span>
+    <span class="rule"></span>
+    <span class="lbl">{{ section.settings.marker_label }}</span>
+  </div>
+  <div class="intro reveal" style="margin-top:56px;">
+    <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.text }}</p>
+  </div>
+  <div class="wall wrap">
+    {%- for block in section.blocks -%}
+      <div class="frame reveal" {{ block.shopify_attributes }}{% unless forloop.first %} style="transition-delay:.{{ forloop.index0 | times: 8 }}s"{% endunless %}>
+        {%- assign chandle = block.settings.link_url | split: '/collections/' | last | split: '/' | first -%}
+        {%- case chandle -%}
+          {%- when 'art' -%}{%- assign trio = 'amandelbloesem-roomspray|100 ml,starry-night-geurstokjes|300 ml,zonnebloemen-roomspray|200 ml' -%}
+          {%- when 'city' -%}{%- assign trio = 'amsterdam-roomspray|100 ml,den-haag-geurstokjes|300 ml,rotterdam-roomspray|200 ml' -%}
+          {%- when 'magical-japan' -%}{%- assign trio = 'sakura-dreams-roomspray|100 ml,golden-blossom-geurstokjes|300 ml,sunset-lake-roomspray|200 ml' -%}
+          {%- else -%}{%- assign trio = '' -%}
+        {%- endcase -%}
+        {%- assign clink = collections[chandle].url | default: block.settings.link_url -%}
+        {%- if clink != blank -%}<a class="art-link" href="{{ clink }}" style="display:block;cursor:pointer" aria-label="{{ block.settings.title | escape }}">{%- endif -%}
+        {%- if trio != blank -%}
+          <div class="art art-trio">
+            {%- assign items = trio | split: ',' -%}
+            {%- for it in items -%}
+              {%- assign parts = it | split: '|' -%}{%- assign prod = all_products[parts[0]] -%}
+              {%- assign img = prod.featured_image -%}
+              {%- for v in prod.variants -%}{%- if v.option1 == parts[1] and v.image -%}{%- assign img = v.image -%}{%- break -%}{%- endif -%}{%- endfor -%}
+              {%- if img -%}<img class="trio-b trio-{{ forloop.index }}" src="{{ img | image_url: width: 360 }}" alt="{{ prod.title | escape }}" loading="lazy">{%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="art"><img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 700 }}{% else %}{{ 'zonnebloemen-spray.png' | asset_url }}{% endif %}" alt="{{ block.settings.title | escape }}" loading="lazy"></div>
+        {%- endif -%}
+        {%- if clink != blank -%}</a>{%- endif -%}
+        <div class="placard">
+          <div class="title">{{ block.settings.title }}</div>
+          <div class="artist">{{ block.settings.artist }}</div>
+          <div class="medium">{{ block.settings.medium }}</div>
+          {%- if block.settings.link_label != blank -%}<a class="go" href="{{ clink }}">{{ block.settings.link_label }}</a>{%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collecties (wand)",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "deg_label", "label": "Graden-label", "default": "180°" },
+    { "type": "text", "id": "marker_label", "label": "Marker-label", "default": "De andere kant — vier collecties" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "De collecties" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Een wand vol <em>werk.</em>" },
+    { "type": "textarea", "id": "text", "label": "Tekst", "default": "Elke collectie is een samenwerking, een plek of een idee. Kies wat je raakt — de geur kies je daarna." }
+  ],
+  "blocks": [
+    {
+      "type": "frame",
+      "name": "Collectie",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Afbeelding" },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Original Collection" },
+        { "type": "text", "id": "artist", "label": "Ondertitel", "default": "Studio Maeve" },
+        { "type": "textarea", "id": "medium", "label": "Omschrijving", "default": "Iconische geuren met artistieke prints." },
+        { "type": "text", "id": "link_label", "label": "Link-tekst", "default": "Ontdek het ontwerp" },
+        { "type": "url", "id": "link_url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Collecties (wand)",
+    "blocks": [
+      { "type": "frame", "settings": { "title": "Original Collection", "artist": "Studio Maeve", "medium": "Iconische geuren met artistieke prints. Tijdloos, altijd leverbaar.", "link_label": "Ontdek het ontwerp" } },
+      { "type": "frame", "settings": { "title": "Artist Edition", "artist": "Kunstenaars, musea & ontwerpers", "medium": "Elke geur vertelt een visueel verhaal, in beperkte oplage.", "link_label": "Bekijk de geur" } },
+      { "type": "frame", "settings": { "title": "City Scents", "artist": "Steden & plekken", "medium": "De identiteit van een stad, gevangen in geur en print.", "link_label": "Kies je plek" } },
+      { "type": "frame", "settings": { "title": "Limited Editions", "artist": "Makers, merken & events", "medium": "Kleine oplages met een eigen verhaal — eenmalig, daarna nooit meer.", "link_label": "Bekijk de editie" } }
+    ]
+  }]
+}
+{% endschema %}

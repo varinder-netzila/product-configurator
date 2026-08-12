@@ -1,0 +1,10 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Maeve",
+    "theme_version": "1.0.0",
+    "theme_author": "Maeve",
+    "theme_documentation_url": "https://maeve.example",
+    "theme_support_url": "https://maeve.example"
+  }
+]

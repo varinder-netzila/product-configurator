@@ -1,0 +1,49 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "maeve-page-faq",
+      "settings": {
+        "eyebrow": "Service",
+        "heading": "Veelgestelde <em>vragen.</em>",
+        "contact_eyebrow": "Nog een vraag?",
+        "contact_heading": "Het atelier denkt <em>met je mee.</em>",
+        "contact_text": "Geen ticketsysteem, geen chatbot — gewoon iemand van Maeve die binnen één werkdag antwoordt.",
+        "contact_email_label": "E-mail",
+        "contact_email": "atelier@maeve.example",
+        "contact_phone_label": "Telefoon",
+        "contact_phone": "+31 (0)20 — 123 45 67",
+        "contact_hours_label": "Ma t/m vr",
+        "contact_hours": "09:00 — 17:30"
+      },
+      "blocks": {
+        "q1": { "type": "faq", "settings": { "category": "De 360°-druk", "category_id": "druk", "roman": "I.", "open": true, "question": "Wat maakt de druk van Maeve anders dan een etiket?", "answer": "<p>Wij drukken het beeld direct op de fles — rondom, zonder naad en zonder etiket. De linkerrand van het ontwerp sluit exact aan op de rechterrand, dus waar je de fles ook draait: het beeld loopt door. Dit procedé beheerst wereldwijd alleen Maeve.</p>" } },
+        "q2": { "type": "faq", "settings": { "question": "Is de print krasvast en watervast?", "answer": "<p>Ja. De inkt wordt op de fles gehard en is bestand tegen water, parfumolie en dagelijks gebruik. Schoonmaken kan gewoon met een vochtige doek; alleen schuursponsjes raden we af.</p>" } },
+        "q3": { "type": "faq", "settings": { "question": "Wijkt de kleur af van wat ik op het scherm zie?", "answer": "<p>Minimaal. Het beeld krijgt op de fles iets meer diepte en glans dan op een plat scherm. Zakelijke klanten ontvangen altijd een fysiek proefmodel voordat de oplage start.</p>" } },
+        "q4": { "type": "faq", "settings": { "category": "Geuren & navullen", "category_id": "geuren", "roman": "II.", "question": "Welke geuren zijn er?", "answer": "<p>Acht composities, samengesteld met parfumeurs in Grasse — van warm amber (Amber Sun) tot groen vetiver (Jardin Vert). Elke print uit de collectie heeft een vaste, bijpassende geur; bij zakelijk maatwerk kies je de geur zelf.</p>" } },
+        "q5": { "type": "faq", "settings": { "anchor_id": "navullen", "question": "Hoe werkt navullen?", "answer": "<p>De geur raakt op, het kunstwerk blijft. Navullingen (vanaf € 14,95) passen op elke Maeve-fles: bij de roomspray vervang je de binnenvulling, bij geurstokjes giet je bij en vervang je de stokjes. Zo gaat je fles jaren mee.</p>" } },
+        "q6": { "type": "faq", "settings": { "question": "Hoe lang gaat een fles mee?", "answer": "<p>De roomspray 100 ml is goed voor zo'n 400 verstuivingen. Geurstokjes 200 ml geuren ongeveer 12 weken, afhankelijk van temperatuur en luchtcirculatie. Groter formaat = navenant langer.</p>" } },
+        "q7": { "type": "faq", "settings": { "question": "Zijn de geuren vegan en dierproefvrij?", "answer": "<p>Ja. Alle composities zijn vegan, dierproefvrij en zonder ftalaten, en worden gemaakt in Europa.</p>" } },
+        "q8": { "type": "faq", "settings": { "category": "Eigen ontwerp (zakelijk)", "category_id": "ontwerp", "roman": "III.", "question": "Kan ik als particulier mijn eigen fles ontwerpen?", "answer": "<p>Onze collecties zijn voor iedereen, met bij elke print een vaste, bijpassende geur. Een volledig eigen ontwerp maken we op aanvraag voor bedrijven — relatiegeschenken, hotels, musea en merken, vanaf 25 stuks. Bekijk <a href=\"/pages/zakelijk\">Maeve Zakelijk</a>.</p>" } },
+        "q9": { "type": "faq", "settings": { "question": "Wat kan er op de fles?", "answer": "<p>Bijna alles: een kunstwerk, een logo, een patroon of de kaart van een stad — 360° rondom gedrukt, zonder etiket of naad. Je levert een JPG of PNG van minimaal 2048 pixels breed; ons atelier vertaalt het naar een proefmodel.</p>" } },
+        "q10": { "type": "faq", "settings": { "question": "Wat kost een zakelijke oplage en hoe snel is het er?", "answer": "<p>Vanaf € 21,95 per fles, afhankelijk van de oplage, plus eenmalige instelkosten. Na akkoord op het proefmodel leveren we doorgaans binnen drie weken. Bekijk de staffel op <a href=\"/pages/zakelijk\">Maeve Zakelijk</a>.</p>" } },
+        "q11": { "type": "faq", "settings": { "question": "Mag elk beeld?", "answer": "<p>Je hebt de rechten op het beeld nodig en we drukken geen kwetsend materiaal. Twijfel je over rechten (bijv. bij een kunstwerk van iemand anders)? <a href=\"#contact\">Mail het atelier</a>, we denken mee.</p>" } },
+        "q12": { "type": "faq", "settings": { "category": "Verzending & retour", "category_id": "verzending", "roman": "IV.", "question": "Wat zijn de levertijden en verzendkosten?", "answer": "<p>Voor 16:00 besteld is morgen in huis (NL & BE). Verzending kost € 4,95 en is gratis vanaf € 40. Zakelijke maatwerk-orders leveren we in overleg, doorgaans binnen drie weken.</p>" } },
+        "q13": { "type": "faq", "settings": { "question": "Kan ik mijn bestelling retourneren?", "answer": "<p>Collectie-items kun je binnen 30 dagen kosteloos retourneren, ook als de fles bedrukt is — het is tenslotte onze collectie. Zakelijk maatwerk kan alleen retour bij een productiefout; dan vervangen we de fles uiteraard gratis.</p>" } },
+        "q14": { "type": "faq", "settings": { "question": "Wat als de fles beschadigd aankomt?", "answer": "<p>Stuur binnen 48 uur een foto naar <a href=\"#contact\">het atelier</a> en we sturen direct een nieuwe — je hoeft de beschadigde fles niet terug te sturen.</p>" } },
+        "q15": { "type": "faq", "settings": { "category": "Zakelijk", "category_id": "zakelijk", "roman": "V.", "question": "Vanaf welke aantallen kan ik zakelijk bestellen?", "answer": "<p>Vanaf 25 stuks voor events en bruiloften, vanaf 50 stuks voor relatiegeschenken en retail. Zie de <a href=\"/pages/zakelijk\">zakelijke pagina</a> voor de staffel en werkwijze.</p>" } },
+        "q16": { "type": "faq", "settings": { "question": "Kunnen jullie een eigen geur voor mijn merk ontwikkelen?", "answer": "<p>Ja, vanaf 500 stuks ontwikkelen we samen met onze parfumeurs in Grasse een signatuurgeur die exclusief van jouw merk blijft.</p>" } }
+      },
+      "block_order": ["q1","q2","q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15","q16"]
+    }
+  },
+  "order": ["main"]
+}

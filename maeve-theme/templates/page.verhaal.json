@@ -1,0 +1,67 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "maeve-page-verhaal",
+      "settings": {
+        "hero_eyebrow": "Ons verhaal",
+        "hero_heading": "Waarom verstoppen we de mooiste geuren in de <em>saaiste flessen?</em>",
+        "hero_text": "Het begon met een simpel idee: geur mag geen bijzaak zijn. Niet bedacht in een marketingmeeting, maar in een drukkerij — tussen machines die iets kunnen wat nergens anders ter wereld bestaat.",
+        "principes_eyebrow": "Waar we voor staan",
+        "principes_heading": "Vijf merkwaarden, <em>geen kleine lettertjes.</em>",
+        "makers_eyebrow": "Voor makers",
+        "makers_heading": "Kunstenaar? Jouw werk verdient <em>360 graden.</em>",
+        "makers_text": "Elk seizoen verschijnt een nieuwe Artist Edition: jouw werk als 360°-wikkel, in beperkte oplage, met eerlijke vergoeding en je naam op elk museumlabel. Stuur ons je portfolio.",
+        "makers_button_label": "Mail het atelier",
+        "makers_button_link": "mailto:atelier@maeve.example",
+        "closing_quote": "\"Wij geloven dat de mooiste geuren geen plek verdienen in een kastje — <em>maar in het zicht.\"</em>",
+        "closing_cite": "Het team van Maeve",
+        "closing_button_label": "Ontdek de collecties",
+        "closing_button_link": "/collections"
+      },
+      "blocks": {
+        "narrative1": {
+          "type": "narrative",
+          "settings": {
+            "flip": false,
+            "image_fallback": "zonnebloemen-spray.png",
+            "image_alt": "Artist Edition",
+            "caption": "De eerste proefdruk, voorjaar 2026 — rondom, zonder naad.",
+            "eyebrow": "Het begin",
+            "heading": "Jaren drukten we op flessen. <em>Toen roken we de kans.</em>",
+            "paragraph_1": "Ons team bedrukt al jaren flessen met een techniek die het beeld direct op de fles legt — 360 graden rondom, zonder etiket, zonder naad. Een procedé dat wereldwijd niemand anders beheerst.",
+            "paragraph_2": "Tot we de geurenmarkt bekeken en iets geks zagen: de duurste interieurgeuren ter wereld staan in de meest verwisselbare flessen. Een wit etiket, een naam erop, klaar. Het mooiste zintuig kreeg het minste oog."
+          }
+        },
+        "narrative2": {
+          "type": "narrative",
+          "settings": {
+            "flip": true,
+            "image_fallback": "korenveld-stokjes.png",
+            "image_alt": "Original Collection",
+            "caption": "Terra No. 3, Original Collection — 360° om de fles.",
+            "eyebrow": "De missie",
+            "heading": "Geur is gevoel. <em>Design is expressie.</em>",
+            "paragraph_1": "Bij Maeve draait alles om geur én design. Met onze artistieke roomsprays en geurstokjes brengen we zintuiglijke luxe in huis — stijlvol vormgegeven en vol karakter, subtiel verweven tot een sfeer die blijft hangen. Kunst van grote meesters, de identiteit van een stad, of — voor bedrijven — een eigen ontwerp.",
+            "paragraph_2": "En omdat het kunstwerk te mooi is om weg te gooien, is elke fles navulbaar. De geur raakt op — het beeld blijft staan."
+          }
+        },
+        "principe1": { "type": "principe", "settings": { "roman": "I.", "title": "Zintuiglijk", "body": "Onze geuren zijn vol en gelaagd, ontworpen om sfeer te brengen — door wat je ruikt, maar ook door wat je ziet en voelt." } },
+        "principe2": { "type": "principe", "settings": { "roman": "II.", "title": "Uitgesproken", "body": "Geen producten die opgaan in de massa. Elke flacon is een visueel statement — van stadsplattegrond tot meesterwerk." } },
+        "principe3": { "type": "principe", "settings": { "roman": "III.", "title": "Persoonlijk", "body": "Kies een geur én een ontwerp dat echt bij je past — van collectie tot maatwerk. En elke fles is navulbaar: gemaakt om te blijven." } },
+        "principe4": { "type": "principe", "settings": { "roman": "IV.", "title": "Verhalend", "body": "Elk ontwerp draagt een verhaal: een plek, een herinnering, een gevoel. We vertellen altijd het verhaal achter de print." } },
+        "principe5": { "type": "principe", "settings": { "roman": "V.", "title": "Betrokken", "body": "We werken samen met kunstenaars, musea, merken en klanten — zo word je zelf onderdeel van het merkverhaal." } }
+      },
+      "block_order": ["narrative1", "narrative2", "principe1", "principe2", "principe3", "principe4", "principe5"]
+    }
+  },
+  "order": ["main"]
+}

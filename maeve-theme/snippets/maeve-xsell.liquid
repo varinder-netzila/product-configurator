@@ -1,0 +1,158 @@
+{%- comment -%} Globale cross-sell/upsell-popup — herbruikbaar via window.maeveCrossSell(opts) {%- endcomment -%}
+<style>
+  .gxs { position: fixed; inset: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .gxs[hidden] { display: none; }
+  .gxs-overlay { position: absolute; inset: 0; background: rgba(33,29,24,.5); backdrop-filter: blur(3px); }
+  .gxs-box { position: relative; z-index: 1; background: var(--ivory); max-width: 420px; width: 100%; padding: 32px 28px 26px; box-shadow: 0 30px 80px rgba(33,29,24,.35); text-align: center; }
+  .gxs-close { position: absolute; top: 12px; right: 16px; border: 0; background: none; font-size: 26px; line-height: 1; color: var(--ink-soft); cursor: pointer; }
+  .gxs-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--clay); }
+  .gxs-title { font-family: var(--serif); font-size: 24px; color: var(--ink); margin: 8px 0 20px; line-height: 1.15; }
+  .gxs-row { display: flex; align-items: center; gap: 14px; text-align: left; background: var(--sand); padding: 12px 14px; }
+  .gxs-img { flex: 0 0 50px; height: 66px; display: flex; align-items: flex-end; justify-content: center; }
+  .gxs-img img { height: 100%; object-fit: contain; filter: drop-shadow(0 6px 8px rgba(33,29,24,.2)); }
+  .gxs-info { flex: 1; min-width: 0; }
+  .gxs-name { display: block; font-family: var(--serif); font-size: 15px; color: var(--ink); }
+  .gxs-tag { display: block; font-size: 11px; margin-top: 3px; }
+  .gxs-tag-in { color: #3E6B4E; font-weight: 600; }
+  .gxs-tag-add { color: var(--clay); }
+  .gxs-p { font-family: var(--serif); font-size: 15px; color: var(--ink-soft); flex: none; }
+  .gxs-addlabel { text-align: left; font-size: 12px; color: var(--ink-soft); margin: 16px 0 8px; }
+  .gxs-opt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--ivory); border: 1px solid var(--line); padding: 10px 12px; margin-bottom: 8px; cursor: pointer; font-family: var(--sans); transition: border-color .2s, box-shadow .2s; }
+  .gxs-opt:hover { border-color: var(--ink-soft); }
+  .gxs-opt.is-on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; }
+  .gxs-opt .gxs-img { flex: 0 0 38px; height: 52px; }
+  .gxs-check { flex: 0 0 20px; width: 20px; height: 20px; border: 1px solid var(--ink-soft); border-radius: 4px; position: relative; background: var(--ivory); }
+  .gxs-opt.is-on .gxs-check { background: var(--ink); border-color: var(--ink); }
+  .gxs-opt.is-on .gxs-check::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--ivory); font-size: 12px; }
+  .gxs-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 4px; padding-top: 16px; border-top: 1px solid var(--line); text-align: left; }
+  .gxs-total-label { font-size: 13px; color: var(--ink); }
+  .gxs-total-label strong { color: var(--clay); }
+  .gxs-total-prices { display: flex; align-items: baseline; gap: 8px; flex: none; }
+  .gxs-was { color: var(--ink-soft); text-decoration: line-through; font-size: 14px; }
+  .gxs-now { font-family: var(--serif); font-size: 21px; color: var(--ink); }
+  .gxs-ship { font-size: 12px; text-align: center; padding: 9px 11px; background: var(--sand); margin-top: 14px; line-height: 1.4; color: var(--ink); }
+  .gxs-ship[hidden] { display: none; }
+  .gxs-ship.is-free { color: #3E6B4E; }
+  .gxs-ship strong { font-family: var(--serif); }
+  .gxs-ship-bar { display: block; height: 4px; background: var(--line); margin-top: 7px; overflow: hidden; }
+  .gxs-ship-bar i { display: block; height: 100%; background: var(--clay); transition: width .35s ease; }
+  .gxs-ship.is-free .gxs-ship-bar i { background: #3E6B4E; }
+  .gxs-add { width: 100%; margin-top: 16px; }
+  .gxs-skip { display: block; width: 100%; margin-top: 12px; border: 0; background: none; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; text-decoration: underline; }
+</style>
+<div class="gxs" id="gxsell" hidden>
+  <div class="gxs-overlay" id="gxsOverlay"></div>
+  <div class="gxs-box" role="dialog" aria-modal="true">
+    <button type="button" class="gxs-close" id="gxsClose" aria-label="{% render 'maeve-t', nl: 'Sluiten', en: 'Close', es: 'Cerrar', fr: 'Fermer', de: 'Schließen' %}">&times;</button>
+    <span class="gxs-eyebrow">{% render 'maeve-t', nl: 'Maak er een set van', en: 'Make it a set', es: 'Conviértelo en un set', fr: 'Composez un coffret', de: 'Mach ein Set daraus' %}</span>
+    <h3 class="gxs-title">{% render 'maeve-t', nl: 'Mooi samen — én voordeliger', en: 'Beautiful together — and better value', es: 'Bonito en conjunto — y más económico', fr: 'Magnifique ensemble — et plus avantageux', de: 'Schön zusammen — und günstiger' %}</h3>
+    <div class="gxs-row">
+      <span class="gxs-img"><img id="gxsImg1" src="" alt=""></span>
+      <span class="gxs-info"><span class="gxs-name" id="gxsName1"></span><span class="gxs-tag gxs-tag-in">{% render 'maeve-t', nl: '✓ zit al in je winkelmandje', en: '✓ already in your cart', es: '✓ ya está en tu carrito', fr: '✓ déjà dans votre panier', de: '✓ bereits in deinem Warenkorb' %}</span></span>
+      <span class="gxs-p" id="gxsP1"></span>
+    </div>
+    <p class="gxs-addlabel">{% render 'maeve-t', nl: 'Vink aan om mee te bestellen — met setkorting:', en: 'Tick to add it too — with a set discount:', es: 'Marca para añadirlo también — con descuento de set:', fr: 'Cochez pour l’ajouter aussi — avec remise coffret :', de: 'Ankreuzen, um es mitzubestellen — mit Set-Rabatt:' %}</p>
+    <button type="button" class="gxs-opt is-on" id="gxsOptCross">
+      <span class="gxs-check" aria-hidden="true"></span>
+      <span class="gxs-img"><img id="gxsImg2" src="" alt=""></span>
+      <span class="gxs-info"><span class="gxs-name" id="gxsName2"></span><span class="gxs-tag gxs-tag-add">{% render 'maeve-t', nl: 'de bijpassende uitvoering', en: 'the matching format', es: 'el formato a juego', fr: 'le format assorti', de: 'die passende Variante' %}</span></span>
+      <span class="gxs-p" id="gxsP2"></span>
+    </button>
+    <button type="button" class="gxs-opt" id="gxsOptRefill">
+      <span class="gxs-check" aria-hidden="true"></span>
+      <span class="gxs-img"><img id="gxsImg3" src="" alt=""></span>
+      <span class="gxs-info"><span class="gxs-name" id="gxsName3"></span><span class="gxs-tag gxs-tag-add">{% render 'maeve-t', nl: 'navulling — óók met korting', en: 'refill — discounted too', es: 'recarga — también con descuento', fr: 'recharge — remisée aussi', de: 'Nachfüllung — ebenfalls reduziert' %}</span></span>
+      <span class="gxs-p" id="gxsP3"></span>
+    </button>
+    <div class="gxs-total">
+      <span class="gxs-total-label" id="gxsTotalLabel"></span>
+      <span class="gxs-total-prices"><span class="gxs-was" id="gxsWas"></span> <span class="gxs-now" id="gxsNow"></span></span>
+    </div>
+    <div class="gxs-ship" id="gxsShip" hidden></div>
+    <button type="button" class="btn solid gxs-add" id="gxsAdd"></button>
+    <button type="button" class="gxs-skip" id="gxsSkip">{% render 'maeve-t', nl: 'Nee, alleen dit toevoegen', en: 'No thanks, add only this', es: 'No gracias, añadir solo esto', fr: 'Non merci, ajouter seulement ceci', de: 'Nein danke, nur dies hinzufügen' %}</button>
+  </div>
+</div>
+<script>
+  (function(){
+    var XS=document.getElementById('gxsell'); if(!XS)return;
+    var MT={
+      scents: {% render 'maeve-t', nl: '" geuren · "', en: '" scents · "', es: '" aromas · "', fr: '" parfums · "', de: '" Düfte · "' %},
+      discount: {% render 'maeve-t', nl: '"% korting"', en: '"% off"', es: '"% de descuento"', fr: '"% de réduction"', de: '"% Rabatt"' %},
+      refillAdded: {% render 'maeve-t', nl: '"navulling toegevoegd"', en: '"refill added"', es: '"recarga añadida"', fr: '"recharge ajoutée"', de: '"Nachfüllung hinzugefügt"' %},
+      plusRefill: {% render 'maeve-t', nl: '" + navulling"', en: '" + refill"', es: '" + recarga"', fr: '" + recharge"', de: '" + Nachfüllung"' %},
+      addTogether: {% render 'maeve-t', nl: '"Voeg toe — samen "', en: '"Add — together "', es: '"Añadir — juntos "', fr: '"Ajouter — ensemble "', de: '"Hinzufügen — zusammen "' %},
+      goToCart: {% render 'maeve-t', nl: '"Ga naar winkelmandje"', en: '"Go to cart"', es: '"Ir al carrito"', fr: '"Aller au panier"', de: '"Zum Warenkorb"' %},
+      freeShipYes: {% render 'maeve-t', nl: '"✓ Je komt in aanmerking voor <strong>gratis verzending</strong>"', en: '"✓ You qualify for <strong>free shipping</strong>"', es: '"✓ Tienes derecho a <strong>envío gratis</strong>"', fr: '"✓ Vous bénéficiez de la <strong>livraison gratuite</strong>"', de: '"✓ Du erhältst <strong>kostenlosen Versand</strong>"' %},
+      freeShipA: {% render 'maeve-t', nl: '"Nog <strong>"', en: '"<strong>"', es: '"<strong>"', fr: '"<strong>"', de: '"Noch <strong>"' %},
+      freeShipB: {% render 'maeve-t', nl: '"</strong> tot gratis verzending"', en: '"</strong> to go for free shipping"', es: '"</strong> para el envío gratis"', fr: '"</strong> pour la livraison gratuite"', de: '"</strong> bis zum kostenlosen Versand"' %},
+      busy: {% render 'maeve-t', nl: '"Bezig…"', en: '"Loading…"', es: '"Cargando…"', fr: '"Chargement…"', de: '"Wird geladen…"' %}
+    };
+    var $=function(i){return document.getElementById(i)};
+    function money(c){return '€ '+(c/100).toFixed(2).replace('.',',')}
+    var state={};
+    function recalc(){
+      var pct=state.pct||10, base=state.basePrice||0;
+      var cross=$('gxsOptCross'), refill=$('gxsOptRefill');
+      var crossOn=cross.style.display!=='none'&&cross.classList.contains('is-on');
+      var refillOn=refill.style.display!=='none'&&refill.classList.contains('is-on');
+      var geuren=base+(crossOn?state.cross.price:0);
+      var gcount=1+(crossOn?1:0);
+      var disc=gcount>=2?pct:0;
+      var navc=refillOn?state.refill.price:0;
+      var was=geuren+navc, now=Math.round(geuren*(1-disc/100))+navc;
+      var addOns=(crossOn?1:0)+(refillOn?1:0), btn=$('gxsAdd');
+      if(addOns>0){
+        var lbl=crossOn?(gcount+MT.scents+disc+MT.discount):MT.refillAdded;
+        if(crossOn&&refillOn)lbl+=MT.plusRefill;
+        $('gxsTotalLabel').innerHTML='<strong>'+lbl+'</strong>';
+        $('gxsWas').textContent=disc>0?money(was):''; $('gxsNow').textContent=money(now);
+        btn.textContent=MT.addTogether+money(now); btn.dataset.go='add';
+      } else {
+        $('gxsTotalLabel').textContent=''; $('gxsWas').textContent=''; $('gxsNow').textContent='—';
+        btn.textContent=MT.goToCart; btn.dataset.go='cart';
+      }
+      var proj=(state.cartTotal!=null?state.cartTotal:base)+(now-base);
+      updateShip(proj);
+    }
+    function updateShip(t){
+      var sh=$('gxsShip'); if(!sh)return;
+      var FREE=4000;
+      if(t>=FREE){ sh.className='gxs-ship is-free'; sh.innerHTML='<span>'+MT.freeShipYes+'</span><span class="gxs-ship-bar"><i style="width:100%"></i></span>'; }
+      else { var pct=Math.max(2,Math.round(t/FREE*100)); sh.className='gxs-ship'; sh.innerHTML='<span>'+MT.freeShipA+money(FREE-t)+MT.freeShipB+'</span><span class="gxs-ship-bar"><i style="width:'+pct+'%"></i></span>'; }
+      sh.removeAttribute('hidden');
+    }
+    function close(go){ XS.setAttribute('hidden',''); document.body.style.overflow=''; if(go&&window.maeveOpenCart)window.maeveOpenCart(); }
+    window.maeveCrossSell=function(o){
+      state=o||{};
+      $('gxsName1').textContent=o.baseName||''; $('gxsP1').textContent=money(o.basePrice||0); $('gxsImg1').src=o.baseImg||'';
+      var cross=$('gxsOptCross');
+      if(o.cross){ cross.style.display=''; cross.classList.add('is-on'); cross.dataset.vid=o.cross.id; $('gxsName2').textContent=o.cross.label; $('gxsP2').textContent=money(o.cross.price); $('gxsImg2').src=o.cross.img||''; }
+      else { cross.style.display='none'; cross.classList.remove('is-on'); }
+      var refill=$('gxsOptRefill');
+      if(o.refill){ refill.style.display=''; refill.classList.remove('is-on'); refill.dataset.vid=o.refill.id; $('gxsName3').textContent=o.refill.label; $('gxsP3').textContent=money(o.refill.price); $('gxsImg3').src=o.refill.img||''; }
+      else { refill.style.display='none'; refill.classList.remove('is-on'); }
+      if(!o.cross && !o.refill){ if(window.maeveOpenCart)window.maeveOpenCart(); return; }
+      state.cartTotal=null;
+      fetch('/cart.js').then(function(r){return r.json()}).then(function(c){ state.cartTotal=c.total_price; recalc(); }).catch(function(){});
+      recalc();
+      XS.removeAttribute('hidden'); document.body.style.overflow='hidden';
+    };
+    $('gxsClose').addEventListener('click',function(){close(false)});
+    $('gxsOverlay').addEventListener('click',function(){close(false)});
+    $('gxsSkip').addEventListener('click',function(){close(true)});
+    ['gxsOptCross','gxsOptRefill'].forEach(function(idk){var el=$(idk); if(el)el.addEventListener('click',function(){el.classList.toggle('is-on');recalc();});});
+    $('gxsAdd').addEventListener('click',function(){
+      var b=$('gxsAdd');
+      if(b.dataset.go!=='add'){ close(true); return; }
+      var items=[], cross=$('gxsOptCross'), refill=$('gxsOptRefill');
+      if(cross.style.display!=='none'&&cross.classList.contains('is-on'))items.push({id:Number(cross.dataset.vid),quantity:1});
+      if(refill.style.display!=='none'&&refill.classList.contains('is-on'))items.push({id:Number(refill.dataset.vid),quantity:1});
+      if(!items.length){ close(true); return; }
+      b.disabled=true; b.textContent=MT.busy;
+      fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:items})})
+        .then(function(r){return r.json()}).then(function(){ b.disabled=false; XS.setAttribute('hidden',''); document.body.style.overflow=''; if(window.maeveOpenCart)window.maeveOpenCart(); })
+        .catch(function(){b.disabled=false;recalc();});
+    });
+  })();
+</script>

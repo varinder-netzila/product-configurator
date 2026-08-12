@@ -1,0 +1,48 @@
+<section class="reviews">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="agg"><span class="stars">{{ section.settings.agg_stars }}</span> {{ section.settings.agg }}</div>
+      <div class="sub">{{ section.settings.sub }}</div>
+    </div>
+    <div class="rgrid">
+      {%- for block in section.blocks -%}
+        <div class="rcard reveal" {{ block.shopify_attributes }}{% unless forloop.first %} style="transition-delay:.{{ forloop.index0 | times: 8 }}s"{% endunless %}>
+          <div class="stars">{{ block.settings.stars }}</div>
+          <p>{{ block.settings.quote }}</p>
+          <div class="who">{{ block.settings.who }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "agg_stars", "label": "Sterren", "default": "★★★★★" },
+    { "type": "text", "id": "agg", "label": "Score-regel", "default": "4,9 uit 5" },
+    { "type": "text", "id": "sub", "label": "Subtekst", "default": "Op basis van 2.000+ beoordelingen" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "text", "id": "stars", "label": "Sterren", "default": "★★★★★" },
+        { "type": "textarea", "id": "quote", "label": "Citaat", "default": "\"Eindelijk geurstokjes die ik niet hoef te verstoppen achter een plant.\"" },
+        { "type": "text", "id": "who", "label": "Naam — plaats", "default": "Sanne — Antwerpen" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Reviews",
+    "blocks": [
+      { "type": "review", "settings": { "quote": "\"Eindelijk geurstokjes die ik niet hoef te verstoppen achter een plant. Het staat zó mooi op mijn dressoir.\"", "who": "Sanne — Antwerpen" } },
+      { "type": "review", "settings": { "quote": "\"De kaart van de straat waar wij elkaar ontmoetten, rondom op een fles. Mijn vrouw was sprakeloos.\"", "who": "Thomas — Amsterdam" } },
+      { "type": "review", "settings": { "quote": "\"Kwaliteit als de grote merken, maar met een print die nergens anders bestaat. En de geur blijft dagenlang hangen.\"", "who": "Floor — Utrecht" } }
+    ]
+  }]
+}
+{% endschema %}

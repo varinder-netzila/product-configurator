@@ -1,0 +1,52 @@
+<section class="col-head">
+  <div class="wrap">
+    <div class="crumb">
+      <a href="{{ routes.root_url }}">{% render 'maeve-t', nl: 'Home', en: 'Home', es: 'Inicio', fr: 'Accueil', de: 'Startseite' %}</a><span class="sep">/</span>
+      <a href="{{ routes.collections_url }}">{% render 'maeve-t', nl: 'Collecties', en: 'Collections', es: 'Colecciones', fr: 'Collections', de: 'Kollektionen' %}</a><span class="sep">/</span>
+      <span>{{ collection.title }}</span>
+    </div>
+    <div class="room">{{ collection.title }}</div>
+    <h1>{{ collection.title }}</h1>
+    {% if collection.description != blank %}<p class="zaaltekst" style="max-width:60ch;color:var(--ink-soft)">{{ collection.description | replace: '</p>', '</p> ' | replace: '</li>', '</li> ' | replace: '<br>', ' ' | replace: '<br/>', ' ' | replace: '<br />', ' ' | strip_html | strip }}</p>{% endif %}
+  </div>
+
+  <div class="wrap">
+    <div class="rooms">
+      {%- for block in section.blocks -%}
+        <a class="room-tab {% if collection.handle == block.settings.handle %}active{% endif %}" href="{{ collections[block.settings.handle].url }}" {{ block.shopify_attributes }}>
+          <span class="zaal">{% render 'maeve-t', nl: section.settings.zaal_word, en: 'Line', es: 'Línea', fr: 'Salle', de: 'Linie' %} {{ forloop.index }} {% render 'maeve-t', nl: section.settings.van_word, en: 'of', es: 'de', fr: 'sur', de: 'von' %} {{ section.blocks.size }}</span>
+          <span class="naam">{{ block.settings.name }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collectie — kop",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "zaal_word", "label": "Woord vóór nummer", "default": "Lijn" },
+    { "type": "text", "id": "van_word", "label": "Woord 'van'", "default": "van" }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Lijn-tab",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Naam", "default": "Art" },
+        { "type": "text", "id": "handle", "label": "Collectie-handle", "default": "art" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Collectie — kop",
+    "blocks": [
+      { "type": "tab", "settings": { "name": "Art", "handle": "art" } },
+      { "type": "tab", "settings": { "name": "City", "handle": "city" } },
+      { "type": "tab", "settings": { "name": "Magical Japan", "handle": "magical-japan" } }
+    ]
+  }]
+}
+{% endschema %}

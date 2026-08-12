@@ -1,0 +1,103 @@
+<section class="collist">
+  <div class="wrap">
+    <div class="collist-head reveal">
+      <div class="crumb"><a href="{{ routes.root_url }}">{% render 'maeve-t', nl: 'Home', en: 'Home', es: 'Inicio', fr: 'Accueil', de: 'Startseite' %}</a><span class="sep">/</span><span>{% render 'maeve-t', nl: 'Collecties', en: 'Collections', es: 'Colecciones', fr: 'Collections', de: 'Kollektionen' %}</span></div>
+      <span class="eyebrow">{% render 'maeve-t', nl: section.settings.eyebrow, en: 'The collections', es: 'Las colecciones', fr: 'Les collections', de: 'Die Kollektionen' %}</span>
+      <h1>{% render 'maeve-t', nl: section.settings.heading, en: 'Discover our <em>collections.</em>', es: 'Descubre nuestras <em>colecciones.</em>', fr: 'Découvrez nos <em>collections.</em>', de: 'Entdecken Sie unsere <em>Kollektionen.</em>' %}</h1>
+      {%- if section.settings.intro != blank -%}<p>{% render 'maeve-t', nl: section.settings.intro, en: 'Each line is a world of its own — from museum-worthy art to the map of your city. Choose where your scent begins.', es: 'Cada línea es un mundo propio — desde el arte de museo hasta el plano de tu ciudad. Elige dónde empieza tu fragancia.', fr: "Chaque ligne est un monde à part — de l'art de musée au plan de votre ville. Choisissez où commence votre parfum.", de: 'Jede Linie ist eine eigene Welt — von musealer Kunst bis zum Stadtplan Ihrer Stadt. Wählen Sie, wo Ihr Duft beginnt.' %}</p>{%- endif -%}
+    </div>
+
+    <div class="collist-grid">
+      {%- assign clfb = "zonnebloemen-spray.png,korenveld-stokjes.png,amandelbloesem-spray.png,korenveld-spray.png" | split: "," -%}
+      {%- assign ci = 0 -%}
+      {%- assign collOrder = 'art,city,delfts-blauw,magical-japan,sicilian-summer,navullingen' | split: ',' -%}
+      {%- for ch in collOrder -%}
+        {%- assign collection = collections[ch] -%}
+        {%- if collection != blank -%}
+          {%- assign fbx = ci | modulo: 4 -%}
+          {%- case collection.handle -%}
+            {%- when 'art' -%}{%- assign trio = 'amandelbloesem-roomspray|100 ml,starry-night-geurstokjes|300 ml,zonnebloemen-roomspray|200 ml' -%}
+            {%- when 'city' -%}{%- assign trio = 'amsterdam-roomspray|100 ml,den-haag-geurstokjes|300 ml,rotterdam-roomspray|200 ml' -%}
+            {%- when 'magical-japan' -%}{%- assign trio = 'sakura-dreams-roomspray|100 ml,golden-blossom-geurstokjes|300 ml,sunset-lake-roomspray|200 ml' -%}
+            {%- when 'alle-geuren' -%}{%- assign trio = 'amandelbloesem-roomspray|100 ml,starry-night-geurstokjes|300 ml,amsterdam-roomspray|200 ml' -%}
+            {%- when 'sicilian-summer' -%}{%- assign trio = 'marina-roomspray|100 ml,limone-geurstokjes|300 ml,arancha-roomspray|200 ml' -%}
+            {%- when 'delfts-blauw' -%}{%- assign trio = 'fine-china-roomspray|100 ml,flowers-geurstokjes|300 ml,grachtenpand-roomspray|200 ml' -%}
+            {%- when 'navullingen' -%}{%- assign trio = 'zonnebloemen-navulling|300 ml,grachtenpand-navulling|300 ml,arancha-navulling|300 ml' -%}
+            {%- else -%}{%- assign trio = '' -%}
+          {%- endcase -%}
+          <a class="collist-card reveal" href="{{ collection.url }}">
+            <div class="collist-ped{% if trio != blank %} trio{% endif %}{% if collection.handle == 'navullingen' %} trio-pouch{% endif %}">
+              {%- if trio != blank -%}
+                {%- assign items = trio | split: ',' -%}
+                {%- for it in items -%}
+                  {%- assign parts = it | split: '|' -%}{%- assign prod = all_products[parts[0]] -%}
+                  {%- assign img = prod.featured_image -%}
+                  {%- for v in prod.variants -%}{%- if v.option1 == parts[1] and v.image -%}{%- assign img = v.image -%}{%- break -%}{%- endif -%}{%- endfor -%}
+                  {%- if img -%}<img class="trio-b trio-{{ forloop.index }}" src="{{ img | image_url: width: 360 }}" alt="{{ prod.title | escape }}" loading="lazy">{%- endif -%}
+                {%- endfor -%}
+              {%- elsif collection.image -%}
+                <img src="{{ collection.image | image_url: width: 700 }}" alt="{{ collection.title | escape }}" loading="lazy">
+              {%- elsif collection.products.first.featured_image -%}
+                <img src="{{ collection.products.first.featured_image | image_url: width: 700 }}" alt="{{ collection.title | escape }}" loading="lazy">
+              {%- else -%}
+                <img src="{{ clfb[fbx] | asset_url }}" alt="{{ collection.title | escape }}" loading="lazy">
+              {%- endif -%}
+            </div>
+            <div class="collist-meta">
+              <h3>{{ collection.title }}</h3>
+              <span class="collist-count">{{ collection.all_products_count }} {% if collection.all_products_count == 1 %}{% render 'maeve-t', nl: 'geur', en: 'scent', es: 'aroma', fr: 'parfum', de: 'Duft' %}{% else %}{% render 'maeve-t', nl: 'geuren', en: 'scents', es: 'aromas', fr: 'parfums', de: 'Düfte' %}{% endif %}</span>
+              <span class="collist-go">{% render 'maeve-t', nl: section.settings.link_label, en: 'View the collection →', es: 'Ver la colección →', fr: 'Voir la collection →', de: 'Kollektion ansehen →' %}</span>
+            </div>
+          </a>
+          {%- assign ci = ci | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.collist { padding: 46px 0 84px; }
+.collist-head { max-width: 640px; margin-bottom: 46px; }
+.collist-head .crumb { font-size: 12px; color: var(--ink-soft); margin-bottom: 22px; }
+.collist-head .crumb a:hover { color: var(--ink); }
+.collist-head .crumb .sep { margin: 0 10px; opacity: .5; }
+.collist-head h1 { font-family: var(--serif); font-size: clamp(36px, 3.8vw, 56px); line-height: 1.05; color: var(--ink); margin: 12px 0 14px; }
+.collist-head h1 em { font-style: italic; }
+.collist-head p { color: var(--ink-soft); font-size: 15.5px; }
+.collist-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.collist-card { display: flex; flex-direction: column; }
+.collist-ped { position: relative; background: radial-gradient(125% 95% at 50% 22%, #F7F1E4 0%, var(--sand) 52%, var(--sand-deep) 100%); aspect-ratio: 1 / 1.05; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.collist-ped::after { content: ''; position: absolute; left: 50%; bottom: 9%; transform: translateX(-50%); width: 56%; height: 22px; background: radial-gradient(ellipse at center, rgba(33,29,24,.24), transparent 72%); }
+.collist-ped img { z-index: 2; height: 86%; margin-bottom: 6%; object-fit: contain; filter: drop-shadow(0 20px 22px rgba(33,29,24,.28)); transition: transform .5s ease; }
+.collist-card:hover .collist-ped img { transform: translateY(-8px); }
+/* trio: drie flessen per collectie, midden (300 ml) hoger */
+.collist-ped.trio { padding: 0; }
+.collist-ped.trio::after { display: none; }
+.collist-ped.trio img { height: 84%; width: 35%; max-width: none; margin: 0 -6%; object-fit: cover; object-position: center 72%; position: relative; z-index: 1; filter: drop-shadow(0 16px 20px rgba(33,29,24,.24)); }
+.collist-ped.trio .trio-2 { height: 98%; z-index: 2; }
+.collist-card:hover .collist-ped.trio img { transform: translateY(-8px); }
+/* navullingen: pouches niet bijsnijden — volledig tonen */
+.collist-ped.trio-pouch img { object-fit: contain; object-position: center bottom; height: 78%; width: auto; max-width: none; margin: 0 -30%; }
+.collist-ped.trio-pouch .trio-2 { height: 90%; }
+.collist-meta { padding: 18px 4px 0; }
+.collist-meta h3 { font-family: var(--serif); font-size: 23px; color: var(--ink); }
+.collist-count { display: block; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin-top: 5px; }
+.collist-go { display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--clay); border-bottom: 1px solid var(--clay); padding-bottom: 2px; transition: color .25s; }
+.collist-card:hover .collist-go { color: var(--clay-dark); }
+@media (max-width: 1000px) { .collist-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .collist { padding: 30px 0 56px; } .collist-head { margin-bottom: 30px; } .collist-grid { gap: 16px; } .collist-meta h3 { font-size: 19px; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collectie-overzicht",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "De collecties" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Ontdek onze <em>collecties.</em>" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Elke lijn is een eigen wereld — van museale kunst tot de plattegrond van jouw stad. Kies waar jouw geur begint." },
+    { "type": "text", "id": "link_label", "label": "Link-tekst", "default": "Bekijk de collectie →" }
+  ],
+  "presets": [{ "name": "Collectie-overzicht" }]
+}
+{% endschema %}

@@ -1,0 +1,77 @@
+<section class="maeve-usecases">
+  <div class="wrap">
+    <div class="uc-head reveal"><h2>{% render 'maeve-t', nl: section.settings.heading, en: 'One bottle. <em>Endless moments.</em>', es: 'Un frasco. <em>Momentos infinitos.</em>', fr: 'Un flacon. <em>Une infinité de moments.</em>', de: 'Eine Flasche. <em>Unendlich viele Momente.</em>' %}</h2>
+      {%- if section.settings.subheading != blank -%}<p>{{ section.settings.subheading }}</p>{%- endif -%}
+    </div>
+    <div class="uc-grid">
+      {%- assign ucfb = "zonnebloemen-detail.png,amandelbloesem-detail.png,korenveld-detail.png,zonnebloemen-spray.png" | split: "," -%}
+      {%- for block in section.blocks -%}
+        {%- assign ui = forloop.index0 | modulo: 4 -%}
+        <div class="uc-card reveal" {{ block.shopify_attributes }}>
+          <div class="uc-img"><img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 700 }}{% else %}{{ ucfb[ui] | asset_url }}{% endif %}" alt="{{ block.settings.title | escape }}" loading="lazy"></div>
+          <h3 class="uc-title">{{ block.settings.title }}</h3>
+          <div class="uc-stat">
+            <span class="uc-pct">{{ block.settings.stat }}</span>
+            <span class="uc-txt">{{ block.settings.stat_text }}</span>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.maeve-usecases { padding: 34px 0 60px; }
+.maeve-usecases .uc-head { margin-bottom: 32px; }
+.maeve-usecases .uc-head h2 { font-family: var(--serif); font-size: clamp(30px, 3.6vw, 52px); line-height: 1.06; color: var(--ink); }
+.maeve-usecases .uc-head h2 em { font-style: italic; color: var(--clay); }
+.maeve-usecases .uc-head p { color: var(--ink-soft); margin-top: 12px; max-width: 56ch; }
+.uc-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 22px; }
+.uc-card { border: 1px solid var(--line); border-radius: 18px; padding: 14px; background: var(--ivory); display: flex; flex-direction: column; }
+.uc-img { aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, var(--sand), var(--sand-deep)); }
+.uc-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.uc-title { font-family: var(--serif); font-size: 22px; color: var(--ink); margin: 18px 4px 14px; line-height: 1.15; }
+.uc-stat { margin-top: auto; display: flex; align-items: center; gap: 14px; background: var(--sand); border-radius: 12px; padding: 14px 16px; }
+.uc-pct { font-family: var(--serif); font-size: 27px; color: var(--clay); flex: none; line-height: 1; }
+.uc-txt { font-size: 12.5px; color: var(--ink-soft); line-height: 1.4; }
+@media (max-width: 900px) { .uc-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 600px) {
+  .maeve-usecases { padding: 56px 0; }
+  .uc-grid { display: flex; grid-template-columns: none; overflow-x: auto; gap: 14px; margin: 0 -36px; padding: 0 20px 6px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .uc-grid::-webkit-scrollbar { display: none; }
+  .uc-card { flex: 0 0 76%; scroll-snap-align: start; }
+  .uc-title { font-size: 19px; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Momenten",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Eén fles. <em>Eindeloos veel momenten.</em>" },
+    { "type": "textarea", "id": "subheading", "label": "Subtekst" }
+  ],
+  "blocks": [
+    {
+      "type": "case",
+      "name": "Moment",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Afbeelding" },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Woonkamer & gasten" },
+        { "type": "text", "id": "stat", "label": "Percentage", "default": "94%" },
+        { "type": "textarea", "id": "stat_text", "label": "Stat-tekst", "default": "vindt hun interieur completer met een MAEVE-fles op het dressoir." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Momenten",
+    "blocks": [
+      { "type": "case", "settings": { "title": "Woonkamer & gasten", "stat": "94%", "stat_text": "vindt hun interieur completer met een MAEVE-fles op het dressoir." } },
+      { "type": "case", "settings": { "title": "Slaapkamer & rust", "stat": "92%", "stat_text": "ervaart meer rust met een zachte geur voor het slapengaan." } },
+      { "type": "case", "settings": { "title": "Cadeau geven", "stat": "97%", "stat_text": "zou MAEVE opnieuw cadeau geven aan iemand die ze kennen." } },
+      { "type": "case", "settings": { "title": "Werkplek & focus", "stat": "89%", "stat_text": "werkt geconcentreerder met een frisse geur op de achtergrond." } }
+    ]
+  }]
+}
+{% endschema %}

@@ -1,0 +1,325 @@
+{%- comment -%} Losse producten: design + uitvoering uit metafields; uitvoering = zusterproduct {%- endcomment -%}
+{%- assign printname = product.metafields.geur.design.value | default: product.title -%}
+{%- assign uit = product.metafields.geur.uitvoering.value | default: 'Roomspray' -%}
+{%- assign _iso = localization.language.iso_code -%}
+{%- assign vSpray = 'Roomspray' -%}{%- assign vStok = 'Geurstokjes' -%}{%- assign vNav = 'Navulling' -%}
+{%- case _iso -%}
+{%- when 'en' -%}{%- assign vSpray = 'Room Spray' -%}{%- assign vStok = 'Reed Diffuser' -%}{%- assign vNav = 'Refill' -%}
+{%- when 'es' -%}{%- assign vSpray = 'Spray de Ambiente' -%}{%- assign vStok = 'Difusor de Varillas' -%}{%- assign vNav = 'Recarga' -%}
+{%- when 'fr' -%}{%- assign vSpray = "Spray d'Ambiance" -%}{%- assign vStok = 'Diffuseur à Bâtonnets' -%}{%- assign vNav = 'Recharge' -%}
+{%- when 'de' -%}{%- assign vSpray = 'Raumspray' -%}{%- assign vStok = 'Duftstäbchen' -%}{%- assign vNav = 'Nachfüllung' -%}
+{%- endcase -%}
+{%- assign scent = printname -%}
+{%- assign base = 'zonnebloemen' -%}
+{%- comment -%} Lijn-collectie (Art / City / Magical Japan) {%- endcomment -%}
+{%- assign artcoll = 'MAEVE' -%}
+{%- assign relh = '' -%}
+{%- for c in product.collections -%}
+  {%- if c.handle == 'art' or c.handle == 'city' or c.handle == 'magical-japan' or c.handle == 'sicilian-summer' or c.handle == 'delfts-blauw' -%}
+    {%- assign relh = c.handle -%}{%- assign artcoll = c.title -%}{%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- comment -%} Zusterproducten van hetzelfde design (Roomspray / Geurstokjes / Navulling) {%- endcomment -%}
+{%- assign sibSpray = null -%}{%- assign sibStok = null -%}{%- assign sibNav = null -%}
+{%- assign linecol = collections[relh] -%}
+{%- if linecol != blank -%}
+  {%- for p in linecol.products -%}
+    {%- if p.metafields.geur.design.value == printname -%}
+      {%- assign pu = p.metafields.geur.uitvoering.value -%}
+      {%- if pu == vSpray -%}{%- assign sibSpray = p -%}
+      {%- elsif pu == vStok -%}{%- assign sibStok = p -%}
+      {%- elsif pu == vNav -%}{%- assign sibNav = p -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if product.featured_image -%}{%- assign mainimg = product.featured_image | image_url: width: 1000 -%}
+{%- else -%}{%- assign mainimg = base | append: '-spray.png' | asset_url -%}{%- endif -%}
+{%- comment -%} Stokjes-beeld: foto van het Geurstokjes-zusterproduct, anders hoofdbeeld {%- endcomment -%}
+{%- assign stokimg = mainimg -%}
+{%- if sibStok != blank and sibStok.featured_image -%}{%- assign stokimg = sibStok.featured_image | image_url: width: 1000 -%}{%- endif -%}
+{%- comment -%} Detailbeeld: tweede foto indien aanwezig, anders hoofdbeeld {%- endcomment -%}
+{%- assign detimg = mainimg -%}
+{%- if product.images[1] -%}{%- assign detimg = product.images[1] | image_url: width: 1000 -%}{%- endif -%}
+{%- comment -%} Echte lifestyle-foto's herkennen op bestandsnaam (interieur / zoom-detail / cadeau) {%- endcomment -%}
+{%- assign imgInterior = '' -%}{%- assign imgZoom = '' -%}{%- assign imgGift = '' -%}{%- assign imgUse = '' -%}
+{%- for im in product.images -%}
+  {%- assign _u = im | image_url: width: 1400 -%}{%- assign _l = _u | downcase -%}
+  {%- if _l contains 'interieur' or _l contains 'interior' -%}{%- assign imgInterior = _u -%}
+  {%- elsif _l contains 'in_use' or _l contains 'in-use' or _l contains 'inuse' or _l contains 'gebruik' -%}{%- assign imgUse = _u -%}
+  {%- elsif _l contains 'zoomin' or _l contains 'zoom' or _l contains 'detail' -%}{%- assign imgZoom = _u -%}
+  {%- elsif _l contains 'cadeau' or _l contains 'gift' -%}{%- assign imgGift = _u -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if imgZoom != '' -%}{%- assign detimg = imgZoom -%}{%- endif -%}
+{%- assign optForm = product.options_with_values[0] -%}
+{%- comment -%} Geurtonen uit metafields, met fallback {%- endcomment -%}
+{%- assign nKop = product.metafields.geur.kop.value -%}
+{%- assign nHart = product.metafields.geur.hart.value -%}
+{%- assign nBasis = product.metafields.geur.basis.value -%}
+{%- if nKop == blank -%}{%- assign nKop = 'Bergamot' -%}{%- endif -%}
+{%- if nHart == blank -%}{%- assign nHart = 'Amber' -%}{%- endif -%}
+{%- if nBasis == blank -%}{%- assign nBasis = 'Sandelhout' -%}{%- endif -%}
+{%- assign noteline = nKop | append: ' · ' | append: nHart | append: ' · ' | append: nBasis | downcase -%}
+
+<div class="wrap pdp">
+  <div class="stage-col">
+    <div class="stage">
+      <span class="no">{{ section.settings.stage_no }}</span>
+      <div class="stage-3d" id="stage3d"><img class="stage-img" id="stageImg" src="{{ mainimg }}" alt="{{ product.title | escape }}"></div>
+      {%- if imgInterior != '' -%}<div class="stage-photo" id="view-p1" style="background:url({{ imgInterior }}) center/cover"><span class="photo-tag">{% render 'maeve-t', nl: 'In het interieur', en: 'In the interior', es: 'En el interior', fr: 'Dans l’intérieur', de: 'Im Interieur' %}</span></div>
+      {%- else -%}<div class="stage-photo bg-room" id="view-p1"><div class="shelf"></div><div class="scene"><img class="scene-photo" src="{{ mainimg }}" alt="" loading="lazy"></div><span class="photo-tag">{% render 'maeve-t', nl: 'In het interieur', en: 'In the interior', es: 'En el interior', fr: 'Dans l’intérieur', de: 'Im Interieur' %}</span></div>{%- endif -%}
+      <div class="stage-photo" id="view-p2" style="background:url({{ detimg }}) center/cover"><span class="photo-tag">{% render 'maeve-t', nl: 'Detail van de 360°-druk', en: 'Detail of the 360° print', es: 'Detalle de la impresión 360°', fr: 'Détail de l’impression 360°', de: 'Detail des 360°-Drucks' %}</span></div>
+      {%- if imgUse != '' -%}<div class="stage-photo" id="view-p3" style="background:url({{ imgUse }}) center/cover"><span class="photo-tag">{% render 'maeve-t', nl: 'MAEVE in gebruik', en: 'MAEVE in use', es: 'MAEVE en uso', fr: 'MAEVE en situation', de: 'MAEVE im Gebrauch' %}</span></div>
+      {%- else -%}<div class="stage-photo bg-sage" id="view-p3"><div class="shelf"></div><div class="scene"><img class="scene-photo tall" src="{{ stokimg }}" alt="" loading="lazy"></div><span class="photo-tag">{% render 'maeve-t', nl: 'MAEVE in gebruik', en: 'MAEVE in use', es: 'MAEVE en uso', fr: 'MAEVE en situation', de: 'MAEVE im Gebrauch' %}</span></div>{%- endif -%}
+      {%- if imgGift != '' -%}<div class="stage-photo" id="view-p4" style="background:url({{ imgGift }}) center/cover"><span class="photo-tag">{% render 'maeve-t', nl: 'Als cadeau', en: 'As a gift', es: 'Como regalo', fr: 'En cadeau', de: 'Als Geschenk' %}</span></div>
+      {%- else -%}<div class="stage-photo bg-gift" id="view-p4"><div class="shelf"></div><div class="scene"><div class="giftbox"></div><img class="scene-photo small" src="{{ mainimg }}" alt="" loading="lazy"></div><span class="photo-tag">{% render 'maeve-t', nl: 'Als cadeau', en: 'As a gift', es: 'Como regalo', fr: 'En cadeau', de: 'Als Geschenk' %}</span></div>{%- endif -%}
+      {%- assign _tones = nKop | append: ', ' | append: nHart | append: ', ' | append: nBasis | downcase | split: ', ' -%}
+      <figcaption class="stage-scent">{%- for t in _tones -%}<span>{{ t | strip }}</span>{%- endfor -%}</figcaption>
+    </div>
+    <div class="stage-thumbs" id="galleryThumbs">
+      <div class="thumb t3d active" data-view="3d" style="background:url({{ mainimg }}) center/cover"><span>{% render 'maeve-t', nl: 'Fles', en: 'Bottle', es: 'Botella', fr: 'Flacon', de: 'Flasche' %}</span></div>
+      <div class="thumb{% if imgInterior == '' %} bg-room{% endif %}" data-view="p1"{% if imgInterior != '' %} style="background:url({{ imgInterior }}) center/cover"{% endif %}><span>{% render 'maeve-t', nl: 'Interieur', en: 'Interior', es: 'Interior', fr: 'Intérieur', de: 'Interieur' %}</span></div>
+      <div class="thumb" data-view="p2" style="background:url({{ detimg }}) center/cover"><span>{% render 'maeve-t', nl: 'Detail', en: 'Detail', es: 'Detalle', fr: 'Détail', de: 'Detail' %}</span></div>
+      <div class="thumb{% if imgUse == '' %} bg-sage{% endif %}" data-view="p3"{% if imgUse != '' %} style="background:url({{ imgUse }}) center/cover"{% endif %}><span>{% render 'maeve-t', nl: 'In gebruik', en: 'In use', es: 'En uso', fr: 'En situation', de: 'Im Gebrauch' %}</span></div>
+      <div class="thumb{% if imgGift == '' %} bg-gift{% endif %}" data-view="p4"{% if imgGift != '' %} style="background:url({{ imgGift }}) center/cover"{% endif %}><span>{% render 'maeve-t', nl: 'Cadeau', en: 'Gift', es: 'Regalo', fr: 'Cadeau', de: 'Geschenk' %}</span></div>
+    </div>
+  </div>
+
+  <div class="info">
+    <div class="artist-line">{{ product.vendor | default: 'Maeve' }} · <em>{{ artcoll }}</em></div>
+    <h1>{{ scent }} — <em>{% render 'maeve-t', nl: section.settings.title_suffix, en: 'scent collection', es: 'colección de fragancia', fr: 'collection de parfum', de: 'Duftkollektion' %}</em></h1>
+    <div class="subtitle">{% render 'maeve-t', nl: 'met', en: 'featuring', es: 'con', fr: 'avec', de: 'mit' %} "{{ printname }}", {% render 'maeve-t', nl: '360° rondom bedrukt', en: 'printed 360° all around', es: 'impreso 360° en todo su contorno', fr: 'imprimé à 360° tout autour', de: 'rundum 360° bedruckt' %}</div>
+    <div class="rating"><span class="stars">★★★★★</span>{% render 'maeve-t', nl: section.settings.rating_text, en: '4.9 — 312 reviews', es: '4,9 — 312 reseñas', fr: '4,9 — 312 avis', de: '4,9 — 312 Bewertungen' %}</div>
+
+    <div class="price-row">
+      <span class="price" id="priceVal">{{ product.price_min | money }}</span>
+      <span class="per" id="priceMeta">{% render 'maeve-t', nl: section.settings.price_meta, en: 'refillable · made to last', es: 'recargable · hecho para durar', fr: 'rechargeable · fait pour durer', de: 'nachfüllbar · für die Ewigkeit gemacht' %}</span>
+    </div>
+
+    <div class="desc">{{ product.description }}</div>
+
+    {%- assign coll = collections[relh] -%}
+    <div class="opt-group">
+      <div class="opt-label"><span>{% render 'maeve-t', nl: section.settings.step1_label, en: '1 · Choose your print', es: '1 · Elige tu estampa', fr: '1 · Choisissez votre impression', de: '1 · Wählen Sie Ihren Druck' %}</span><span class="sel">{{ printname }}</span></div>
+      <div class="chips" id="printChips">
+        {%- assign shown = 0 -%}
+        {%- if coll != blank -%}
+          {%- for p in coll.products -%}
+            {%- if p.metafields.geur.uitvoering.value == uit -%}
+              {%- assign pd = p.metafields.geur.design.value | default: p.title -%}
+              {%- assign pslug = p.handle | replace: '-roomspray', '' | replace: '-geurstokjes', '' | replace: '-navulling', '' -%}
+              {%- assign pprint = 'print-' | append: pslug | append: '.png' -%}
+              {%- assign pimg = pprint | asset_url -%}
+              <a class="chip pchip{% if p.id == product.id %} active{% endif %}" href="{{ p.url }}"><span class="sw" style="background:url({{ pimg }}) center/cover"></span><span>{{ pd }}</span></a>
+              {%- assign shown = shown | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if shown == 0 -%}
+          {%- assign cslug = product.handle | replace: '-roomspray', '' | replace: '-geurstokjes', '' | replace: '-navulling', '' -%}
+          {%- assign fbprint = 'print-' | append: cslug | append: '.png' -%}
+          <span class="chip pchip active"><span class="sw" style="background:url({{ fbprint | asset_url }}) center/cover"></span><span>{{ printname }}</span></span>
+        {%- endif -%}
+      </div>
+      <div class="scent-line">{% render 'maeve-t', nl: 'Bij deze print hoort de geur', en: 'This print is paired with the scent', es: 'Esta impresión se combina con la fragancia', fr: 'Cette impression s’accompagne du parfum', de: 'Zu diesem Druck gehört der Duft' %} <strong>{{ scent }}</strong> — {{ noteline }}.</div>
+    </div>
+
+    <div class="opt-group">
+      <div class="opt-label"><span>{% render 'maeve-t', nl: section.settings.step2_label, en: '2 · Choose your type', es: '2 · Elige el tipo', fr: '2 · Choisissez le type', de: '2 · Wählen Sie die Art' %}</span><span class="sel">{{ uit }}</span></div>
+      <div class="chips uit-links">
+        {%- if sibSpray != blank -%}<a class="chip{% if uit == vSpray %} active{% endif %}" href="{{ sibSpray.url }}">{% render 'maeve-t', nl: 'Roomspray', en: 'Room spray', es: 'Spray de Ambiente', fr: 'Spray d’Ambiance', de: 'Raumspray' %}</a>{%- endif -%}
+        {%- if sibStok != blank -%}<a class="chip{% if uit == vStok %} active{% endif %}" href="{{ sibStok.url }}">{% render 'maeve-t', nl: 'Geurstokjes', en: 'Reed diffuser', es: 'Difusor de Varillas', fr: 'Diffuseur à Bâtonnets', de: 'Duftstäbchen' %}</a>{%- endif -%}
+        {%- if sibNav != blank -%}<a class="chip{% if uit == vNav %} active{% endif %}" href="{{ sibNav.url }}">{% render 'maeve-t', nl: 'Navulling', en: 'Refill', es: 'Recarga', fr: 'Recharge', de: 'Nachfüllung' %}</a>{%- endif -%}
+      </div>
+    </div>
+
+    <div class="opt-group">
+      <div class="opt-label"><span>{% render 'maeve-t', nl: section.settings.step3_label, en: '3 · Choose your size', es: '3 · Elige el tamaño', fr: '3 · Choisissez la taille', de: '3 · Wählen Sie die Größe' %}</span><span class="sel" id="sizeSel">{{ optForm.values[0] }}</span></div>
+      <div class="chips" id="sizeChips">
+        {%- for v in optForm.values -%}<button type="button" class="chip{% if forloop.first %} active{% endif %}" data-size="{{ v | escape }}">{{ v }}<small></small></button>{%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_notes -%}
+    <div class="notes">
+      <div class="note"><div class="k">{% render 'maeve-t', nl: 'Kop', en: 'Top', es: 'Salida', fr: 'Tête', de: 'Kopf' %}</div><div class="v">{{ nKop }}</div></div>
+      <div class="note"><div class="k">{% render 'maeve-t', nl: 'Hart', en: 'Heart', es: 'Corazón', fr: 'Cœur', de: 'Herz' %}</div><div class="v">{{ nHart }}</div></div>
+      <div class="note"><div class="k">{% render 'maeve-t', nl: 'Basis', en: 'Base', es: 'Fondo', fr: 'Fond', de: 'Basis' %}</div><div class="v">{{ nBasis }}</div></div>
+    </div>
+    {%- endif -%}
+
+    {%- if product.selling_plan_groups.size > 0 -%}
+    <div class="maeve-sub-widget"><div class="subscriptions_app_embed_block"></div></div>
+    {%- endif -%}
+
+    <div class="buy-row">
+      <div class="qty"><button type="button" id="qMin">−</button><span id="qVal">1</span><button type="button" id="qPlus">+</button></div>
+      <button class="btn solid" id="addBtn">{% render 'maeve-t', nl: 'In winkelmandje', en: 'Add to cart', es: 'Añadir al carrito', fr: 'Ajouter au panier', de: 'In den Warenkorb' %} — <span id="btnPrice">{{ product.price_min | money }}</span></button>
+      {%- if section.settings.show_payment_icons -%}
+      <div class="pay-icons">
+        {%- assign pay_types = shop.enabled_payment_types -%}
+        {%- if pay_types.size > 0 -%}
+          {%- for t in pay_types -%}{{ t | payment_type_svg_tag: class: 'pay-ico' }}{%- endfor -%}
+        {%- else -%}
+          {%- assign pay_fallback = "visa,master,american_express,paypal,apple_pay,ideal,bancontact" | split: "," -%}
+          {%- for t in pay_fallback -%}{{ t | payment_type_svg_tag: class: 'pay-ico' }}{%- endfor -%}
+        {%- endif -%}
+      </div>
+      {%- endif -%}
+    </div>
+
+    {%- assign bcoll = section.settings.bundle_collection -%}
+    {%- if section.settings.show_bundle and uit != vNav and bcoll != blank and bcoll.products.size > 1 -%}
+    <div class="setbox" data-d2="{{ section.settings.bundle_discount2 }}" data-d3="{{ section.settings.bundle_discount3 }}">
+      <div class="setbox-head">
+        <span class="setbox-tag">{% render 'maeve-t', nl: section.settings.bundle_tag, en: 'Build your scent wardrobe', es: 'Crea tu armario de fragancias', fr: 'Composez votre garde-robe olfactive', de: 'Bauen Sie Ihre Duftgarderobe' %}</span>
+        <span class="setbox-sub">{% render 'maeve-t', nl: section.settings.bundle_text, en: 'Add scents and save automatically — 2 scents −10%, 3 scents −20%.', es: 'Añade fragancias y ahorra automáticamente — 2 fragancias −10%, 3 fragancias −20%.', fr: 'Ajoutez des parfums et économisez automatiquement — 2 parfums −10%, 3 parfums −20%.', de: 'Fügen Sie Düfte hinzu und sparen Sie automatisch — 2 Düfte −10%, 3 Düfte −20%.' %}</span>
+      </div>
+      <div class="setbox-strip">
+        <div class="setpick is-base">
+          <span class="sp-img">{% if product.featured_image %}<img src="{{ product.featured_image | image_url: width: 200 }}" alt="">{% else %}<img src="{{ 'zonnebloemen-spray.png' | asset_url }}" alt="">{% endif %}</span>
+          <span class="sp-name">{{ printname }}</span>
+          <span class="sp-base-tag">{% render 'maeve-t', nl: 'deze geur', en: 'this scent', es: 'esta fragancia', fr: 'ce parfum', de: 'dieser Duft' %}</span>
+        </div>
+        {%- assign _bu = uit -%}{%- if uit == vNav -%}{%- assign _bu = vSpray -%}{%- endif -%}
+        {%- for p in bcoll.products -%}{%- if p.id != product.id and p.metafields.geur.uitvoering.value == _bu -%}
+          {%- assign pv1 = null -%}{%- assign pv2 = null -%}{%- assign pv3 = null -%}
+          {%- for pv in p.variants -%}
+            {%- if pv.option1 == '100 ml' -%}{%- assign pv1 = pv -%}{%- elsif pv.option1 == '200 ml' -%}{%- assign pv2 = pv -%}{%- elsif pv.option1 == '300 ml' -%}{%- assign pv3 = pv -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign pdname = p.metafields.geur.design.value | default: p.title -%}
+          {%- assign img1 = '' -%}{%- if pv1.image -%}{%- assign img1 = pv1.image | image_url: width: 240 -%}{%- elsif p.featured_image -%}{%- assign img1 = p.featured_image | image_url: width: 240 -%}{%- endif -%}
+          {%- assign img2 = img1 -%}{%- if pv2.image -%}{%- assign img2 = pv2.image | image_url: width: 240 -%}{%- endif -%}
+          {%- assign img3 = img1 -%}{%- if pv3.image -%}{%- assign img3 = pv3.image | image_url: width: 240 -%}{%- endif -%}
+          <button type="button" class="setpick" data-v100="{{ pv1.id }}" data-c100="{{ pv1.price }}" data-img100="{{ img1 }}" data-v200="{{ pv2.id }}" data-c200="{{ pv2.price }}" data-img200="{{ img2 }}" data-v300="{{ pv3.id }}" data-c300="{{ pv3.price }}" data-img300="{{ img3 }}" data-vid="{{ pv2.id }}" data-cents="{{ pv2.price }}">
+            <span class="sp-check" aria-hidden="true"></span>
+            <span class="sp-img"><img src="{{ img2 }}" alt="{{ p.title | escape }}" loading="lazy"></span>
+            <span class="sp-name">{{ pdname }}</span>
+            <span class="sp-price">{{ pv2.price | money }}</span>
+          </button>
+        {%- endif -%}{%- endfor -%}
+      </div>
+      <div class="setbox-foot">
+        <div class="setbox-sum"><span class="set-disc"></span><span class="set-prices"><span class="set-was"></span> <span class="set-now">—</span></span></div>
+        <button type="button" class="btn solid setbox-add" id="setAdd" disabled>{% render 'maeve-t', nl: section.settings.bundle_button, en: 'Add set', es: 'Añadir set', fr: 'Ajouter le set', de: 'Set hinzufügen' %}</button>
+      </div>
+    </div>
+    {%- endif -%}
+
+    <p class="ship-note">{% render 'maeve-t', nl: section.settings.ship_note, en: 'Order before 4 PM, <strong>delivered tomorrow</strong> · free shipping from €40 · 30-day returns', es: 'Pide antes de las 16:00 y <strong>recíbelo mañana</strong> · envío gratis a partir de 40 € · 30 días de devolución', fr: "Commandez avant 16h, <strong>livré demain</strong> · livraison offerte dès 40 € · retour sous 30 jours", de: 'Bis 16:00 Uhr bestellt, <strong>morgen geliefert</strong> · kostenloser Versand ab 40 € · 30 Tage Rückgabe' %}</p>
+
+    <details><summary>{% render 'maeve-t', nl: 'Het werk &amp; de druk', en: 'The artwork &amp; the print', es: 'La obra &amp; la impresión', fr: 'L’œuvre &amp; l’impression', de: 'Das Kunstwerk &amp; der Druck' %}</summary><div class="acc-body">{% render 'maeve-t', nl: 'Elke fles is rondom bedrukt met een 360°-kunstprint — zonder etiket en zonder naad. De linkerrand sluit naadloos aan op de rechter, dus waar je de fles ook draait: het beeld loopt door.', en: 'Every bottle is printed all around with a 360° art print — no label, no seam. The left edge meets the right seamlessly, so wherever you turn the bottle, the image continues.', es: 'Cada botella está impresa en todo su contorno con una obra de arte de 360° — sin etiqueta y sin costura. El borde izquierdo se une al derecho sin interrupción, así que gires como gires la botella, la imagen continúa.', fr: 'Chaque flacon est imprimé tout autour d’une œuvre d’art à 360° — sans étiquette ni couture. Le bord gauche rejoint le droit sans rupture, de sorte que, où que vous tourniez le flacon, l’image se poursuit.', de: 'Jede Flasche ist rundum mit einem 360°-Kunstdruck bedruckt — ohne Etikett und ohne Naht. Der linke Rand schließt nahtlos an den rechten an, sodass das Bild weiterläuft, egal wie Sie die Flasche drehen.' %}</div></details>
+    <details><summary>{% render 'maeve-t', nl: 'Geur &amp; ingrediënten', en: 'Scent &amp; ingredients', es: 'Fragancia &amp; ingredientes', fr: 'Parfum &amp; ingrédients', de: 'Duft &amp; Inhaltsstoffe' %}</summary><div class="acc-body"><strong>{{ scent }}</strong> — {{ noteline }}.<ul><li>{% render 'maeve-t', nl: 'Kop', en: 'Top', es: 'Salida', fr: 'Tête', de: 'Kopf' %}: {{ nKop | downcase }}</li><li>{% render 'maeve-t', nl: 'Hart', en: 'Heart', es: 'Corazón', fr: 'Cœur', de: 'Herz' %}: {{ nHart | downcase }}</li><li>{% render 'maeve-t', nl: 'Basis', en: 'Base', es: 'Fondo', fr: 'Fond', de: 'Basis' %}: {{ nBasis | downcase }}</li></ul>{% render 'maeve-t', nl: section.settings.acc_ingredients, en: '<p>Composed with perfumers in Grasse. Vegan, cruelty-free, free from phthalates.</p>', es: '<p>Compuesto con perfumistas en Grasse. Vegano, libre de crueldad animal, sin ftalatos.</p>', fr: "<p>Composé avec des parfumeurs à Grasse. Végan, sans cruauté, sans phtalates.</p>", de: '<p>Komponiert mit Parfümeuren in Grasse. Vegan, tierversuchsfrei, ohne Phthalate.</p>' %}</div></details>
+    <details><summary>{% render 'maeve-t', nl: 'Navullen', en: 'Refilling', es: 'Recargar', fr: 'Recharger', de: 'Nachfüllen' %}</summary><div class="acc-body">{% render 'maeve-t', nl: section.settings.acc_refill, en: '<p>The scent runs out, the artwork stays. Refills fit every Maeve bottle. That way your bottle lasts for years — more beautiful and more affordable.</p>', es: '<p>La fragancia se acaba, la obra permanece. Las recargas encajan en cualquier botella Maeve. Así tu botella dura años — más bonita y más económica.</p>', fr: "<p>Le parfum s'épuise, l'œuvre demeure. Les recharges s'adaptent à chaque flacon Maeve. Ainsi votre flacon dure des années — plus beau et plus avantageux.</p>", de: '<p>Der Duft geht zur Neige, das Kunstwerk bleibt. Nachfüllungen passen auf jede Maeve-Flasche. So hält Ihre Flasche jahrelang — schöner und günstiger.</p>' %}</div></details>
+    <details><summary>{% render 'maeve-t', nl: 'Verzending &amp; retour', en: 'Shipping &amp; returns', es: 'Envío &amp; devoluciones', fr: 'Livraison &amp; retours', de: 'Versand &amp; Rückgabe' %}</summary><div class="acc-body">{% render 'maeve-t', nl: section.settings.acc_shipping, en: '<p>Order before 4 PM and it arrives tomorrow (NL &amp; BE). Free shipping from €40. Not in love? Free returns within 30 days.</p>', es: '<p>Pide antes de las 16:00 y llega mañana (NL &amp; BE). Envío gratis a partir de 40 €. ¿No te enamora? Devolución gratuita en 30 días.</p>', fr: "<p>Commandez avant 16h et c'est livré demain (NL &amp; BE). Livraison offerte dès 40 €. Pas conquis ? Retour gratuit sous 30 jours.</p>", de: '<p>Bis 16:00 Uhr bestellt, morgen geliefert (NL &amp; BE). Kostenloser Versand ab 40 €. Nicht verliebt? Kostenlose Rückgabe innerhalb von 30 Tagen.</p>' %}</div></details>
+
+    {%- if section.settings.show_social -%}
+    <div class="pdp-social">
+      <h3 class="pdp-social-h">{% render 'maeve-t', nl: section.settings.social_heading, en: 'Loved by 200,000+ customers', es: 'Adorado por más de 200.000 clientes', fr: 'Aimé par plus de 200 000 clients', de: 'Geliebt von über 200.000 Kundinnen und Kunden' %}</h3>
+      <div class="pdp-social-strip">
+        {%- assign scoll = section.settings.bundle_collection -%}
+        {%- assign sfb = "zonnebloemen-spray.png,korenveld-stokjes.png,amandelbloesem-spray.png,korenveld-spray.png" | split: "," -%}
+        {%- if scoll != blank -%}
+          {%- for p in scoll.products limit: 8 -%}
+            {%- assign sidx = forloop.index0 | modulo: 4 -%}
+            <div class="pdp-sclip">
+              <img src="{% if p.featured_image %}{{ p.featured_image | image_url: width: 300 }}{% else %}{{ sfb[sidx] | asset_url }}{% endif %}" alt="{{ p.title | escape }}" loading="lazy">
+              <span class="pdp-splay" aria-hidden="true"></span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      <div class="pdp-social-prog"><span class="pdp-social-bar"></span></div>
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="buybar" id="buybar">
+  <div class="inner">
+    <div class="meta"><span class="name"><span id="barScent">{{ scent }}</span> <em id="barFormat">— {{ uit | downcase }} {{ optForm.values[0] }}, {{ printname }}</em></span><span class="price" id="barPrice">{{ product.price_min | money }}</span></div>
+    <button class="btn solid" id="barAdd">{% render 'maeve-t', nl: 'In winkelmandje', en: 'Add to cart', es: 'Añadir al carrito', fr: 'Ajouter au panier', de: 'In den Warenkorb' %}</button>
+  </div>
+</div>
+
+<form action="/cart/add" method="post" id="addForm" hidden><input type="hidden" name="id" id="variantId" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="quantity" id="qtyField" value="1"></form>
+
+{%- if section.settings.show_xsell and uit != vNav -%}
+<div class="xsell" id="xsell" data-pct="{{ section.settings.xsell_discount }}" hidden>
+  <div class="xsell-overlay" id="xsellOverlay"></div>
+  <div class="xsell-box" role="dialog" aria-modal="true">
+    <button type="button" class="xsell-close" id="xsellClose" aria-label="{% render 'maeve-t', nl: 'Sluiten', en: 'Close', es: 'Cerrar', fr: 'Fermer', de: 'Schließen' %}">&times;</button>
+    <span class="xsell-eyebrow">{% render 'maeve-t', nl: section.settings.xsell_eyebrow, en: 'Added to your cart ✓', es: 'Añadido a tu cesta ✓', fr: 'Ajouté à votre panier ✓', de: 'Zum Warenkorb hinzugefügt ✓' %}</span>
+    <h3 class="xsell-title">{% render 'maeve-t', nl: section.settings.xsell_heading, en: 'Add the matching type', es: 'Añade el tipo a juego', fr: 'Ajoutez le type assorti', de: 'Fügen Sie die passende Art hinzu' %}</h3>
+
+    <div class="xsell-row xsell-added">
+      <span class="xsell-img"><img id="xsellImg1" src="" alt=""></span>
+      <span class="xsell-info"><span class="xsell-name" id="xsellName1"></span><span class="xsell-tag xsell-tag-in">{% render 'maeve-t', nl: '✓ zit al in je winkelmandje', en: '✓ already in your cart', es: '✓ ya está en tu carrito', fr: '✓ déjà dans votre panier', de: '✓ bereits im Warenkorb' %}</span></span>
+      <span class="xsell-p" id="xsellP1"></span>
+    </div>
+
+    <p class="xsell-addlabel">{% render 'maeve-t', nl: 'Vink aan om mee te bestellen — met setkorting op álles:', en: 'Tick to add it too — with a set discount on everything:', es: 'Marca para añadirlo también — con descuento de set en todo:', fr: 'Cochez pour l’ajouter aussi — avec une remise sur l’ensemble :', de: 'Ankreuzen, um es mitzubestellen — mit Set-Rabatt auf alles:' %}</p>
+
+    <button type="button" class="xsell-opt is-on" id="optCross">
+      <span class="xsell-check" aria-hidden="true"></span>
+      <span class="xsell-img"><img id="xsellImg2" src="" alt=""></span>
+      <span class="xsell-info"><span class="xsell-name" id="xsellName2"></span><span class="xsell-tag xsell-tag-add">{% render 'maeve-t', nl: 'de bijpassende uitvoering', en: 'the matching format', es: 'el formato a juego', fr: 'le format assorti', de: 'die passende Variante' %}</span></span>
+      <span class="xsell-p" id="xsellP2"></span>
+    </button>
+
+    <button type="button" class="xsell-opt" id="optRefill">
+      <span class="xsell-check" aria-hidden="true"></span>
+      <span class="xsell-img"><img id="xsellImg3" src="" alt=""></span>
+      <span class="xsell-info"><span class="xsell-name" id="xsellName3"></span><span class="xsell-tag xsell-tag-add">{% render 'maeve-t', nl: 'navulling — óók met korting', en: 'refill — discounted too', es: 'recarga — también con descuento', fr: 'recharge — également remisée', de: 'Nachfüllung — ebenfalls reduziert' %}</span></span>
+      <span class="xsell-p" id="xsellP3"></span>
+    </button>
+
+    <div class="xsell-total">
+      <span class="xsell-total-label" id="xsellTotalLabel"></span>
+      <span class="xsell-total-prices"><span class="xsell-was" id="xsellWas"></span> <span class="xsell-now" id="xsellNow"></span></span>
+    </div>
+
+    <button type="button" class="btn solid xsell-add" id="xsellAdd"></button>
+    <button type="button" class="xsell-skip" id="xsellSkip">{% render 'maeve-t', nl: 'Nee, verder met alleen het eerste', en: 'No thanks, continue with just the first', es: 'No gracias, continuar solo con el primero', fr: 'Non merci, continuer avec le premier uniquement', de: 'Nein danke, nur mit dem ersten fortfahren' %}</button>
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Productinfo",
+  "settings": [
+    { "type": "text", "id": "stage_no", "label": "Hoeknummer", "default": "No. 1 / 8" },
+    { "type": "text", "id": "title_suffix", "label": "Titel-achtervoegsel", "default": "geurcollectie" },
+    { "type": "text", "id": "rating_text", "label": "Beoordeling-tekst", "default": "4,9 — 312 beoordelingen" },
+    { "type": "text", "id": "price_meta", "label": "Prijs-bijschrift", "default": "navulbaar · gemaakt om te blijven" },
+    { "type": "header", "content": "Stap-labels" },
+    { "type": "text", "id": "step1_label", "label": "Stap 1", "default": "1 · Kies je print" },
+    { "type": "text", "id": "step2_label", "label": "Stap 2", "default": "2 · Kies je uitvoering" },
+    { "type": "text", "id": "step3_label", "label": "Stap 3", "default": "3 · Kies je formaat" },
+    { "type": "checkbox", "id": "show_notes", "label": "Toon geurtonen (Kop/Hart/Basis)", "default": true },
+    { "type": "inline_richtext", "id": "ship_note", "label": "Verzendregel", "default": "Voor 16:00 besteld, <strong>morgen in huis</strong> · gratis verzending vanaf €40 · 30 dagen retour" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Toon betaaliconen onder koopknop", "default": true },
+    { "type": "header", "content": "Bundel / geurgarderobe" },
+    { "type": "checkbox", "id": "show_bundle", "label": "Toon bundel bij koopknop", "default": true },
+    { "type": "collection", "id": "bundle_collection", "label": "Geuren-collectie voor de set" },
+    { "type": "range", "id": "bundle_discount2", "min": 0, "max": 50, "step": 1, "unit": "%", "label": "Korting bij 2 geuren (weergave)", "default": 10 },
+    { "type": "range", "id": "bundle_discount3", "min": 0, "max": 50, "step": 1, "unit": "%", "label": "Korting bij 3 geuren (weergave)", "default": 20 },
+    { "type": "text", "id": "bundle_tag", "label": "Bundel-titel", "default": "Bouw je geurgarderobe" },
+    { "type": "text", "id": "bundle_text", "label": "Bundel-tekst", "default": "Voeg geuren toe en bespaar automatisch — 2 geuren −10%, 3 geuren −20%." },
+    { "type": "text", "id": "bundle_button", "label": "Bundel-knop", "default": "Voeg set toe" },
+    { "type": "header", "content": "Accordeons" },
+    { "type": "richtext", "id": "acc_ingredients", "label": "Geur & ingrediënten — extra", "default": "<p>Gecomponeerd met parfumeurs in Grasse. Vegan, dierproefvrij, zonder ftalaten.</p>" },
+    { "type": "richtext", "id": "acc_refill", "label": "Navullen", "default": "<p>De geur raakt op, het kunstwerk blijft. Navullingen passen op elke Maeve-fles. Zo gaat je fles jaren mee — mooier én voordeliger.</p>" },
+    { "type": "richtext", "id": "acc_shipping", "label": "Verzending & retour", "default": "<p>Voor 16:00 besteld is morgen in huis (NL & BE). Gratis verzending vanaf €40. Niet verliefd? Binnen 30 dagen kosteloos retour.</p>" },
+    { "type": "header", "content": "Social proof (in kolom)" },
+    { "type": "checkbox", "id": "show_social", "label": "Toon social proof onder accordeons", "default": true },
+    { "type": "text", "id": "social_heading", "label": "Social proof — kop", "default": "Geliefd door 200.000+ klanten" },
+    { "type": "header", "content": "Cross-sell pop-up" },
+    { "type": "checkbox", "id": "show_xsell", "label": "Toon pop-up na toevoegen", "default": true },
+    { "type": "range", "id": "xsell_discount", "min": 0, "max": 50, "step": 1, "unit": "%", "label": "Korting (weergave)", "default": 10 },
+    { "type": "text", "id": "xsell_eyebrow", "label": "Pop-up eyebrow", "default": "Toegevoegd aan je winkelmandje ✓" },
+    { "type": "text", "id": "xsell_heading", "label": "Pop-up kop", "default": "Voeg de bijpassende uitvoering toe" }
+  ]
+}
+{% endschema %}

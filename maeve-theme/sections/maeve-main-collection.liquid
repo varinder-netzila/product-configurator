@@ -1,0 +1,173 @@
+<section>
+  <div class="wrap">
+    {%- comment -%} alle-geuren toont gegroepeerd per collectie (titel + producten); andere collecties = vlak raster {%- endcomment -%}
+    {%- assign grouped = false -%}
+    {%- if collection.handle == 'alle-geuren' or collection.handle == 'navullingen' -%}{%- assign grouped = true -%}{%- endif -%}
+
+    {%- comment -%} aanwezige facetten bepalen {%- endcomment -%}
+    {%- assign allUit = '' -%}{%- assign allLijn = '' -%}{%- assign allForm = '' -%}
+    {%- for product in collection.products -%}
+      {%- assign pu = product.metafields.geur.uitvoering.value -%}{%- if pu != blank -%}{%- assign allUit = allUit | append: pu | append: ',' -%}{%- endif -%}
+      {%- if product.tags contains 'Art' -%}{%- assign allLijn = allLijn | append: 'Art,' -%}{%- elsif product.tags contains 'City' -%}{%- assign allLijn = allLijn | append: 'City,' -%}{%- elsif product.tags contains 'Magical Japan' -%}{%- assign allLijn = allLijn | append: 'Magical Japan,' -%}{%- elsif product.tags contains 'Sicilian Summer' -%}{%- assign allLijn = allLijn | append: 'Sicilian Summer,' -%}{%- elsif product.tags contains 'Delfts Blauw' -%}{%- assign allLijn = allLijn | append: 'Delfts Blauw,' -%}{%- endif -%}
+      {%- for v in product.variants -%}{%- assign allForm = allForm | append: v.option1 | append: ',' -%}{%- endfor -%}
+    {%- endfor -%}
+    {%- assign uitsArr = allUit | split: ',' | uniq -%}
+    {%- assign lijnsArr = allLijn | split: ',' | uniq -%}
+    {%- assign _liso = localization.language.iso_code -%}
+    {%- if _liso == 'en' -%}{%- assign uitOrder = 'Room Spray,Reed Diffuser,Refill' | split: ',' -%}
+    {%- elsif _liso == 'es' -%}{%- assign uitOrder = 'Spray de Ambiente,Difusor de Varillas,Recarga' | split: ',' -%}
+    {%- elsif _liso == 'fr' -%}{%- assign uitOrder = "Spray d'Ambiance,Diffuseur à Bâtonnets,Recharge" | split: ',' -%}
+    {%- elsif _liso == 'de' -%}{%- assign uitOrder = 'Raumspray,Duftstäbchen,Nachfüllung' | split: ',' -%}
+    {%- else -%}{%- assign uitOrder = 'Roomspray,Geurstokjes,Navulling' | split: ',' -%}
+    {%- endif -%}
+    {%- assign lijnOrder = 'Art,City,Magical Japan,Sicilian Summer,Delfts Blauw' | split: ',' -%}
+    {%- assign lineHandles = 'art,city,magical-japan,sicilian-summer,delfts-blauw' | split: ',' -%}
+    {%- assign lijnCount = 0 -%}{%- for l in lijnOrder -%}{%- if lijnsArr contains l -%}{%- assign lijnCount = lijnCount | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- assign uitCount = 0 -%}{%- for u in uitOrder -%}{%- if uitsArr contains u -%}{%- assign uitCount = uitCount | plus: 1 -%}{%- endif -%}{%- endfor -%}
+
+    <div class="filterbar" id="collFilters">
+      <span class="count" id="filterCount" data-plural="{% render 'maeve-t', nl: section.settings.plural, en: 'scents', es: 'fragancias', fr: 'parfums', de: 'Düfte' %}" data-suffix="{% render 'maeve-t', nl: section.settings.count_suffix, en: 'in this collection', es: 'en esta colección', fr: 'dans cette collection', de: 'in dieser Kollektion' %}">{{ collection.products_count }} {% if collection.products_count == 1 %}{% render 'maeve-t', nl: section.settings.singular, en: 'scent', es: 'fragancia', fr: 'parfum', de: 'Duft' %}{% else %}{% render 'maeve-t', nl: section.settings.plural, en: 'scents', es: 'fragancias', fr: 'parfums', de: 'Düfte' %}{% endif %} {% render 'maeve-t', nl: section.settings.count_suffix, en: 'in this collection', es: 'en esta colección', fr: 'dans cette collection', de: 'in dieser Kollektion' %}</span>
+      <div class="filters">
+        {%- if lijnCount > 1 -%}<div class="filter-group"><span class="flabel">{% render 'maeve-t', nl: section.settings.f_lijn, en: 'Collection', es: 'Colección', fr: 'Collection', de: 'Kollektion' %}</span>{%- for l in lijnOrder -%}{%- if lijnsArr contains l -%}<button type="button" class="fchip" data-f="lijn" data-v="{{ l | handleize }}">{{ l }}</button>{%- endif -%}{%- endfor -%}</div>{%- endif -%}
+        {%- if uitCount > 1 -%}<div class="filter-group"><span class="flabel">{% render 'maeve-t', nl: section.settings.f_uit, en: 'Type', es: 'Tipo', fr: 'Type', de: 'Art' %}</span>{%- for u in uitOrder -%}{%- if uitsArr contains u -%}<button type="button" class="fchip" data-f="uit" data-v="{{ u | handleize }}">{{ u }}</button>{%- endif -%}{%- endfor -%}</div>{%- endif -%}
+      </div>
+    </div>
+
+    <div id="collContent">
+      {%- assign total = collection.products_count -%}
+      {%- assign idx = 0 -%}
+
+      {%- if grouped -%}
+        {%- comment -%} per collectie: titel + producten {%- endcomment -%}
+        {%- for lh in lineHandles -%}
+          {%- assign ltag = lijnOrder[forloop.index0] -%}
+          {%- assign lineN = 0 -%}
+          {%- for product in collection.products -%}{%- if product.tags contains ltag -%}{%- assign lineN = lineN | plus: 1 -%}{%- endif -%}{%- endfor -%}
+          {%- if lineN > 0 -%}
+            {%- assign lcoll = collections[lh] -%}
+            <div class="collgroup" data-lijn="{{ lh }}">
+              <div class="collgroup-head">
+                <h2 class="collgroup-title">{{ lcoll.title | default: ltag }}</h2>
+                <a class="collgroup-link" href="{{ lcoll.url }}">{% render 'maeve-t', nl: section.settings.group_link | default: 'Bekijk collectie', en: 'View collection', es: 'Ver colección', fr: 'Voir la collection', de: 'Kollektion ansehen' %}</a>
+              </div>
+              <div class="grid">
+                {%- for gu in uitOrder -%}
+                  {%- for product in collection.products -%}
+                    {%- if product.tags contains ltag and product.metafields.geur.uitvoering.value == gu -%}
+                      {%- assign idx = idx | plus: 1 -%}
+                      {%- assign cardimg = product.featured_image -%}
+                      {%- for v in product.variants -%}{%- if v.option1 == '200 ml' and v.image -%}{%- assign cardimg = v.image -%}{%- break -%}{%- endif -%}{%- endfor -%}
+                      {%- assign pforms = '' -%}{%- for v in product.variants -%}{%- assign pforms = pforms | append: v.option1 | handleize | append: ' ' -%}{%- endfor -%}
+                      <div class="piece reveal in" data-uit="{{ gu | handleize }}" data-lijn="{{ lh }}" data-formaat="{{ pforms | strip }}">
+                        <a class="pedestal" href="{{ product.url }}">
+                          {% if product.tags contains 'Bestseller' %}<span class="tag">{% render 'maeve-t', nl: 'Bestseller', en: 'Bestseller', es: 'Más vendido', fr: 'Best-seller', de: 'Bestseller' %}</span>{% elsif product.tags contains 'Nieuw' %}<span class="tag">{% render 'maeve-t', nl: 'Nieuw', en: 'New', es: 'Nuevo', fr: 'Nouveau', de: 'Neu' %}</span>{% endif %}
+                          {% if cardimg %}<img class="prod-photo" src="{{ cardimg | image_url: width: 700 }}" alt="{{ product.title | escape }}">{% else %}<img class="prod-photo" src="{{ 'zonnebloemen-spray.png' | asset_url }}" alt="{{ product.title | escape }}">{% endif %}
+                          {%- assign _k = product.metafields.geur.kop.value -%}{%- if _k != blank -%}{%- assign _tones = _k | append: ', ' | append: product.metafields.geur.hart.value | append: ', ' | append: product.metafields.geur.basis.value | downcase | split: ', ' -%}<figcaption class="ped-scent">{%- for t in _tones -%}<span>{{ t | strip }}</span>{%- endfor -%}</figcaption>{%- endif -%}
+                        </a>
+                        <div class="mlabel">
+                          <div class="artist">{{ lcoll.title | default: ltag }}</div>
+                          <a href="{{ product.url }}"><div class="title">{{ product.title }}</div></a>{%- if product.metafields.geur.kop.value != blank -%}<div class="mtones">{{ product.metafields.geur.kop.value | append: ' · ' | append: product.metafields.geur.hart.value | append: ' · ' | append: product.metafields.geur.basis.value | downcase }}</div>{%- endif -%}
+                          <div class="row">
+                            <span class="price">{% render 'maeve-t', nl: section.settings.price_prefix, en: 'from', es: 'desde', fr: 'à partir de', de: 'ab' %} {{ product.price_min | money }}</span>
+                            <a class="go" href="{{ product.url }}">{% render 'maeve-t', nl: section.settings.card_link, en: 'View scent', es: 'Ver fragancia', fr: 'Voir le parfum', de: 'Duft ansehen' %}</a>
+                          </div>
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if total == 0 -%}<p>{% render 'maeve-t', nl: section.settings.empty_text, en: 'No scents in this collection yet.', es: 'Aún no hay fragancias en esta colección.', fr: 'Aucun parfum dans cette collection pour le moment.', de: 'Noch keine Düfte in dieser Kollektion.' %}</p>{%- endif -%}
+
+      {%- else -%}
+        <div class="grid" id="collGrid">
+          {%- comment -%} altijd eerst sprays, dan geurstokjes, dan navulling {%- endcomment -%}
+          {%- for gu in uitOrder -%}
+            {%- for product in collection.products -%}
+              {%- if product.metafields.geur.uitvoering.value == gu -%}
+                {%- assign idx = idx | plus: 1 -%}
+                {%- assign cardimg = product.featured_image -%}
+                {%- for v in product.variants -%}{%- if v.option1 == '200 ml' and v.image -%}{%- assign cardimg = v.image -%}{%- break -%}{%- endif -%}{%- endfor -%}
+                {%- assign pline = '' -%}{%- if product.tags contains 'Art' -%}{%- assign pline = 'art' -%}{%- elsif product.tags contains 'City' -%}{%- assign pline = 'city' -%}{%- elsif product.tags contains 'Magical Japan' -%}{%- assign pline = 'magical-japan' -%}{%- elsif product.tags contains 'Sicilian Summer' -%}{%- assign pline = 'sicilian-summer' -%}{%- elsif product.tags contains 'Delfts Blauw' -%}{%- assign pline = 'delfts-blauw' -%}{%- endif -%}
+                {%- assign pforms = '' -%}{%- for v in product.variants -%}{%- assign pforms = pforms | append: v.option1 | handleize | append: ' ' -%}{%- endfor -%}
+                <div class="piece reveal in" data-uit="{{ gu | handleize }}" data-lijn="{{ pline }}" data-formaat="{{ pforms | strip }}">
+                  <a class="pedestal" href="{{ product.url }}">
+                    <span class="no">No. {{ idx }} / {{ total }}</span>
+                    {% if product.tags contains 'Bestseller' %}<span class="tag">{% render 'maeve-t', nl: 'Bestseller', en: 'Bestseller', es: 'Más vendido', fr: 'Best-seller', de: 'Bestseller' %}</span>{% elsif product.tags contains 'Nieuw' %}<span class="tag">{% render 'maeve-t', nl: 'Nieuw', en: 'New', es: 'Nuevo', fr: 'Nouveau', de: 'Neu' %}</span>{% endif %}
+                    {% if cardimg %}<img class="prod-photo" src="{{ cardimg | image_url: width: 700 }}" alt="{{ product.title | escape }}">{% else %}<img class="prod-photo" src="{{ 'zonnebloemen-spray.png' | asset_url }}" alt="{{ product.title | escape }}">{% endif %}
+                          {%- assign _k = product.metafields.geur.kop.value -%}{%- if _k != blank -%}{%- assign _tones = _k | append: ', ' | append: product.metafields.geur.hart.value | append: ', ' | append: product.metafields.geur.basis.value | downcase | split: ', ' -%}<figcaption class="ped-scent">{%- for t in _tones -%}<span>{{ t | strip }}</span>{%- endfor -%}</figcaption>{%- endif -%}
+                  </a>
+                  <div class="mlabel">
+                    <div class="artist">{{ collection.title }}</div>
+                    <a href="{{ product.url }}"><div class="title">{{ product.title }}</div></a>{%- if product.metafields.geur.kop.value != blank -%}<div class="mtones">{{ product.metafields.geur.kop.value | append: ' · ' | append: product.metafields.geur.hart.value | append: ' · ' | append: product.metafields.geur.basis.value | downcase }}</div>{%- endif -%}
+                    <div class="row">
+                      <span class="price">{% render 'maeve-t', nl: section.settings.price_prefix, en: 'from', es: 'desde', fr: 'à partir de', de: 'ab' %} {{ product.price_min | money }}</span>
+                      <a class="go" href="{{ product.url }}">{% render 'maeve-t', nl: section.settings.card_link, en: 'View scent', es: 'Ver fragancia', fr: 'Voir le parfum', de: 'Duft ansehen' %}</a>
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endfor -%}
+          {%- if total == 0 -%}<p>{% render 'maeve-t', nl: section.settings.empty_text, en: 'No scents in this collection yet.', es: 'Aún no hay fragancias en esta colección.', fr: 'Aucun parfum dans cette collection pour le moment.', de: 'Noch keine Düfte in dieser Kollektion.' %}</p>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+    <p class="filter-empty" id="filterEmpty" hidden>{% render 'maeve-t', nl: section.settings.no_match, en: 'No scents found with these filters.', es: 'No se han encontrado fragancias con estos filtros.', fr: 'Aucun parfum trouvé avec ces filtres.', de: 'Keine Düfte mit diesen Filtern gefunden.' %}</p>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var MT={ of: {% render 'maeve-t', nl: '" van "', en: '" of "', es: '" de "', fr: '" sur "', de: '" von "' %} };
+    var bar=document.getElementById('collFilters'); if(!bar)return;
+    var content=document.getElementById('collContent'); if(!content)return;
+    var cards=Array.prototype.slice.call(content.querySelectorAll('.piece'));
+    var groups=Array.prototype.slice.call(content.querySelectorAll('.collgroup'));
+    var total=cards.length;
+    var countEl=document.getElementById('filterCount');
+    var emptyEl=document.getElementById('filterEmpty');
+    var plural=countEl?(countEl.dataset.plural||''):'', suffix=countEl?(countEl.dataset.suffix||''):'';
+    function toks(c,g){ return (c.dataset[g]||'').split(' ').filter(Boolean); }
+    function apply(){
+      var active={};
+      bar.querySelectorAll('.fchip.active').forEach(function(p){ (active[p.dataset.f]=active[p.dataset.f]||[]).push(p.dataset.v); });
+      var shown=0;
+      cards.forEach(function(c){
+        var ok=true;
+        for(var g in active){ var av=active[g], ct=toks(c,g); if(!av.some(function(x){return ct.indexOf(x)>=0;})){ ok=false; break; } }
+        c.style.display=ok?'':'none'; if(ok)shown++;
+      });
+      groups.forEach(function(grp){
+        var vis=Array.prototype.some.call(grp.querySelectorAll('.piece'),function(p){return p.style.display!=='none';});
+        grp.style.display=vis?'':'none';
+      });
+      if(countEl) countEl.textContent=(shown===total?total:(shown+MT.of+total))+' '+plural+' '+suffix;
+      if(emptyEl) emptyEl.hidden = shown!==0;
+    }
+    bar.addEventListener('click',function(e){ var p=e.target.closest('.fchip'); if(!p)return; p.classList.toggle('active'); apply(); });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collectie — raster",
+  "settings": [
+    { "type": "text", "id": "singular", "label": "Enkelvoud", "default": "geur" },
+    { "type": "text", "id": "plural", "label": "Meervoud", "default": "geuren" },
+    { "type": "text", "id": "count_suffix", "label": "Telling-achtervoegsel", "default": "in deze collectie" },
+    { "type": "text", "id": "price_prefix", "label": "Prijs-voorvoegsel", "default": "vanaf" },
+    { "type": "text", "id": "card_link", "label": "Kaart-link", "default": "Bekijk geur" },
+    { "type": "text", "id": "group_link", "label": "Groep-link (alle geuren)", "default": "Bekijk collectie" },
+    { "type": "text", "id": "empty_text", "label": "Leeg — tekst", "default": "Nog geen geuren in deze collectie." },
+    { "type": "header", "content": "Filters" },
+    { "type": "text", "id": "f_lijn", "label": "Filter-label collectie", "default": "Collectie" },
+    { "type": "text", "id": "f_uit", "label": "Filter-label soort", "default": "Soort" },
+    { "type": "text", "id": "f_formaat", "label": "Filter-label formaat", "default": "Formaat" },
+    { "type": "text", "id": "no_match", "label": "Geen resultaat — tekst", "default": "Geen geuren gevonden met deze filters." }
+  ]
+}
+{% endschema %}

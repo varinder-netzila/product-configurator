@@ -1,0 +1,31 @@
+{%- assign artcoll = product.tags | first -%}
+{%- assign relh = artcoll | handleize -%}
+{%- assign coll = collections[relh] -%}
+{%- if coll.products.size > 1 -%}
+<section class="related">
+  <div class="wrap">
+    <div class="head reveal"><h2>{% render 'maeve-t', nl: section.settings.heading, en: 'More from <em>this collection.</em>', es: 'Más de <em>esta colección.</em>', fr: 'Plus de <em>cette collection.</em>', de: 'Mehr aus <em>dieser Kollektion.</em>' %}</h2><a class="all" href="{{ coll.url }}">{% render 'maeve-t', nl: section.settings.link_label, en: 'View all', es: 'Ver todo', fr: 'Tout voir', de: 'Alle ansehen' %}</a></div>
+    <div class="rel-grid">
+      {%- for p in coll.products limit: 4 -%}{%- unless p.id == product.id -%}
+        <a class="rel-card reveal" href="{{ p.url }}">
+          <div class="ped">{% if p.featured_image %}<img class="prod-photo" src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title | escape }}">{% else %}<img class="prod-photo" src="{{ 'amandelbloesem-spray.png' | asset_url }}" alt="{{ p.title | escape }}">{% endif %}</div>
+          <h3>{{ p.title }}</h3>
+          <div class="sub">{{ artcoll }}</div>
+          <div class="p">{% render 'maeve-t', nl: 'vanaf', en: 'from', es: 'desde', fr: 'à partir de', de: 'ab' %} {{ p.price_min | money }}</div>
+        </a>
+      {%- endunless -%}{%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Verwante producten",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Meer uit <em>deze collectie.</em>" },
+    { "type": "text", "id": "link_label", "label": "Link-tekst", "default": "Bekijk alles" }
+  ],
+  "presets": [{ "name": "Verwante producten" }]
+}
+{% endschema %}

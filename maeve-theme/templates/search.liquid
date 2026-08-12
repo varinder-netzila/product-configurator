@@ -1,0 +1,28 @@
+<div class="page-head"><h1>Zoeken</h1></div>
+<div class="wrap" style="max-width:760px;padding-top:20px">
+  <form action="{{ routes.search_url }}" method="get" style="display:flex;gap:12px;margin-bottom:40px">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Zoek een geur of collectie" style="flex:1;padding:14px 16px;border:1px solid var(--line);background:var(--ivory)">
+    <button type="submit" class="btn solid">Zoek</button>
+  </form>
+</div>
+{%- if search.performed -%}
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="pgrid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            <a class="card reveal" href="{{ item.url }}">
+              <div class="ped">
+                {%- if item.featured_image -%}<img src="{{ item.featured_image | image_url: width: 700 }}" alt="{{ item.title | escape }}">
+                {%- else -%}<img src="{{ 'zonnebloemen-spray.png' | asset_url }}" alt="{{ item.title | escape }}">{%- endif -%}
+              </div>
+              <div class="meta"><div class="title">{{ item.title }}</div><div class="row"><span class="price">vanaf {{ item.price_min | money }}</span><span class="go">Bekijk</span></div></div>
+            </a>
+          {%- endif -%}
+        {%- else -%}
+          <p>Geen resultaten voor "{{ search.terms | escape }}".</p>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}

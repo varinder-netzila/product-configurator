@@ -1,0 +1,43 @@
+{%- assign tparts = product.title | split: '—' -%}
+{%- assign printname = tparts.first | strip -%}
+{%- assign artcoll = product.tags | first -%}
+{%- assign base = 'zonnebloemen' -%}
+{%- if product.handle contains 'amandel' -%}{%- assign base = 'amandelbloesem' -%}
+{%- elsif product.handle contains 'korenveld' -%}{%- assign base = 'korenveld' -%}{%- endif -%}
+{%- comment -%} Hoofdfoto: 200ml-variant (hero) als basis, anders featured, anders fallback {%- endcomment -%}
+{%- assign mainimg = '' -%}
+{%- for v in product.variants -%}{%- if v.option1 == '200 ml' and v.image -%}{%- assign mainimg = v.image | image_url: width: 1000 -%}{%- break -%}{%- endif -%}{%- endfor -%}
+{%- if mainimg == '' and product.featured_image -%}{%- assign mainimg = product.featured_image | image_url: width: 1000 -%}{%- endif -%}
+{%- if mainimg == '' -%}{%- assign mainimg = base | append: '-spray.png' | asset_url -%}{%- endif -%}
+{%- capture sizeImgs -%}{ {%- assign _f = true -%}{%- for v in product.variants -%}{%- if v.image -%}{%- unless _f -%},{%- endunless -%}{{ v.option1 | json }}:{{ v.image | image_url: width: 1000 | json }}{%- assign _f = false -%}{%- endif -%}{%- endfor -%} }{%- endcapture -%}
+<section class="artist-sec">
+  <div class="wrap artist-grid">
+    <div class="artist-visual reveal"><div class="art"><img id="artistImg" src="{{ mainimg }}" data-sizeimgs='{{ sizeImgs | strip }}' alt="{{ printname }}" loading="lazy"></div><div class="cap">{{ printname }} — {{ artcoll }}.</div></div>
+    <div class="artist-copy reveal">
+      <span class="eyebrow">{% render 'maeve-t', nl: section.settings.eyebrow, en: 'The story behind the print', es: 'La historia detrás de la estampa', fr: "L'histoire derrière l'impression", de: 'Die Geschichte hinter dem Druck' %}</span>
+      <h2>{% render 'maeve-t', nl: section.settings.heading, en: 'Art is not only seen. <em>You smell it.</em>', es: 'El arte no solo se ve. <em>Se huele.</em>', fr: "L'art ne se voit pas seulement. <em>Il se sent.</em>", de: 'Kunst sieht man nicht nur. <em>Man riecht sie.</em>' %}</h2>
+      <p>{{ product.description | replace: '</p>', '</p> ' | replace: '</li>', '</li> ' | replace: '<br>', ' ' | replace: '<br/>', ' ' | replace: '<br />', ' ' | strip_html | strip | truncatewords: 55 }}</p>
+      <p class="quote">{% render 'maeve-t', nl: section.settings.quote, en: "\"A painting has four sides. This has none. The work simply never stops.\"", es: "«Un cuadro tiene cuatro lados. Este no tiene ninguno. La obra sencillamente nunca termina.»", fr: "« Un tableau a quatre côtés. Celui-ci n'en a aucun. L'œuvre ne s'arrête tout simplement jamais. »", de: "„Ein Gemälde hat vier Seiten. Dieses hat keine. Das Werk hört einfach nie auf.“" %}</p>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var img=document.getElementById('artistImg'); if(!img)return;
+      var map={}; try{ map=JSON.parse(img.getAttribute('data-sizeimgs')||'{}'); }catch(e){}
+      var chips=document.getElementById('sizeChips'); if(!chips)return;
+      chips.addEventListener('click',function(e){ var b=e.target.closest('.chip'); if(b&&b.dataset.size&&map[b.dataset.size]) img.src=map[b.dataset.size]; });
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Product — verhaal/artiest",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Het verhaal achter de print" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Kunst zie je niet alleen. <em>Je ruikt het.</em>" },
+    { "type": "textarea", "id": "quote", "label": "Citaat", "default": "\"Een schilderij heeft vier zijden. Dit heeft er geen één. Het werk stopt gewoon nooit.\"" }
+  ],
+  "presets": [{ "name": "Product — verhaal/artiest" }]
+}
+{% endschema %}

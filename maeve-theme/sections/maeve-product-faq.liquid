@@ -1,0 +1,124 @@
+{%- comment -%} Product-specifieke, SEO-sterke FAQ + FAQPage JSON-LD {%- endcomment -%}
+{%- assign design = product.metafields.geur.design.value | default: product.title -%}
+{%- assign uit = product.metafields.geur.uitvoering.value | default: 'Roomspray' -%}
+{%- assign _iso = localization.language.iso_code -%}
+{%- assign vSpray = 'Roomspray' -%}{%- assign vStok = 'Geurstokjes' -%}{%- assign vNav = 'Navulling' -%}
+{%- case _iso -%}
+{%- when 'en' -%}{%- assign vSpray = 'Room Spray' -%}{%- assign vStok = 'Reed Diffuser' -%}{%- assign vNav = 'Refill' -%}
+{%- when 'es' -%}{%- assign vSpray = 'Spray de Ambiente' -%}{%- assign vStok = 'Difusor de Varillas' -%}{%- assign vNav = 'Recarga' -%}
+{%- when 'fr' -%}{%- assign vSpray = "Spray d'Ambiance" -%}{%- assign vStok = 'Diffuseur à Bâtonnets' -%}{%- assign vNav = 'Recharge' -%}
+{%- when 'de' -%}{%- assign vSpray = 'Raumspray' -%}{%- assign vStok = 'Duftstäbchen' -%}{%- assign vNav = 'Nachfüllung' -%}
+{%- endcase -%}
+{%- assign uitL = uit | downcase -%}
+{%- assign familie = product.metafields.geur.familie.value | default: 'verfijnde' -%}
+{%- assign familieL = familie | downcase -%}
+{%- assign kop = product.metafields.geur.kop.value -%}
+{%- assign hart = product.metafields.geur.hart.value -%}
+{%- assign basis = product.metafields.geur.basis.value -%}
+{%- assign noteline = '' -%}
+{%- if kop != blank -%}{%- assign noteline = kop -%}{%- if hart != blank -%}{%- assign noteline = noteline | append: ', ' | append: hart -%}{%- endif -%}{%- if basis != blank -%}{%- assign noteline = noteline | append: ', ' | append: basis -%}{%- endif -%}{%- assign noteline = noteline | downcase -%}{%- else -%}{%- assign noteline = familieL -%}{%- endif -%}
+{%- assign inspiratie = product.metafields.geur.inspiratie.value | strip_html | strip -%}
+
+{%- comment -%} formaten + prijzen {%- endcomment -%}
+{%- assign formaten = '' -%}
+{%- for v in product.variants -%}
+  {%- assign pm = v.price | money -%}
+  {%- assign formaten = formaten | append: v.title | append: ' (' | append: pm | append: ')' -%}
+  {%- unless forloop.last -%}{%- assign formaten = formaten | append: ', ' -%}{%- endunless -%}
+{%- endfor -%}
+
+{%- comment -%} ===== Q&A opbouwen (paren: Vraag ==> Antwoord, gescheiden door :::) ===== {%- endcomment -%}
+{%- assign faq = '' -%}
+
+{%- if uit == vSpray -%}
+  {%- capture faqp -%}{% render 'maeve-t', nl: 'Wat is de', en: 'What is the', es: 'Qué es el', fr: 'Qu’est-ce que le', de: 'Was ist das' %} {{ design }} {% render 'maeve-t', nl: 'roomspray?==>De', en: 'room spray?==>The', es: 'Spray de Ambiente?==>El', fr: 'Spray d’Ambiance ?==>Le', de: 'Raumspray?==>Das' %} {{ design }} {% render 'maeve-t', nl: 'roomspray is een interieurspray die je ruimte direct vult met een', en: 'room spray is an interior spray that instantly fills your space with a', es: 'Spray de Ambiente es un spray de interior que llena tu espacio al instante con un aroma', fr: 'Spray d’Ambiance est un spray d’intérieur qui remplit instantanément votre espace d’un parfum', de: 'Raumspray ist ein Interieurspray, das deinen Raum sofort mit einem' %} {{ familieL }} {% render 'maeve-t', nl: 'geur —', en: 'scent —', es: '—', fr: '—', de: 'Duft erfüllt —' %} {{ noteline }}. {% render 'maeve-t', nl: 'De fles is 360° rondom bedrukt met de', en: 'The bottle is printed 360° all around with the', es: 'La botella está impresa 360° por completo con la', fr: 'Le flacon est imprimé à 360° tout autour avec l’', de: 'Die Flasche ist rundum 360° mit dem' %} {{ design }}{% render 'maeve-t', nl: '-kunstprint, zonder etiket of naad.', en: ' art print, with no label or seam.', es: ' lámina artística, sin etiqueta ni costura.', fr: ' impression artistique, sans étiquette ni couture.', de: '-Kunstdruck bedruckt, ohne Etikett oder Naht.' %}:::{% render 'maeve-t', nl: 'Hoe gebruik ik de', en: 'How do I use the', es: 'Cómo uso el', fr: 'Comment utiliser le', de: 'Wie verwende ich das' %} {{ design }} {% render 'maeve-t', nl: 'roomspray?==>Verstuif 1 à 2 keer in de lucht of licht op textiel zoals gordijnen, kussens of een plaid. Zo verspreidt de', en: 'room spray?==>Spray once or twice into the air, or lightly onto textiles such as curtains, cushions or a throw. This spreads the', es: 'Spray de Ambiente?==>Pulveriza 1 o 2 veces en el aire o ligeramente sobre textiles como cortinas, cojines o una manta. Así el aroma', fr: 'Spray d’Ambiance ?==>Vaporisez 1 à 2 fois dans l’air ou légèrement sur les textiles tels que rideaux, coussins ou un plaid. Ainsi le parfum', de: 'Raumspray?==>Sprühe 1 bis 2 Mal in die Luft oder leicht auf Textilien wie Vorhänge, Kissen oder ein Plaid. So verteilt sich der' %} {{ familieL }} {% render 'maeve-t', nl: 'geur zich gelijkmatig door de kamer. Vermijd direct contact met onbehandeld hout en kwetsbare stoffen.', en: 'scent evenly through the room. Avoid direct contact with untreated wood and delicate fabrics.', es: 'se difunde de forma uniforme por la habitación. Evita el contacto directo con madera sin tratar y telas delicadas.', fr: 'se diffuse uniformément dans la pièce. Évitez le contact direct avec le bois non traité et les tissus délicats.', de: 'Duft gleichmäßig im Raum. Vermeide direkten Kontakt mit unbehandeltem Holz und empfindlichen Stoffen.' %}:::{% render 'maeve-t', nl: 'Hoe lang blijft de geur van', en: 'How long does the scent of', es: 'Cuánto dura el aroma de', fr: 'Combien de temps le parfum de', de: 'Wie lange hält der Duft von' %} {{ design }} {% render 'maeve-t', nl: 'hangen?==>Na het sprayen blijft de geur (', en: 'linger?==>After spraying, the scent (', es: '?==>Tras pulverizar, el aroma (', fr: 'persiste-t-il ?==>Après la pulvérisation, le parfum (', de: 'an?==>Nach dem Sprühen bleibt der Duft (' %}{{ noteline }}{% render 'maeve-t', nl: ') afhankelijk van de ruimte enkele uren goed merkbaar; op textiel langer. Spray gerust opnieuw naar wens.', en: ') stays clearly noticeable for several hours depending on the room; longer on textiles. Feel free to spray again as desired.', es: ') se percibe claramente durante varias horas según la habitación; más en los textiles. Vuelve a pulverizar cuando quieras.', fr: ') reste nettement perceptible plusieurs heures selon la pièce ; plus longtemps sur les textiles. N’hésitez pas à vaporiser de nouveau selon vos envies.', de: ') je nach Raum mehrere Stunden gut wahrnehmbar; auf Textilien länger. Sprühe bei Bedarf gerne erneut.' %}:::{%- endcapture -%}
+  {%- assign faq = faq | append: faqp -%}
+{%- elsif uit == vStok -%}
+  {%- capture faqp -%}{% render 'maeve-t', nl: 'Wat zijn de', en: 'What are the', es: 'Qué es el', fr: 'Qu’est-ce que le', de: 'Was sind die' %} {{ design }} {% render 'maeve-t', nl: 'geurstokjes?==>De', en: 'reed diffuser?==>The', es: 'Difusor de Varillas?==>El', fr: 'Diffuseur à Bâtonnets ?==>Le', de: 'Duftstäbchen?==>Die' %} {{ design }} {% render 'maeve-t', nl: 'geurstokjes (reed diffuser) geven continu en zonder vuur een subtiele', en: 'reed diffuser releases a subtle, flame-free', es: 'Difusor de Varillas libera de forma continua y sin llama un sutil aroma', fr: 'Diffuseur à Bâtonnets libère en continu et sans flamme un subtil parfum', de: 'Duftstäbchen geben kontinuierlich und ohne Flamme einen dezenten' %} {{ familieL }} {% render 'maeve-t', nl: 'geur af —', en: 'scent continuously —', es: '—', fr: '—', de: 'Duft ab —' %} {{ noteline }}. {% render 'maeve-t', nl: 'De fles is 360° rondom bedrukt met de', en: 'The bottle is printed 360° all around with the', es: 'La botella está impresa 360° por completo con la', fr: 'Le flacon est imprimé à 360° tout autour avec l’', de: 'Die Flasche ist rundum 360° mit dem' %} {{ design }}{% render 'maeve-t', nl: '-kunstprint, zonder etiket of naad.', en: ' art print, with no label or seam.', es: ' lámina artística, sin etiqueta ni costura.', fr: ' impression artistique, sans étiquette ni couture.', de: '-Kunstdruck bedruckt, ohne Etikett oder Naht.' %}:::{% render 'maeve-t', nl: 'Hoe gebruik ik de', en: 'How do I use the', es: 'Cómo uso el', fr: 'Comment utiliser le', de: 'Wie verwende ich die' %} {{ design }} {% render 'maeve-t', nl: 'geurstokjes?==>Plaats de rieten stokjes in het flesje. Ze nemen de geurolie op en verspreiden die geleidelijk door de ruimte. Draai de stokjes af en toe om voor een sterkere, frissere geurafgifte.', en: 'reed diffuser?==>Place the reeds in the bottle. They absorb the scented oil and gradually diffuse it through the room. Turn the reeds now and then for a stronger, fresher release.', es: 'Difusor de Varillas?==>Coloca las varillas de junco en el frasco. Absorben el aceite aromático y lo difunden gradualmente por la habitación. Gira las varillas de vez en cuando para una difusión más intensa y fresca.', fr: 'Diffuseur à Bâtonnets ?==>Placez les bâtonnets de rotin dans le flacon. Ils absorbent l’huile parfumée et la diffusent progressivement dans la pièce. Retournez les bâtonnets de temps en temps pour une diffusion plus intense et plus fraîche.', de: 'Duftstäbchen?==>Stecke die Rattanstäbchen in das Fläschchen. Sie nehmen das Duftöl auf und verteilen es nach und nach im Raum. Drehe die Stäbchen ab und zu um, für eine stärkere, frischere Duftabgabe.' %}:::{% render 'maeve-t', nl: 'Hoe lang gaan de', en: 'How long do the', es: 'Cuánto duran las', fr: 'Combien de temps durent les', de: 'Wie lange halten die' %} {{ design }} {% render 'maeve-t', nl: 'geurstokjes mee?==>Afhankelijk van het formaat en het aantal omgedraaide stokjes gaan de geurstokjes meerdere weken tot maanden mee. Met een navulling gebruik je dezelfde fles nog langer.', en: 'reeds last?==>Depending on the size and how often you turn the reeds, the diffuser lasts several weeks to months. With a refill you keep using the same bottle even longer.', es: 'varillas?==>Según el tamaño y la frecuencia con que gires las varillas, el difusor dura de varias semanas a meses. Con una recarga usas la misma botella aún más tiempo.', fr: 'bâtonnets ?==>Selon le format et la fréquence à laquelle vous retournez les bâtonnets, le diffuseur dure de plusieurs semaines à plusieurs mois. Avec une recharge, vous utilisez le même flacon encore plus longtemps.', de: 'Stäbchen?==>Je nach Größe und wie oft du die Stäbchen umdrehst, halten die Duftstäbchen mehrere Wochen bis Monate. Mit einer Nachfüllung nutzt du dieselbe Flasche noch länger.' %}:::{%- endcapture -%}
+  {%- assign faq = faq | append: faqp -%}
+{%- else -%}
+  {%- capture faqp -%}{% render 'maeve-t', nl: 'Waarvoor gebruik ik de', en: 'What is the', es: 'Para qué sirve la', fr: 'À quoi sert la', de: 'Wofür verwende ich die' %} {{ design }} {% render 'maeve-t', nl: 'navulling?==>Met deze navulling van 300 ml vul je je bestaande', en: 'refill for?==>This 300 ml refill tops up your existing', es: 'Recarga?==>Con esta recarga de 300 ml rellenas tu', fr: 'Recharge ?==>Avec cette recharge de 300 ml, vous remplissez votre', de: 'Nachfüllung?==>Mit dieser Nachfüllung von 300 ml füllst du dein bestehendes' %} {{ design }} {% render 'maeve-t', nl: 'roomspray of geurstokjes bij — dezelfde', en: 'room spray or reed diffuser — the same', es: 'Spray de Ambiente o Difusor de Varillas — el mismo aroma', fr: 'Spray d’Ambiance ou Diffuseur à Bâtonnets — le même parfum', de: 'Raumspray oder Duftstäbchen auf — derselbe' %} {{ familieL }} {% render 'maeve-t', nl: 'geur (', en: 'scent (', es: '(', fr: '(', de: 'Duft (' %}{{ noteline }}{% render 'maeve-t', nl: '), met minder verpakking en lagere kosten.', en: '), with less packaging and at a lower cost.', es: '), con menos envases y a un coste menor.', fr: '), avec moins d’emballage et à moindre coût.', de: '), mit weniger Verpackung und zu geringeren Kosten.' %}:::{% render 'maeve-t', nl: 'Past de', en: 'Does the', es: 'Encaja la', fr: 'La', de: 'Passt die' %} {{ design }} {% render 'maeve-t', nl: 'navulling op mijn fles?==>De navulling bevat exact dezelfde', en: 'refill fit my bottle?==>The refill contains exactly the same', es: 'Recarga en mi botella?==>La recarga contiene exactamente el mismo', fr: 'Recharge convient-elle à mon flacon ?==>La recharge contient exactement le même', de: 'Nachfüllung zu meiner Flasche?==>Die Nachfüllung enthält exakt denselben' %} {{ design }}{% render 'maeve-t', nl: '-geur als de roomspray en geurstokjes, zodat je je MAEVE-fles eenvoudig hervult in plaats van een nieuwe te kopen.', en: ' scent as the room spray and reed diffuser, so you simply refill your MAEVE bottle instead of buying a new one.', es: ' aroma que el Spray de Ambiente y el Difusor de Varillas, así rellenas fácilmente tu botella MAEVE en lugar de comprar una nueva.', fr: ' parfum que le Spray d’Ambiance et le Diffuseur à Bâtonnets, ainsi vous remplissez simplement votre flacon MAEVE au lieu d’en acheter un neuf.', de: '-Duft wie das Raumspray und die Duftstäbchen, sodass du deine MAEVE-Flasche einfach nachfüllst, statt eine neue zu kaufen.' %}:::{%- endcapture -%}
+  {%- assign faq = faq | append: faqp -%}
+{%- endif -%}
+
+{%- comment -%} gemeenschappelijke vragen {%- endcomment -%}
+{%- capture faqc -%}{% render 'maeve-t', nl: 'Hoe ruikt', en: 'What does', es: 'A qué huele', fr: 'Quelle est l’odeur de', de: 'Wie riecht' %} {{ design }}{% render 'maeve-t', nl: '?==>', en: ' smell like?==>', es: '?==>', fr: ' ?==>', de: '?==>' %}{{ design }} {% render 'maeve-t', nl: 'is een', en: 'is a', es: 'es un aroma', fr: 'est un parfum', de: 'ist ein' %} {{ familieL }} {% render 'maeve-t', nl: 'geur met als geurtonen', en: 'scent with notes of', es: 'con notas de', fr: 'aux notes de', de: 'Duft mit Duftnoten von' %} {{ noteline }}.{%- endcapture -%}
+{%- assign faq = faq | append: faqc -%}
+{%- if inspiratie != blank -%}{%- assign faq = faq | append: ' ' | append: inspiratie -%}{%- endif -%}
+{%- assign faq = faq | append: ':::' -%}
+
+{%- unless uit == vNav -%}
+  {%- capture faqs -%}{% render 'maeve-t', nl: 'Welke formaten en prijzen heeft de', en: 'What sizes and prices does the', es: 'Qué formatos y precios tiene el', fr: 'Quels formats et prix propose le', de: 'Welche Größen und Preise hat das' %} {{ design }} {{ uitL }}{% render 'maeve-t', nl: '?==>De', en: ' come in?==>The', es: '?==>El', fr: ' ?==>Le', de: '?==>Das' %} {{ design }} {{ uitL }} {% render 'maeve-t', nl: 'is verkrijgbaar in', en: 'is available in', es: 'está disponible en', fr: 'est disponible en', de: 'ist erhältlich in' %} {{ formaten }}.:::{% render 'maeve-t', nl: 'Is de', en: 'Is the', es: 'Es el', fr: 'Le', de: 'Ist das' %} {{ design }} {{ uitL }} {% render 'maeve-t', nl: 'navulbaar?==>Ja. Er is een aparte', en: 'refillable?==>Yes. There is a separate', es: 'recargable?==>Sí. Hay una', fr: 'est-il rechargeable ?==>Oui. Il existe une', de: 'nachfüllbar?==>Ja. Es gibt eine separate' %} {{ design }}{% render 'maeve-t', nl: '-navulling (300 ml) waarmee je dezelfde geur bijvult. Zo gebruik je je fles langer en gooi je minder verpakking weg.', en: ' refill (300 ml) to top up the same scent. That way you keep your bottle longer and throw away less packaging.', es: ' recarga independiente (300 ml) para reponer el mismo aroma. Así usas tu botella más tiempo y desechas menos envases.', fr: ' recharge séparée (300 ml) pour faire le plein du même parfum. Ainsi vous gardez votre flacon plus longtemps et jetez moins d’emballage.', de: '-Nachfüllung (300 ml), mit der du denselben Duft auffüllst. So nutzt du deine Flasche länger und wirfst weniger Verpackung weg.' %}:::{%- endcapture -%}
+  {%- assign faq = faq | append: faqs -%}
+{%- endunless -%}
+
+{%- capture faqf -%}{% render 'maeve-t', nl: 'Is de fles echt 360° rondom bedrukt?==>Ja, elke fles is volledig rondom bedrukt met de', en: 'Is the bottle really printed 360° all around?==>Yes, every bottle is fully printed all around with the', es: '¿La botella está realmente impresa 360° por completo?==>Sí, cada botella está impresa por completo con la', fr: 'Le flacon est-il vraiment imprimé à 360° tout autour ?==>Oui, chaque flacon est entièrement imprimé tout autour avec l’', de: 'Ist die Flasche wirklich rundum 360° bedruckt?==>Ja, jede Flasche ist vollständig rundum mit dem' %} {{ design }}{% render 'maeve-t', nl: '-kunstprint — zonder etiket en zonder naad, dus het beeld loopt helemaal rond de fles door.', en: ' art print — with no label and no seam, so the image runs all the way around the bottle.', es: ' lámina artística — sin etiqueta ni costura, así que la imagen recorre toda la botella.', fr: ' impression artistique — sans étiquette ni couture, l’image fait donc tout le tour du flacon.', de: '-Kunstdruck bedruckt — ohne Etikett und ohne Naht, sodass das Motiv komplett um die Flasche läuft.' %}:::{% render 'maeve-t', nl: 'Hoe snel heb ik mijn', en: 'How quickly will I receive my', es: 'Con qué rapidez recibo mi', fr: 'À quelle vitesse vais-je recevoir mon', de: 'Wie schnell erhalte ich mein' %} {{ design }} {% render 'maeve-t', nl: 'in huis en wat kost verzending?==>Je bestelling wordt snel verzonden binnen Nederland en België. Vanaf € 40 is de verzending gratis.', en: 'and what does shipping cost?==>Your order ships quickly within the Netherlands and Belgium. Shipping is free from € 40.', es: 'y cuánto cuesta el envío?==>Tu pedido se envía rápidamente dentro de los Países Bajos y Bélgica. El envío es gratis a partir de € 40.', fr: 'et quels sont les frais de livraison ?==>Votre commande est expédiée rapidement aux Pays-Bas et en Belgique. La livraison est gratuite dès € 40.', de: 'und was kostet der Versand?==>Deine Bestellung wird schnell innerhalb der Niederlande und Belgiens versendet. Ab € 40 ist der Versand kostenlos.' %}{%- endcapture -%}
+{%- assign faq = faq | append: faqf -%}
+
+{%- assign pairs = faq | split: ':::' -%}
+
+<section class="pfaq">
+  <div class="wrap pfaq-wrap">
+    <div class="pfaq-head">
+      <span class="pfaq-eyebrow">{% render 'maeve-t', nl: section.settings.eyebrow, en: 'Frequently asked questions', es: 'Preguntas frecuentes', fr: 'Questions fréquentes', de: 'Häufige Fragen' %}</span>
+      <h2>{% render 'maeve-t', nl: section.settings.heading, en: 'All about the', es: 'Todo sobre el', fr: 'Tout savoir sur le', de: 'Alles über das' %} {{ design }} {{ uitL }}</h2>
+    </div>
+    <div class="pfaq-list">
+      {%- for pair in pairs -%}
+        {%- assign qa = pair | split: '==>' -%}
+        <details class="pfaq-item"{% if forloop.first %} open{% endif %}>
+          <summary>{{ qa[0] | strip }}</summary>
+          <div class="pfaq-a">{{ qa[1] | strip }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for pair in pairs -%}
+      {%- assign qa = pair | split: '==>' -%}
+      {
+        "@type": "Question",
+        "name": {{ qa[0] | strip | json }},
+        "acceptedAnswer": { "@type": "Answer", "text": {{ qa[1] | strip | json }} }
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+{% stylesheet %}
+.pfaq { padding: 64px 0; background: var(--sand); }
+.pfaq-wrap { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 56px; align-items: start; }
+.pfaq-eyebrow { display: block; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--clay); margin-bottom: 14px; }
+.pfaq-head h2 { font-family: var(--serif); font-size: clamp(28px, 3vw, 42px); line-height: 1.1; color: var(--ink); }
+.pfaq-list { border-top: 1px solid var(--line); }
+.pfaq-item { border-bottom: 1px solid var(--line); }
+.pfaq-item summary { list-style: none; cursor: pointer; padding: 20px 40px 20px 0; position: relative; font-family: var(--serif); font-size: 18px; color: var(--ink); }
+.pfaq-item summary::-webkit-details-marker { display: none; }
+.pfaq-item summary::after { content: '+'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 22px; color: var(--clay); font-family: var(--sans); transition: transform .25s ease; }
+.pfaq-item[open] summary::after { content: '–'; }
+.pfaq-a { padding: 0 40px 22px 0; color: var(--ink-soft); font-size: 15px; line-height: 1.65; max-width: 60ch; }
+@media (max-width: 900px) {
+  .pfaq { padding: 48px 0; }
+  .pfaq-wrap { grid-template-columns: 1fr; gap: 24px; }
+  .pfaq-item summary { font-size: 16px; padding: 17px 36px 17px 0; }
+  .pfaq-a { font-size: 14.5px; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product — FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Veelgestelde vragen" },
+    { "type": "text", "id": "heading", "label": "Kop (gevolgd door designnaam + uitvoering)", "default": "Alles over de" }
+  ],
+  "presets": [{ "name": "Product — FAQ" }]
+}
+{% endschema %}

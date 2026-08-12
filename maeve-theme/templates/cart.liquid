@@ -1,0 +1,36 @@
+<div class="page-head"><h1>Winkelmandje</h1></div>
+<div class="cart-wrap">
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      {%- for item in cart.items -%}
+        <div class="cart-row">
+          {%- if item.image -%}
+            <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.title | escape }}">
+          {%- else -%}
+            <img src="{{ 'zonnebloemen-spray.png' | asset_url }}" alt="{{ item.title | escape }}">
+          {%- endif -%}
+          <div>
+            <div class="serif" style="font-size:18px;font-style:italic">{{ item.product.title }}</div>
+            <div style="font-size:13px;color:var(--ink-soft)">{{ item.variant.title }}</div>
+            <a href="{{ item.url_to_remove }}" style="font-size:12px;color:var(--clay)">Verwijderen</a>
+          </div>
+          <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" style="width:64px;padding:8px;border:1px solid var(--line)">
+          <div class="serif">{{ item.final_line_price | money }}</div>
+        </div>
+      {%- endfor -%}
+      <div class="cart-foot">
+        <button type="submit" name="update" class="btn ghost">Bijwerken</button>
+        <div class="serif" style="font-size:20px">Subtotaal: {{ cart.total_price | money }}</div>
+      </div>
+      <div style="text-align:right;margin-top:24px">
+        <button type="submit" name="checkout" class="btn solid">Afrekenen</button>
+      </div>
+    </form>
+  {%- else -%}
+    <div class="empty">
+      <h2>Je winkelmandje is nog <em>leeg.</em></h2>
+      <p style="color:var(--ink-soft);margin:14px 0 28px">Geen enkel werk mee naar huis? Dat kunnen we niet laten gebeuren.</p>
+      <a class="btn solid" href="{{ routes.all_products_collection_url }}">Bekijk de geuren</a>
+    </div>
+  {%- endif -%}
+</div>

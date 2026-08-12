@@ -1,0 +1,62 @@
+<script>
+
+  // ---------- reveal on scroll ----------
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ---------- dial ticks ----------
+  const ticks = document.getElementById('dialTicks');
+  if (ticks) for (let i = 0; i < 36; i++) {
+    const a = i * 10 * Math.PI / 180;
+    const r1 = i % 9 === 0 ? 38 : 41.5, r2 = 44;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 50 + r1 * Math.sin(a)); line.setAttribute('y1', 50 - r1 * Math.cos(a));
+    line.setAttribute('x2', 50 + r2 * Math.sin(a)); line.setAttribute('y2', 50 - r2 * Math.cos(a));
+    line.setAttribute('stroke', 'rgba(33,29,24,.4)');
+    line.setAttribute('stroke-width', i % 9 === 0 ? '1.4' : '.7');
+    ticks.appendChild(line);
+  }
+
+  // ---------- scroll-linked: dial + ribbon + hero rotation ----------
+  const needle = document.getElementById('dialNeedle');
+  const degNum = document.getElementById('degNum');
+  const ribbon = document.getElementById('ribbon');
+
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    const deg = Math.round(p * 360);
+    if (needle) needle.setAttribute('transform', `rotate(${deg} 50 50)`);
+    if (degNum) degNum.textContent = deg + '°';
+
+    // ribbon pans with its position in the viewport
+    if (ribbon) {
+      const rz = ribbon.getBoundingClientRect();
+      const local = Math.min(1, Math.max(0, 1 - (rz.top - innerHeight * .1) / (innerHeight * .9)));
+      ribbon.style.backgroundPositionX = (local * 600) + 'px';
+    }
+  }
+  addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true });
+  onScroll();
+
+
+
+  var MT={ busy: {% render 'maeve-t', nl: '"Bezig…"', en: '"Loading…"', es: '"Cargando…"', fr: '"Chargement…"', de: '"Wird geladen…"' %}, addToCart: {% render 'maeve-t', nl: '"In winkelmandje"', en: '"Add to cart"', es: '"Añadir al carrito"', fr: '"Ajouter au panier"', de: '"In den Warenkorb"' %} };
+  document.querySelectorAll('.mlabel .add').forEach(function(btn){
+    btn.style.cursor='pointer';
+    btn.addEventListener('click',function(){
+      var id=btn.getAttribute('data-variant-id'); if(!id)return; btn.textContent=MT.busy;
+      fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id),quantity:1})})
+        .then(function(r){return r.json()}).then(function(){
+          btn.textContent=MT.addToCart;
+          var d=btn.dataset;
+          var opts={ pct:10, baseName:d.pname, basePrice:parseInt(d.bprice,10)||0, baseImg:d.bimg||'',
+            cross: d.crossId ? {id:Number(d.crossId), label:d.crossLabel, price:parseInt(d.crossPrice,10)||0, img:d.crossImg||''} : null,
+            refill: d.navId ? {id:Number(d.navId), label:d.navLabel, price:parseInt(d.navPrice,10)||0, img:d.navImg||''} : null };
+          if(window.maeveCrossSell){ window.maeveCrossSell(opts); }
+          else if(window.maeveOpenCart){ window.maeveOpenCart(); }
+        }).catch(function(){btn.textContent=MT.addToCart});});});
+
+</script>

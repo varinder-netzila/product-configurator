@@ -1,0 +1,29 @@
+{%- assign tparts = product.title | split: '—' -%}
+{%- assign printname = tparts.first | strip -%}
+{%- assign base = 'zonnebloemen' -%}
+{%- if product.handle contains 'amandel' -%}{%- assign base = 'amandelbloesem' -%}
+{%- elsif product.handle contains 'korenveld' -%}{%- assign base = 'korenveld' -%}{%- endif -%}
+{%- assign detimg = base | append: '-detail.png' | asset_url -%}
+<section class="unrolled">
+  <div class="wrap">
+    <div class="head reveal"><h2>{% render 'maeve-t', nl: section.settings.heading, en: 'The wrap, <em>unrolled.</em>', es: 'El envoltorio, <em>desplegado.</em>', fr: "L'enveloppe, <em>déroulée.</em>", de: 'Die Hülle, <em>abgerollt.</em>' %}</h2><p>{% render 'maeve-t', nl: section.settings.text, en: 'This is the full print as it wraps around your bottle — from 0° to exactly the same point at 360°.', es: 'Esta es la impresión completa tal y como envuelve tu botella — desde 0° hasta exactamente el mismo punto a 360°.', fr: "Voici l'impression complète telle qu'elle entoure votre flacon — de 0° jusqu'au même point exact à 360°.", de: 'Das ist der vollständige Druck, wie er um Ihre Flasche verläuft — von 0° bis genau zum selben Punkt bei 360°.' %}</p></div>
+    <div class="reveal">
+      <div class="ribbon" id="ribbon" style="background-image:url({% if section.settings.ribbon_image %}{{ section.settings.ribbon_image | image_url: width: 2400 }}{% else %}{{ detimg }}{% endif %});background-repeat:repeat-x;background-size:auto 100%"></div>
+      <div class="ruler"><span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span></div>
+      <div class="ribbon-caption">— {{ printname }}, {{ product.vendor }}. {% render 'maeve-t', nl: section.settings.caption_tail, en: 'The print runs 360° all the way around, without a seam.', es: 'La impresión recorre los 360° por completo, sin costura.', fr: "L'impression fait le tour à 360°, sans couture.", de: 'Der Druck läuft 360° rundum durch, ohne Naht.' %}</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Wikkel uitgerold",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "De wikkel, <em>uitgerold.</em>" },
+    { "type": "textarea", "id": "text", "label": "Tekst", "default": "Dit is de volledige print zoals hij om jouw fles loopt — van 0° tot precies hetzelfde punt op 360°." },
+    { "type": "image_picker", "id": "ribbon_image", "label": "Print-strook (leeg = print van product)" },
+    { "type": "text", "id": "caption_tail", "label": "Onderschrift-staart", "default": "De print loopt 360° rondom door, zonder naad." }
+  ],
+  "presets": [{ "name": "Wikkel uitgerold" }]
+}
+{% endschema %}

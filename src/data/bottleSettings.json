@@ -1,0 +1,160 @@
+{
+  "bottleSettings": {
+    "IZY Bottle": {
+      "scale": 1,
+      "contactShadow": {
+        "position": [0, 0, 0],
+        "opacity": 0.8,
+        "scale": 6,
+        "blur": 6,
+        "far": 5,
+        "color": "#000000"
+      },
+      "camera": {
+        "position": [3, 0.9, 0]
+      },
+      "spacing":  {
+        "top": 0.15,
+        "bottom": 0.15
+      },
+      "mapTextPosition": 0.95,
+      "mapFonts": {
+        "title": {
+          "family": "Arial, sans-serif",
+          "size": 72,
+          "weight": "bold",
+          "style": "normal"
+        },
+        "subtitle": {
+          "family": "Georgia, serif",
+          "size": 48,
+          "weight": "normal",
+          "style": "italic"
+        },
+        "coordinates": {
+          "family": "\"Courier New\", monospace",
+          "size": 40,
+          "weight": "normal",
+          "style": "normal"
+        }
+      }
+    },
+    "IZY Travel Bottle": {
+      "scale": 1,
+      "contactShadow": {
+        "position": [0, 0, 0],
+        "opacity": 0.4,
+        "scale": 6,
+        "blur": 5,
+        "far": 1.5,
+        "color": "#000000"
+      },
+      "camera": {
+        "position": [1.4, 0.4, 0]
+      },
+      "spacing":  {
+        "top": 0.18,
+        "bottom": 0.07
+      },
+      "mapTextPosition": 0.9,
+      "mapFonts": {
+        "title": {
+          "family": "Arial, sans-serif",
+          "size": 72,
+          "weight": "bold",
+          "style": "normal"
+        },
+        "subtitle": {
+          "family": "Georgia, serif",
+          "size": 48,
+          "weight": "normal",
+          "style": "italic"
+        },
+        "coordinates": {
+          "family": "\"Courier New\", monospace",
+          "size": 40,
+          "weight": "normal",
+          "style": "normal"
+        }
+      }
+    },
+    "IZY Mug": {
+      "scale": 1,
+      "contactShadow": {
+        "position": [0, 0, 0],
+        "opacity": 0.5,
+        "scale": 8,
+        "blur": 4,
+        "far": 4,
+        "color": "#000000"
+      },
+      "camera": {
+        "position": [4.5, 1.4, 0]
+      },
+      "spacing":  {
+        "top": 0.0,
+        "bottom": 0.2
+      },
+      "mapTextPosition": 0.95,
+      "mapFonts": {
+        "title": {
+          "family": "Arial, sans-serif",
+          "size": 72,
+          "weight": "bold",
+          "style": "normal"
+        },
+        "subtitle": {
+          "family": "Georgia, serif",
+          "size": 48,
+          "weight": "normal",
+          "style": "italic"
+        },
+        "coordinates": {
+          "family": "\"Courier New\", monospace",
+          "size": 40,
+          "weight": "normal",
+          "style": "normal"
+        }
+      }
+    },
+    "IZY Tumbler": {
+      "scale": 1,
+      "contactShadow": {
+        "position": [0, 0, 0],
+        "opacity": 0.4,
+        "scale": 7,
+        "blur": 4,
+        "far": 1.7,
+        "color": "#000000"
+      },
+      "camera": {
+        "position": [3, 0.8, 0]
+      },
+      "spacing":  {
+        "top": 0,
+        "bottom": 0.14      
+      },
+      "mapTextPosition": 0.95,
+      "mapFonts": {
+        "title": {
+          "family": "Arial, sans-serif",
+          "size": 72,
+          "weight": "bold",
+          "style": "normal"
+        },
+        "subtitle": {
+          "family": "Georgia, serif",
+          "size": 48,
+          "weight": "normal",
+          "style": "italic"
+        },
+        "coordinates": {
+          "family": "\"Courier New\", monospace",
+          "size": 40,
+          "weight": "normal",
+          "style": "normal"
+        }
+      }
+    }
+  }
+}

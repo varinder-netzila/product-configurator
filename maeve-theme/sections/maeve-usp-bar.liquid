@@ -1,0 +1,36 @@
+<section class="uspbar">
+  <div class="wrap">
+    {%- for block in section.blocks -%}
+      <div class="usp" {{ block.shopify_attributes }}>
+        <div class="t">{{ block.settings.t }}</div>
+        <div class="s">{{ block.settings.s }}</div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "USP-balk",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "USP",
+      "settings": [
+        { "type": "text", "id": "t", "label": "Titel", "default": "360° rondom bedrukt" },
+        { "type": "text", "id": "s", "label": "Subtekst", "default": "Geen etiket, geen naad" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "USP-balk",
+    "blocks": [
+      { "type": "usp", "settings": { "t": "360° rondom bedrukt", "s": "Geen etiket, geen naad" } },
+      { "type": "usp", "settings": { "t": "Navulbaar ontworpen", "s": "De fles blijft, de geur komt terug" } },
+      { "type": "usp", "settings": { "t": "Gemaakt in Europa", "s": "Hoogwaardige geurformules" } },
+      { "type": "usp", "settings": { "t": "Klaar als cadeau", "s": "Stijlvol verpakt verzonden" } }
+    ]
+  }]
+}
+{% endschema %}

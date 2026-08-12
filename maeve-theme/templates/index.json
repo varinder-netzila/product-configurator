@@ -1,0 +1,519 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "maeve-hero",
+      "settings": {
+        "show_dial": true,
+        "eyebrow": "0° — Where scents meet design · 's werelds enige 360° geprinte geurcollectie",
+        "heading_line1": "Geur die je niet <em>wegzet,</em>",
+        "heading_line2": "maar <em>neerzet.</em>",
+        "sub_text": "<p>Roomsprays en geurstokjes, rondom bedrukt met kunst van grote meesters en steden die je kent. Deze pagina is één volle rotatie om de fles — scroll, en draai mee.</p>",
+        "cta1_label": "Bekijk de geuren",
+        "cta1_link": "#exhibition",
+        "cta2_label": "Ons verhaal",
+        "cta2_link": "/pages/ons-verhaal",
+        "trust_stars": "★★★★★",
+        "trust_left": "<strong>4,9</strong> uit 2.000+ beoordelingen",
+        "trust_right": "Gratis verzending vanaf <strong>€ 40</strong>",
+        "img_main": "shopify://shop_images/Spray_300ML_Fine_China_Real.png",
+        "img_main_alt": "",
+        "img_left": "shopify://shop_images/Stokjes_200ML_Starry_Real.png",
+        "img_right": "shopify://shop_images/Stokjes_200ML_Almond.png"
+      }
+    },
+    "usp": {
+      "type": "maeve-usp-bar",
+      "blocks": {
+        "u1": {
+          "type": "usp",
+          "settings": {
+            "t": "360° rondom bedrukt",
+            "s": "Geen etiket, geen naad"
+          }
+        },
+        "u2": {
+          "type": "usp",
+          "settings": {
+            "t": "Navulbaar ontworpen",
+            "s": "De fles blijft, de geur komt terug"
+          }
+        },
+        "u3": {
+          "type": "usp",
+          "settings": {
+            "t": "Gemaakt in Europa",
+            "s": "Hoogwaardige geurformules"
+          }
+        },
+        "u4": {
+          "type": "usp",
+          "settings": {
+            "t": "Klaar als cadeau",
+            "s": "Stijlvol verpakt verzonden"
+          }
+        }
+      },
+      "block_order": [
+        "u1",
+        "u2",
+        "u3",
+        "u4"
+      ],
+      "settings": {}
+    },
+    "unrolled": {
+      "type": "maeve-unrolled",
+      "settings": {
+        "deg_label": "90°",
+        "marker_label": "De print, uitgerold",
+        "heading": "Dit is wat er gebeurt als je <em>onze fles uitrolt.</em>",
+        "text": "Geen etiket, geen naad, geen achterkant. Het beeld loopt 360 graden door — van begin tot precies hetzelfde begin. Scroll en zie de print zich afrollen.",
+        "ribbon_caption": "— Amandelbloesem, naar Vincent van Gogh. De print loopt 360° rondom door, zonder naad."
+      }
+    },
+    "collecties": {
+      "type": "maeve-collecties",
+      "blocks": {
+        "c1": {
+          "type": "frame",
+          "settings": {
+            "title": "Art",
+            "artist": "Kunst & meesterwerken",
+            "medium": "Iconische meesterwerken, 360° rondom de fles — van Van Gogh tot moderne kunst.",
+            "link_label": "Ontdek Art",
+            "link_url": "/collections/art"
+          }
+        },
+        "c2": {
+          "type": "frame",
+          "settings": {
+            "title": "City Scents",
+            "artist": "Steden, dorpen & straten",
+            "medium": "De identiteit van Amsterdam, Den Haag en Rotterdam, gevangen in geur en beeld.",
+            "link_label": "Ontdek City",
+            "link_url": "/collections/city"
+          }
+        },
+        "c3": {
+          "type": "frame",
+          "settings": {
+            "title": "Magical Japan",
+            "artist": "Japanse natuur & seizoenen",
+            "medium": "Sakura, osmanthus en serene meren — de stilte van Japan in geur en beeld.",
+            "link_label": "Ontdek Magical Japan",
+            "link_url": "/collections/magical-japan"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "deg_label": "180°",
+        "marker_label": "De andere kant — vier collecties",
+        "eyebrow": "De collecties",
+        "heading": "Een wand vol <em>werk.</em>",
+        "text": "Elke collectie is een samenwerking, een plek of een idee. Kies wat je raakt — de geur kies je daarna."
+      }
+    },
+    "bestsellers": {
+      "type": "maeve-bestsellers",
+      "blocks": {
+        "p1": {
+          "type": "piece",
+          "settings": {
+            "no_label": "No. 1 / 27",
+            "badge": "Bestseller",
+            "badge_dark": false,
+            "product_link": "/products/zonnebloemen-roomspray",
+            "artist": "Art — naar Vincent van Gogh",
+            "title": "Zonnebloemen — roomspray",
+            "rating": "4,9 · 312 beoordelingen",
+            "specs": "360°-druk rondom, 100 ml, navulbaar.\nMandarijn · zonnebloem · honing.",
+            "price": "€ 19,95",
+            "variant_id": "54212753424726"
+          }
+        },
+        "p2": {
+          "type": "piece",
+          "settings": {
+            "no_label": "No. 2 / 27",
+            "badge": "Bestseller",
+            "badge_dark": false,
+            "product_link": "/products/sunset-lake-geurstokjes",
+            "artist": "Magical Japan",
+            "title": "Sunset Lake — geurstokjes",
+            "rating": "4,8 · 204 beoordelingen",
+            "specs": "360°-druk rondom, 200 ml, ± 12 weken.\nYuzu · waterlelie · warm hout.",
+            "price": "€ 24,95",
+            "variant_id": "54212803690838"
+          }
+        },
+        "p3": {
+          "type": "piece",
+          "settings": {
+            "no_label": "No. 3 / 27",
+            "badge": "Bestseller",
+            "badge_dark": false,
+            "product_link": "/products/amsterdam-roomspray",
+            "artist": "City",
+            "title": "Amsterdam — roomspray",
+            "rating": "4,9 · 97 beoordelingen",
+            "specs": "360°-druk rondom, 300 ml, navulbaar.\nBergamot · lindebloesem · cederhout.",
+            "price": "€ 29,95",
+            "variant_id": "54212753621334"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "deg_label": "270°",
+        "marker_label": "De tentoonstelling — nu te koop",
+        "eyebrow": "Bestsellers",
+        "heading": "Drie werken om mee <em>naar huis te nemen.</em>",
+        "text": "",
+        "shopall_label": "Bekijk alle geuren",
+        "shopall_link": "/collections",
+        "promise": "\"Kunst aan de muur kost duizenden. <em>Kunst op je dressoir kost € 19,95.\"</em>"
+      }
+    },
+    "usecases": {
+      "type": "maeve-usecases",
+      "blocks": {
+        "u1": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/C59B5AC6-0CAD-451B-A2C3-3013F970E574.png",
+            "title": "Woonkamer & gasten",
+            "stat": "94%",
+            "stat_text": "vindt hun interieur completer met een MAEVE-fles op het dressoir."
+          }
+        },
+        "u2": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/D8C35A01-AEEB-4222-A9D3-5EC6333319C0.png",
+            "title": "Slaapkamer & rust",
+            "stat": "92%",
+            "stat_text": "ervaart meer rust met een zachte geur voor het slapengaan."
+          }
+        },
+        "u4": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/8AEBB964-9C36-46BA-BC90-BE660E8ACCD1.png",
+            "title": "Werkplek & focus",
+            "stat": "89%",
+            "stat_text": "werkt geconcentreerder met een frisse geur op de achtergrond."
+          }
+        },
+        "u3": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/138DCF80-2A4B-4B92-AB99-D8C1BC5C30C8.png",
+            "title": "Cadeau geven",
+            "stat": "97%",
+            "stat_text": "zou MAEVE opnieuw cadeau geven aan iemand die ze kennen."
+          }
+        }
+      },
+      "block_order": [
+        "u1",
+        "u2",
+        "u4",
+        "u3"
+      ],
+      "settings": {
+        "heading": "Eén fles. <em>Eindeloos veel momenten.</em>",
+        "subheading": ""
+      }
+    },
+    "reviews": {
+      "type": "maeve-reviews",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "quote": "\"Eindelijk geurstokjes die ik niet hoef te verstoppen achter een plant. Het staat zó mooi op mijn dressoir.\"",
+            "who": "Sanne — Antwerpen"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "quote": "\"De kaart van de straat waar wij elkaar ontmoetten, rondom op een fles. Mijn vrouw was sprakeloos.\"",
+            "who": "Thomas — Amsterdam"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "quote": "\"Kwaliteit als de grote merken, maar met een print die nergens anders bestaat. En de geur blijft dagenlang hangen.\"",
+            "who": "Floor — Utrecht"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "settings": {
+        "agg_stars": "★★★★★",
+        "agg": "4,9 uit 5",
+        "sub": "Op basis van 2.000+ beoordelingen"
+      }
+    },
+    "social": {
+      "type": "maeve-social-proof",
+      "blocks": {
+        "s1": {
+          "type": "clip",
+          "settings": {
+            "video_url": "",
+            "caption": "“Staat zó mooi op mijn dressoir.”"
+          }
+        },
+        "s2": {
+          "type": "clip",
+          "settings": {
+            "video_url": "",
+            "caption": "“De print loopt echt rondom door.”"
+          }
+        },
+        "s3": {
+          "type": "clip",
+          "settings": {
+            "video_url": "",
+            "caption": "“Mijn vrouw was sprakeloos.”"
+          }
+        },
+        "s4": {
+          "type": "clip",
+          "settings": {
+            "video_url": "",
+            "caption": "“Kwaliteit als de grote merken.”"
+          }
+        },
+        "s5": {
+          "type": "clip",
+          "settings": {
+            "video_url": "",
+            "caption": "“Gasten vragen er steevast naar.”"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "settings": {
+        "heading": "Geliefd door <em>2.000+</em> klanten.",
+        "subheading": ""
+      }
+    },
+    "compare": {
+      "type": "maeve-compare",
+      "blocks": {
+        "c1": {
+          "type": "row",
+          "settings": {
+            "label": "Hoogwaardige geurformule",
+            "brand": true,
+            "col2": true,
+            "col3": true
+          }
+        },
+        "c2": {
+          "type": "row",
+          "settings": {
+            "label": "Verkrijgbaar als spray én stokjes",
+            "brand": true,
+            "col2": true,
+            "col3": true
+          }
+        },
+        "c3": {
+          "type": "row",
+          "settings": {
+            "label": "Stijlvol op je dressoir",
+            "brand": true,
+            "col2": true,
+            "col3": false
+          }
+        },
+        "c4": {
+          "type": "row",
+          "settings": {
+            "label": "Navulbaar, minder verspilling",
+            "brand": true,
+            "col2": true,
+            "col3": false
+          }
+        },
+        "c5": {
+          "type": "row",
+          "settings": {
+            "label": "360° kunstprint rondom de fles",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        },
+        "c6": {
+          "type": "row",
+          "settings": {
+            "label": "Geur én design in één",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        },
+        "c7": {
+          "type": "row",
+          "settings": {
+            "label": "Eigen ontwerp mogelijk",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        },
+        "c8": {
+          "type": "row",
+          "settings": {
+            "label": "Zonder etiket of naad",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ],
+      "settings": {
+        "heading": "Waarom MAEVE de <em>juiste keuze</em> is.",
+        "subheading": "Geur, kunst en duurzaamheid — samengebracht in één fles.",
+        "brand_name": "MAEVE",
+        "col2_name": "Gewone roomsprays",
+        "col3_name": "Standaard geurstokjes"
+      }
+    },
+    "waarom": {
+      "type": "maeve-waarom",
+      "blocks": {
+        "v1": {
+          "type": "value",
+          "settings": {
+            "num": "I.",
+            "title": "Geur & design in één",
+            "text": "Verfijnde geurformules in een flacon die rondom een kunstwerk draagt. Decoratief én voelbaar."
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "num": "II.",
+            "title": "Jouw eigen ontwerp",
+            "text": "Dankzij onze 360°-druk maak je van elke fles een eigen verhaal — een foto, een kaart, jouw idee."
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "num": "III.",
+            "title": "Gemaakt om te blijven",
+            "text": "Elke fles is navulbaar. De geur raakt op, het beeld blijft staan — jaar na jaar."
+          }
+        },
+        "v4": {
+          "type": "value",
+          "settings": {
+            "num": "IV.",
+            "title": "Een cadeau met karakter",
+            "text": "Stijlvol verpakt en klaar om te geven. Persoonlijk, verfijnd en niet-alledaags."
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Waarom Maeve",
+        "heading": "Geur die je <em>ziet, ruikt en houdt.</em>",
+        "shopall_label": "Geef geur met karakter",
+        "shopall_link": "/collections"
+      }
+    },
+    "fullcircle": {
+      "type": "maeve-fullcircle",
+      "disabled": true,
+      "settings": {
+        "ring_text": "360° · JE BENT ROND · ELKE KANT EEN VERHAAL · 360° · JE BENT ROND · ELKE KANT EEN VERHAAL ·",
+        "eyebrow": "360° — Voor bedrijven",
+        "heading": "Jouw eigen ontwerp, <em>rondom de fles.</em>",
+        "text": "Een kunstwerk, een logo of de kaart van jouw stad — naadloos 360° gedrukt, zonder etiket of naad. Voor relatiegeschenken, hotels, musea en merken, vanaf 25 stuks. Wij vertalen jouw idee naar een proefmodel.",
+        "cta1_label": "Naar Maeve Zakelijk",
+        "cta1_link": "/pages/zakelijk",
+        "cta2_label": "Of shop de collectie",
+        "cta2_link": "#exhibition",
+        "b2b_line": "Particulier? Kies uit onze collecties — elke geur komt met een vast, bijpassend ontwerp."
+      }
+    },
+    "newsletter": {
+      "type": "maeve-newsletter",
+      "settings": {
+        "heading": "Als eerste de nieuwe prints zien?",
+        "text": "Elke maand één nieuwe kunstenaarssamenwerking. Schrijf je in en ontvang 10% korting op je eerste rotatie.",
+        "placeholder": "Je e-mailadres",
+        "button_label": "Inschrijven"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "usp",
+    "unrolled",
+    "collecties",
+    "bestsellers",
+    "usecases",
+    "reviews",
+    "social",
+    "compare",
+    "waarom",
+    "fullcircle",
+    "newsletter"
+  ]
+}

@@ -1,0 +1,107 @@
+<section class="exhibition" id="exhibition">
+  <div class="deg-marker reveal">
+    <span class="deg">{{ section.settings.deg_label }}</span>
+    <span class="rule"></span>
+    <span class="lbl">{{ section.settings.marker_label }}</span>
+  </div>
+  <div class="wrap">
+    <div class="intro reveal">
+      <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.text }}</p>
+    </div>
+    <div class="pieces">
+      {%- for block in section.blocks -%}
+        <div class="piece reveal" {{ block.shopify_attributes }}{% unless forloop.first %} style="transition-delay:.{{ forloop.index0 | times: 8 }}s"{% endunless %}>
+          <div class="pedestal">
+            <span class="no">{{ block.settings.no_label }}</span>
+            {%- if block.settings.badge != blank -%}<span class="badge{% if block.settings.badge_dark %} dark{% endif %}">{{ block.settings.badge }}</span>{%- endif -%}
+            {%- assign bh = block.settings.product_link | split: '/products/' | last | split: '?' | first | split: '/' | first -%}
+            {%- assign bprod = all_products[bh] -%}
+            {%- assign bimg = bprod.featured_image -%}
+            {%- for v in bprod.variants -%}{%- assign vcur = v.id | append: '' -%}{%- if vcur == block.settings.variant_id and v.image -%}{%- assign bimg = v.image -%}{%- break -%}{%- endif -%}{%- endfor -%}
+            {%- comment -%} cross-sell data: bijpassende uitvoering (zelfde formaat) + navulling {%- endcomment -%}
+            {%- assign bdesign = bprod.metafields.geur.design.value | default: bprod.title -%}
+            {%- assign buit = bprod.metafields.geur.uitvoering.value | default: 'Roomspray' -%}
+            {%- assign bdh = bdesign | handleize -%}
+            {%- assign basevar = bprod.variants.first -%}
+            {%- for v in bprod.variants -%}{%- assign vc2 = v.id | append: '' -%}{%- if vc2 == block.settings.variant_id -%}{%- assign basevar = v -%}{%- break -%}{%- endif -%}{%- endfor -%}
+            {%- assign bf = basevar.option1 -%}
+            {%- assign crosssuffix = 'geurstokjes' -%}{%- assign crossuitlabel = 'geurstokjes' -%}
+            {%- if buit == 'Geurstokjes' -%}{%- assign crosssuffix = 'roomspray' -%}{%- assign crossuitlabel = 'roomspray' -%}{%- endif -%}
+            {%- assign crosshandle = bdh | append: '-' | append: crosssuffix -%}
+            {%- assign crossprod = all_products[crosshandle] -%}
+            {%- assign crossvar = nil -%}
+            {%- if crossprod != blank -%}{%- for v in crossprod.variants -%}{%- if v.option1 == bf -%}{%- assign crossvar = v -%}{%- break -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+            {%- assign navhandle = bdh | append: '-navulling' -%}
+            {%- assign navprod = all_products[navhandle] -%}
+            {%- assign navvar = navprod.variants.first -%}
+            <a href="{{ block.settings.product_link }}"><img class="prod-photo" src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 700 }}{% elsif bimg %}{{ bimg | image_url: width: 700 }}{% else %}{{ 'zonnebloemen-spray.png' | asset_url }}{% endif %}" alt="{{ block.settings.title | escape }}" loading="lazy"></a>
+          </div>
+          <div class="mlabel">
+            <div class="artist">{{ block.settings.artist }}</div>
+            <a href="{{ block.settings.product_link }}"><div class="title">{{ block.settings.title }}</div></a>
+            <div class="rating"><span class="stars">★★★★★</span> {{ block.settings.rating }}</div>
+            {{ block.settings.specs | newline_to_br }}
+            <div class="row"><span class="price">{{ block.settings.price }}</span><span class="add" data-variant-id="{{ block.settings.variant_id }}"
+              data-pname="{{ bdesign | escape }} — {{ buit | downcase }} {{ bf }}"
+              data-bprice="{{ basevar.price }}"
+              data-bimg="{% if bimg %}{{ bimg | image_url: width: 140 }}{% endif %}"
+              {% if crossvar != blank %}data-cross-id="{{ crossvar.id }}" data-cross-label="{{ bdesign | escape }} — {{ crossuitlabel }} {{ bf }}" data-cross-price="{{ crossvar.price }}" data-cross-img="{% if crossvar.image %}{{ crossvar.image | image_url: width: 140 }}{% endif %}"{% endif %}
+              {% if navvar != blank %}data-nav-id="{{ navvar.id }}" data-nav-label="{{ bdesign | escape }} — {% render 'maeve-t', nl: 'navulling 300 ml', en: 'refill 300 ml', es: 'recarga 300 ml', fr: 'recharge 300 ml', de: 'Nachfüllung 300 ml' %}" data-nav-price="{{ navvar.price }}" data-nav-img="{% if navvar.image %}{{ navvar.image | image_url: width: 140 }}{% elsif navprod.featured_image %}{{ navprod.featured_image | image_url: width: 140 }}{% endif %}"{% endif %}>{% render 'maeve-t', nl: 'In winkelmandje', en: 'Add to cart', es: 'Añadir al carrito', fr: 'Ajouter au panier', de: 'In den Warenkorb' %}</span></div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="shopall reveal">
+      <a class="btn solid" href="{{ section.settings.shopall_link }}">{{ section.settings.shopall_label }}</a>
+    </div>
+    <div class="promise-line reveal">
+      <p>{{ section.settings.promise }}</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bestsellers",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "deg_label", "label": "Graden-label", "default": "270°" },
+    { "type": "text", "id": "marker_label", "label": "Marker-label", "default": "De tentoonstelling — nu te koop" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Bestsellers" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Drie werken om mee <em>naar huis te nemen.</em>" },
+    { "type": "textarea", "id": "text", "label": "Tekst", "default": "Gepresenteerd zoals ze bedoeld zijn: op een sokkel. Beweeg eroverheen en de print draait om de fles." },
+    { "type": "text", "id": "shopall_label", "label": "Knop-tekst", "default": "Bekijk alle geuren" },
+    { "type": "url", "id": "shopall_link", "label": "Knop-link" },
+    { "type": "inline_richtext", "id": "promise", "label": "Slotzin", "default": "\"Kunst aan de muur kost duizenden. <em>Kunst op je dressoir kost € 24,95.\"</em>" }
+  ],
+  "blocks": [
+    {
+      "type": "piece",
+      "name": "Product",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Afbeelding" },
+        { "type": "text", "id": "no_label", "label": "Nummer", "default": "No. 1 / 8" },
+        { "type": "text", "id": "badge", "label": "Badge (leeg = geen)", "default": "Bestseller" },
+        { "type": "checkbox", "id": "badge_dark", "label": "Badge donker", "default": false },
+        { "type": "url", "id": "product_link", "label": "Product-link" },
+        { "type": "text", "id": "artist", "label": "Bovenregel", "default": "Artist Edition — naar Vincent van Gogh" },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Zonnebloemen — roomspray Amber Sun" },
+        { "type": "text", "id": "rating", "label": "Beoordeling-tekst", "default": "4,9 · 312 beoordelingen" },
+        { "type": "textarea", "id": "specs", "label": "Specs / geurtonen (2 regels)", "default": "360°-druk rondom, 100 ml, navulbaar.\nAmber · sandelhout · bergamot." },
+        { "type": "text", "id": "price", "label": "Prijs", "default": "€ 24,95" },
+        { "type": "text", "id": "variant_id", "label": "Variant-ID (voor winkelmandje)", "default": "54201549554006" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Bestsellers",
+    "blocks": [
+      { "type": "piece", "settings": { "no_label": "No. 1 / 8", "badge": "Bestseller", "artist": "Artist Edition — naar Vincent van Gogh", "title": "Zonnebloemen — roomspray Amber Sun", "rating": "4,9 · 312 beoordelingen", "specs": "360°-druk rondom, 100 ml, navulbaar.\nAmber · sandelhout · bergamot.", "price": "€ 24,95", "variant_id": "54201549554006" } },
+      { "type": "piece", "settings": { "no_label": "No. 2 / 8", "badge": "", "artist": "Original Collection — Studio Maeve", "title": "Terra No. 3 — geurstokjes Velvet Oud", "rating": "4,8 · 204 beoordelingen", "specs": "360°-druk rondom, 200 ml, ± 12 weken.\nOud · vanille · zwarte peper.", "price": "€ 29,95", "variant_id": "54201557549398" } },
+      { "type": "piece", "settings": { "no_label": "No. 3 / 8", "badge": "Nieuw", "badge_dark": true, "artist": "City Scents", "title": "Amsterdam — roomspray Grachtenlicht", "rating": "4,9 · 97 beoordelingen", "specs": "360°-druk rondom, 100 ml, navulbaar.\nFris · helder · elegant.", "price": "€ 24,95", "variant_id": "54201574293846" } }
+    ]
+  }]
+}
+{% endschema %}

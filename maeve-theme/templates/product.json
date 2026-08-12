@@ -1,0 +1,211 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "maeve-main-product",
+      "settings": {
+        "bundle_collection": "alle-geuren"
+      }
+    },
+    "artist": {
+      "type": "maeve-product-artist",
+      "settings": {}
+    },
+    "usecases": {
+      "type": "maeve-usecases",
+      "blocks": {
+        "u1": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/C59B5AC6-0CAD-451B-A2C3-3013F970E574.png",
+            "title": "Woonkamer & gasten",
+            "stat": "94%",
+            "stat_text": "vindt hun interieur completer met een MAEVE-fles op het dressoir."
+          }
+        },
+        "u2": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/D8C35A01-AEEB-4222-A9D3-5EC6333319C0.png",
+            "title": "Slaapkamer & rust",
+            "stat": "92%",
+            "stat_text": "ervaart meer rust met een zachte geur voor het slapengaan."
+          }
+        },
+        "u3": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/138DCF80-2A4B-4B92-AB99-D8C1BC5C30C8.png",
+            "title": "Cadeau geven",
+            "stat": "97%",
+            "stat_text": "zou MAEVE opnieuw cadeau geven aan iemand die ze kennen."
+          }
+        },
+        "u4": {
+          "type": "case",
+          "settings": {
+            "image": "shopify://shop_images/8AEBB964-9C36-46BA-BC90-BE660E8ACCD1.png",
+            "title": "Werkplek & focus",
+            "stat": "89%",
+            "stat_text": "werkt geconcentreerder met een frisse geur op de achtergrond."
+          }
+        }
+      },
+      "block_order": [
+        "u1",
+        "u2",
+        "u3",
+        "u4"
+      ],
+      "settings": {}
+    },
+    "compare": {
+      "type": "maeve-compare",
+      "blocks": {
+        "c1": {
+          "type": "row",
+          "settings": {
+            "label": "Hoogwaardige geurformule",
+            "brand": true,
+            "col2": true,
+            "col3": true
+          }
+        },
+        "c2": {
+          "type": "row",
+          "settings": {
+            "label": "Verkrijgbaar als spray én stokjes",
+            "brand": true,
+            "col2": true,
+            "col3": true
+          }
+        },
+        "c3": {
+          "type": "row",
+          "settings": {
+            "label": "Stijlvol op je dressoir",
+            "brand": true,
+            "col2": true,
+            "col3": false
+          }
+        },
+        "c4": {
+          "type": "row",
+          "settings": {
+            "label": "Navulbaar, minder verspilling",
+            "brand": true,
+            "col2": true,
+            "col3": false
+          }
+        },
+        "c5": {
+          "type": "row",
+          "settings": {
+            "label": "360° kunstprint rondom de fles",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        },
+        "c6": {
+          "type": "row",
+          "settings": {
+            "label": "Geur én design in één",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        },
+        "c7": {
+          "type": "row",
+          "settings": {
+            "label": "Eigen ontwerp mogelijk",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        },
+        "c8": {
+          "type": "row",
+          "settings": {
+            "label": "Zonder etiket of naad",
+            "brand": true,
+            "col2": false,
+            "col3": false
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ],
+      "settings": {}
+    },
+    "reviews": {
+      "type": "maeve-product-reviews",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "quote": "\"De geur is warm zonder zwaar te zijn, en de fles staat op de schouw alsof hij daar altijd al hoorde.\"",
+            "who": "Marit — Haarlem"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "quote": "\"Tweede fles inmiddels. De navulling is een uitkomst — het kunstwerk blijft gewoon staan.\"",
+            "who": "Jeroen — Gent"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★☆",
+            "quote": "\"Gekocht om het ontwerp, gebleven om de geur.\"",
+            "who": "Linda — Eindhoven"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "settings": {}
+    },
+    "faq": {
+      "type": "maeve-product-faq",
+      "settings": {}
+    },
+    "related": {
+      "type": "maeve-related",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "artist",
+    "usecases",
+    "compare",
+    "reviews",
+    "faq",
+    "related"
+  ]
+}

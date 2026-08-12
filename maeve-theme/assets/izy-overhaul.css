@@ -1,0 +1,2759 @@
+/* =====================================================
+   IZY OVERHAUL -- Comprehensive Visual Improvements
+   Covers: product cards, trust bar, typography,
+   tabbed section, FAQ, collection pages, mobile
+   ===================================================== */
+
+/* ==========================================
+   1. GLOBAL TYPOGRAPHY SCALE
+========================================== */
+
+/* Section headings (featured collections, etc.) -- 71px was too large */
+.section-featured-collection .hometitle,
+.section-featured-blog .hometitle,
+.section-collection-list .hometitle,
+.section-product-list .hometitle,
+.section-multi-column .hometitle {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+@media (max-width: 767px) {
+  .section-featured-collection .hometitle,
+  .section-featured-blog .hometitle,
+  .section-collection-list .hometitle,
+  .section-product-list .hometitle {
+    font-size: 28px;
+  }
+}
+
+/* ==========================================
+   2. TRUST BAR (compact-messages)
+   Dark premium look with 4 value props
+========================================== */
+
+.section-compact-messages .store-messages {
+  margin-top: 0;
+  padding: 44px 0;
+  border-top: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;
+}
+.section-compact-messages .store-messages-section-heading {
+  display: none;
+}
+.section-compact-messages .store-messages .message {
+  border-top: none;
+  border-left: 1px solid #e0e0e0;
+  padding: 0 32px 0 32px;
+}
+.section-compact-messages .store-messages .message:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+.section-compact-messages .store-messages .message .fluff {
+  display: none;
+}
+.section-compact-messages .store-messages .message .title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  letter-spacing: 0;
+  color: var(--text-1, #111111);
+}
+.section-compact-messages .store-messages .message .tagline {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 100%;
+  margin: 0;
+  letter-spacing: 0;
+  color: var(--text-2, #666666);
+}
+.section-compact-messages .message-title {
+  margin-bottom: 8px;
+}
+.section-compact-messages .message-title svg {
+  height: 20px;
+  width: 20px;
+  opacity: 0.5;
+}
+@media (max-width: 768px) {
+  .section-compact-messages .store-messages {
+    padding: 0;
+    margin-top: 0;
+  }
+  .section-compact-messages .store-messages .message {
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+    padding: 20px 0;
+  }
+  .section-compact-messages .store-messages .message:first-child {
+    border-top: none;
+    padding-top: 24px;
+  }
+}
+
+/* ==========================================
+   3. PRODUCT CARDS -- Complete Improvement
+========================================== */
+
+/* ── 3a. Fix: Always show price (never hide on hover) ── */
+.collection-listing .product-block:hover .product-block__detail .product-price {
+  visibility: visible;
+  opacity: 1;
+}
+.collection-listing .product-block:hover .product-block__detail {
+  padding-top: 0;
+}
+
+/* ── 3b. Product detail text area ── */
+.product-block .product-block__detail {
+  padding-top: 12px;
+  padding-bottom: 4px;
+  position: relative;
+}
+.product-block .product-block__title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #111111;
+  margin-bottom: 5px;
+  letter-spacing: 0;
+}
+.product-block .product-price--block {
+  font-size: 14px;
+  font-weight: 400;
+  color: #737373;
+}
+
+/* Collection card prices: sale price big, compare-at small with strikethrough */
+.product-block .price--on-sale .price__default > span:first-child {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+.product-block .price--on-sale .price__was {
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+  text-decoration: line-through;
+  letter-spacing: 0;
+}
+
+/* ── 3c. Show ATC button on card hover for collection/featured pages ── */
+.collection-listing .product-block .prod_thumb_atc_button,
+.section-featured-collection .product-block .prod_thumb_atc_button {
+  display: block;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  margin-top: 10px;
+}
+.collection-listing .product-block:hover .prod_thumb_atc_button,
+.section-featured-collection .product-block:hover .prod_thumb_atc_button {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* B2B visitors: hide OUR hover ATC entirely on every screen —
+   SparkLayer provides the ATC with wholesale pricing, we don't want a duplicate. */
+body.is-b2b .collection-listing .product-block .prod_thumb_atc_button,
+body.is-b2b .section-featured-collection .product-block .prod_thumb_atc_button,
+body.is-b2b .product-block .prod_thumb_atc_button {
+  display: none !important;
+}
+.collection-listing .product-block .prod_thumb_atc_button button,
+.section-featured-collection .product-block .prod_thumb_atc_button button {
+  width: 100%;
+  padding: 11px 20px;
+  background: #111111;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+  min-height: auto;
+  min-width: auto;
+}
+.collection-listing .product-block .prod_thumb_atc_button button:hover,
+.section-featured-collection .product-block .prod_thumb_atc_button button:hover {
+  background: #333333;
+}
+
+/* ── 3d. Product image -- smooth subtle scale on hover ── */
+.block-inner-inner {
+  transition: transform 0.4s ease-in-out;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.product-block:hover .block-inner-inner {
+  transform: scale(1.02);
+}
+
+/* ── 3e. Product card -- do NOT hide overflow on .block-inner ──
+   The vendor badge is absolutely positioned inside .block-inner.
+   overflow:hidden here clips it. Apply radius+clip to image only. ── */
+.product-block .block-inner {
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* ── 3f. Product vendor badge -- ensure it stays above the image ── */
+.product_vendor {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+}
+.product_vendor span {
+  pointer-events: auto;
+}
+
+/* ── 3f. Color swatches spacing ── */
+.product-block-options {
+  margin-top: 8px;
+}
+.product-block-options__inner {
+  gap: 5px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* ==========================================
+   4. FEATURED COLLECTION SECTIONS
+========================================== */
+
+.section-featured-collection {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+.section-featured-collection .hometitle {
+  margin-bottom: 28px;
+}
+/* No double-spacing between consecutive featured collections */
+.section-featured-collection + .shopify-section .section-featured-collection {
+  padding-top: 0;
+}
+
+/* ==========================================
+   5. TABBED SECTION (Artists / Japan / Originals)
+   Fix: contrast, letter-spacing, transitions
+========================================== */
+
+/* Fix inactive tab contrast -- #c3bebf fails WCAG */
+.tabbed-section .tab-button {
+  color: #999999;
+  letter-spacing: -1.5px;
+  transition: color 0.3s ease-in-out, letter-spacing 0.3s ease-in-out;
+}
+.tabbed-section .tab-button.active {
+  color: #111111;
+  letter-spacing: -1.5px;
+}
+.tabbed-section .tab-button:hover:not(.active) {
+  color: #555555;
+}
+
+/* ==========================================
+   6. COLLECTION PAGE IMPROVEMENTS
+========================================== */
+
+/* Collection page heading */
+.main-collection-page .header h1,
+.template-collection .page-header h1 {
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+@media (max-width: 767px) {
+  .main-collection-page .header h1,
+  .template-collection .page-header h1 {
+    font-size: 28px;
+  }
+}
+
+/* Filter pills -- active state matches brand */
+li.active_menu_links,
+.main-collection-page ul li.active_menu_links {
+  background: #52816b;
+  border-color: #52816b;
+  color: #ffffff;
+  font-weight: 500;
+}
+.main-collection-page .product-count ul li {
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  font-size: 13px;
+  padding: 4px 16px;
+}
+.main-collection-page .product-count ul li:hover:not(.active_menu_links) {
+  border-color: #52816b;
+}
+
+/* ==========================================
+   7. FAQ / ACCORDION SECTION
+   Clean, spacious, readable
+========================================== */
+
+.section-accordion_with_image_main .collapsible-tabs-heading h2 {
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 36px;
+}
+@media (max-width: 767px) {
+  .section-accordion_with_image_main .collapsible-tabs-heading h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+}
+
+/* ==========================================
+   8. MOBILE ADD-TO-CART BUTTON
+   Fix: wrong green color → brand black
+========================================== */
+
+@media (max-width: 640px) {
+  .product-block-wrapper .form.js-product-form button.btn.btn--large.add-to-cart {
+    background: #111111;
+  }
+  .action-wrapper {
+    border-top: 1px solid #eeeeee;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* ==========================================
+   9. SCROLLING BANNER / PRESS LOGOS
+   Reduce excessive top/bottom space
+========================================== */
+
+.section-scrolling-banner {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* ==========================================
+   10. HOMEPAGE -- COLLECTION SECTION HEADING
+   "De wereld van IZY"
+========================================== */
+
+.collection-tiles h2 {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+@media (max-width: 767px) {
+  .collection-tiles h2 {
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+}
+
+/* ==========================================
+   11. PRODUCT PAGE IMPROVEMENTS
+========================================== */
+
+/* Accordion titles cleaner */
+.template-product .disclosure .disclosure__title {
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* Service icons row -- better spacing */
+.svg-with-text-grid.grid__item {
+  padding: 14px 20px;
+}
+.service-text span {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+/* ==========================================
+   12. GENERAL SECTION SPACING CLEANUP
+========================================== */
+
+/* Tighter page rhythm -- sections were too spaced out */
+.shopify-section {
+  position: relative;
+}
+
+/* ==========================================
+   13. BUTTON CONSISTENCY
+   All primary buttons = black, pill shape
+========================================== */
+
+/* Collection slider "Shop nu" button text size */
+.slide_content_image a:not(.image_wrapper) span {
+  font-size: 11px;
+  letter-spacing: 0.065em;
+  font-weight: 500;
+}
+
+/* ==========================================
+   14. CUSTOM RICH TEXT WITH IMAGE
+   Brand story section -- better spacing
+========================================== */
+
+.section-custom-rich-text-with-img {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+/* Corporate gifting: ensure 3D customizer button stays clickable
+   (negative margin on the section can cause overlap) */
+.section-rich-text {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   15. MOBILE OPTIMISATIONS
+========================================== */
+
+@media (max-width: 767px) {
+  /* Product grid -- more breathing room on mobile */
+  .product-grid {
+    margin: 0 -10px;
+    padding: 10px 10px 0;
+  }
+  /* Product card ATC button -- keep hidden on mobile (tap to product page) */
+  .collection-listing .product-block .prod_thumb_atc_button,
+  .section-featured-collection .product-block .prod_thumb_atc_button {
+    display: none;
+  }
+  /* Section headings */
+  .section-compact-messages .store-messages .store-messages-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+}
+
+/* ==========================================
+   16. "GA NAAR WINKELMANDJE" BADGE ON ADD TO CART
+========================================== */
+
+.izy-cart-badge {
+  position: fixed;
+  top: 110px;
+  right: 24px;
+  background: #111111;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 12px 22px;
+  border-radius: 50px;
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 99999;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+.izy-cart-badge--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.izy-cart-badge:hover {
+  background: #333333;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+@media (max-width: 767px) {
+  .izy-cart-badge {
+    top: auto;
+    bottom: 80px;
+    right: 16px;
+    font-size: 12px;
+    padding: 10px 18px;
+  }
+}
+
+/* ==========================================
+   16a. STICKY HEADER -- Always visible, never hide on scroll
+========================================== */
+
+.section-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 8000 !important;
+}
+.section-header .pageheader {
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ==========================================
+   16a2. Hide ATC on Postcode Loterij collection (needs customization first)
+========================================== */
+
+.template-suffix-npl .prod_thumb_atc_button,
+.template-suffix-npl .izy-qty-stepper {
+  display: none !important;
+}
+
+/* ==========================================
+   16b. LOGO ALIGNMENT FIX
+========================================== */
+
+.logo-area__left {
+  display: flex;
+  align-items: center;
+}
+.logo-area__left .logo {
+  display: flex;
+  align-items: center;
+  margin-top: -2px;
+}
+
+/* ==========================================
+   16b2. HERO IMAGE -- Position higher so face/eyes visible
+========================================== */
+
+.section-slideshow .rimage-outer-wrapper img,
+.section-slideshow .image-overlay img,
+.section-slideshow .slide__image img,
+.section-slideshow .rimage--loaded {
+  object-position: center 30% !important;
+}
+
+/* ==========================================
+   16b3. CART DRAWER -- Lock body scroll when open
+========================================== */
+
+html:has(.drawer[open]),
+html.izy-drawer-open {
+  overflow: hidden !important;
+  height: 100% !important;
+}
+html:has(.drawer[open]) > body,
+html.izy-drawer-open > body {
+  overflow: hidden !important;
+  height: 100% !important;
+  position: fixed !important;
+  width: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* Cart drawer: keep checkout pinned, scroll items area */
+
+/* ==========================================
+   16c. FIX: ATC button on product cards not cut off
+========================================== */
+
+.collection-listing .product-block .prod_thumb_atc_button,
+.section-featured-collection .product-block .prod_thumb_atc_button {
+  overflow: visible !important;
+  padding-bottom: 8px;
+}
+.product-block .product-block__detail {
+  overflow: visible !important;
+}
+.product-block .block-inner {
+  overflow: visible !important;
+}
+.collection-listing .product-block,
+.section-featured-collection .product-block {
+  overflow: visible !important;
+  padding-bottom: 8px;
+}
+
+/* ==========================================
+   16d. CART ITEM -- REMOVE BUTTON
+========================================== */
+
+.izy-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #999999;
+  text-decoration: none;
+  padding: 4px 0;
+  margin-top: 4px;
+  transition: color 0.15s;
+}
+.izy-remove-btn:hover {
+  color: #c53030;
+}
+.izy-remove-btn svg {
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   16c. PRODUCT CARD -- QUANTITY STEPPER
+========================================== */
+
+.izy-qty-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 6px;
+  border: 1px solid #e0e0e0;
+  border-radius: 50px;
+  overflow: hidden;
+  height: 34px;
+  background: #ffffff;
+  user-select: none;
+}
+.izy-qty-btn {
+  width: 34px;
+  height: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  color: #111111;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.izy-qty-btn:hover {
+  background: #f0f0f0;
+}
+input.izy-qty-val,
+input.izy-qty-val[type="number"] {
+  width: 32px !important;
+  height: 100% !important;
+  text-align: center !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #111111 !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  -moz-appearance: textfield !important;
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  max-width: 32px !important;
+  line-height: 34px !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+input.izy-qty-val::-webkit-outer-spin-button,
+input.izy-qty-val::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+input.izy-qty-val:focus {
+  background: #f0f0f0 !important;
+  border-radius: 4px !important;
+}
+
+@media (max-width: 767px) {
+  .izy-qty-stepper {
+    display: none;
+  }
+}
+
+/* ==========================================
+   17. CART TIMER -- 15min reservation urgency
+========================================== */
+
+.izy-cart-timer {
+  padding: 8px 14px 10px;
+  background: #faf8f5;
+  border-radius: 10px;
+  margin: 0;
+}
+#izy-cart-timer-slot:empty {
+  display: none;
+}
+.izy-cart-timer__inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.izy-cart-timer__icon {
+  flex-shrink: 0;
+  color: #111111;
+  width: 15px;
+  height: 15px;
+}
+.izy-cart-timer__text {
+  font-size: 13px;
+  color: #555555;
+  line-height: 1.3;
+}
+.izy-cart-timer__text strong {
+  color: #111111;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+/* Warning state when < 5 min */
+.izy-cart-timer--warning .izy-cart-timer__text strong {
+  color: #c53030;
+}
+.izy-cart-timer--warning .izy-cart-timer__icon {
+  color: #c53030;
+}
+
+/* Progress bar */
+.izy-cart-timer__bar {
+  width: 100%;
+  height: 3px;
+  background: #e8e5e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.izy-cart-timer__bar-fill {
+  height: 100%;
+  width: 100%;
+  background: #111111;
+  border-radius: 3px;
+  transform-origin: left;
+  transition: transform 1s linear;
+}
+.izy-cart-timer--warning .izy-cart-timer__bar-fill {
+  background: #c53030;
+}
+.izy-cart-timer--expired {
+  opacity: 0.5;
+}
+
+/* Timer warning popup */
+.izy-timer-popup {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.izy-timer-popup svg {
+  flex-shrink: 0;
+  color: #fbbf24;
+}
+.izy-timer-popup--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* ==========================================
+   17. FIX: Prevent carousels from hijacking vertical scroll
+   Horizontal carousels should only scroll with arrows/drag,
+   not capture mousewheel events when scrolling the page.
+========================================== */
+
+.slider,
+.carousel .slider__grid,
+.product-grid--carousel {
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+}
+
+/* On desktop: disable wheel-based horizontal scrolling on carousels */
+@media (min-width: 768px) {
+  .section-featured-collection .slider,
+  .section-product-list .slider,
+  .section-related-products .slider {
+    overflow-x: hidden;
+  }
+  /* Let the nav arrows handle scrolling instead */
+  .section-featured-collection carousel-slider:not([inactive]) .slider,
+  .section-product-list carousel-slider:not([inactive]) .slider,
+  .section-related-products carousel-slider:not([inactive]) .slider {
+    overflow-x: hidden;
+  }
+}
+
+/* ==========================================
+   17. PRODUCT PAGE -- CRO OPTIMISED LAYOUT
+========================================== */
+
+/* ── Price: larger, bolder, more prominent ── */
+.template-product .product-price {
+  font-size: 26px;
+  font-weight: 600;
+  color: #111111;
+  letter-spacing: -0.5px;
+}
+.template-product .product-price .was-price {
+  font-size: 18px;
+  color: #999999;
+  text-decoration: line-through;
+  margin-right: 8px;
+}
+
+/* ── Trust badges row -- tighter, above buy button feels ── */
+.template-product .svg-with-text-grid {
+  padding: 10px 0 6px;
+  margin: 0;
+  gap: 4px;
+}
+.template-product .svg-with-text-grid .grid__item {
+  padding: 6px 0;
+}
+.template-product .service-text span {
+  font-size: 13px;
+  color: #555555;
+}
+
+/* ── Buy button -- bigger, bolder, higher contrast ── */
+.template-product .product-form__cart-submit {
+  min-height: 54px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 50px;
+  text-transform: uppercase;
+}
+
+/* ── Dynamic checkout (Apple Pay / Shop Pay) -- pill shape ── */
+.template-product .shopify-payment-button .shopify-payment-button__button {
+  border-radius: 50px !important;
+  min-height: 50px;
+}
+
+/* ── Accordions -- cleaner separators ── */
+.template-product .disclosure {
+  border-bottom: 1px solid #ebebeb;
+}
+.template-product .disclosure__title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 16px 0;
+}
+
+/* ==========================================
+   21. BUNDLE UPSELL -- "Bundle and save more!"
+========================================== */
+.izy-upsell {
+  max-width: 1200px;
+  margin: 48px auto 0;
+  padding: 0 20px 40px;
+}
+.izy-upsell__title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 20px;
+}
+.izy-upsell__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.izy-upsell__card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.izy-upsell__card:hover {
+  border-color: #ccc;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.izy-upsell__img {
+  position: relative;
+  background: #f5f5f5;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* Product images side by side */
+.izy-upsell__img-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px 8px;
+}
+.izy-upsell__img-row img {
+  height: 85%;
+  width: auto;
+  max-width: 40%;
+  object-fit: contain;
+  flex-shrink: 1;
+  margin: 0 -8px; /* slight overlap */
+}
+.izy-upsell__img-row img:first-child { z-index: 2; }
+.izy-upsell__img-row img:nth-child(2) { z-index: 1; }
+.izy-upsell__img-row img:nth-child(3) { z-index: 0; }
+.izy-upsell__card:hover .izy-upsell__img-row img {
+  transform: scale(1.03);
+  transition: transform 0.2s;
+}
+.izy-upsell__badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #e74c3c;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+.izy-upsell__info {
+  padding: 14px 16px 18px;
+}
+.izy-upsell__name {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 6px;
+}
+.izy-upsell__prices {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.izy-upsell__was {
+  font-size: 14px;
+  color: #aaa;
+  text-decoration: line-through;
+}
+.izy-upsell__now {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+@media (max-width: 768px) {
+  .izy-upsell {
+    padding: 0 16px 32px;
+    margin-top: 32px;
+  }
+  .izy-upsell__title {
+    font-size: 20px;
+    margin-bottom: 14px;
+  }
+  .izy-upsell__grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .izy-upsell__card {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: stretch;
+  }
+  .izy-upsell__img {
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 14px 0 0 14px;
+    overflow: hidden;
+  }
+  .izy-upsell__img-row {
+    padding: 8px 4px;
+    height: 100%;
+  }
+  .izy-upsell__img-row img {
+    height: auto;
+    max-height: 90%;
+    max-width: 50%;
+    margin: 0 -4px;
+  }
+  .izy-upsell__badge {
+    top: 6px;
+    right: 6px;
+    font-size: 9px;
+    padding: 3px 7px;
+  }
+  .izy-upsell__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 14px;
+  }
+  .izy-upsell__name {
+    font-size: 14px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .izy-upsell__now {
+    font-size: 15px;
+  }
+  .izy-upsell__was {
+    font-size: 12px;
+  }
+}
+
+/* ── Sticky ATC footer bar -- hidden ── */
+sticky-atc.sticky-atc {
+  display: none !important;
+}
+
+/* ── Related products heading ── */
+.section-related-products .hometitle {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+/* ==========================================
+   17. PRIVACY POLICY PAGE STYLING
+========================================== */
+
+.template-privacy-verklaring .section-rich-text {
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Hero intro */
+.template-privacy-verklaring .section-rich-text:first-of-type {
+  padding-top: 60px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ebebeb;
+  margin-bottom: 8px;
+}
+
+/* TOC box */
+.template-privacy-verklaring .section-rich-text:nth-of-type(2) {
+  background: #f8f8f8;
+  border-radius: 16px;
+  padding: 28px 36px !important;
+  margin-bottom: 8px;
+}
+.template-privacy-verklaring .section-rich-text:nth-of-type(2) h3 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #737373;
+  margin-bottom: 12px;
+}
+.template-privacy-verklaring .section-rich-text:nth-of-type(2) a {
+  display: block;
+  font-size: 14px;
+  color: #111111;
+  line-height: 2;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.template-privacy-verklaring .section-rich-text:nth-of-type(2) a:hover {
+  color: #555555;
+}
+
+/* Content sections */
+.template-privacy-verklaring .section-rich-text h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-top: 8px;
+  border-top: 2px solid #111111;
+  display: inline-block;
+}
+.template-privacy-verklaring .section-rich-text p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #333333;
+  margin-bottom: 14px;
+}
+.template-privacy-verklaring .section-rich-text strong {
+  color: #111111;
+}
+
+/* Table styling for section 1 */
+.template-privacy-verklaring table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 20px;
+  font-size: 14px;
+}
+.template-privacy-verklaring table td {
+  padding: 10px 14px;
+  border: 1px solid #e8e8e8;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.template-privacy-verklaring table tr:first-child td {
+  background: #111111;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.template-privacy-verklaring table tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+/* Contact section */
+.template-privacy-verklaring .section-rich-text:last-of-type {
+  background: #111111;
+  border-radius: 20px;
+  padding: 48px 40px !important;
+  margin-top: 16px;
+  margin-bottom: 48px;
+}
+.template-privacy-verklaring .section-rich-text:last-of-type h2,
+.template-privacy-verklaring .section-rich-text:last-of-type p,
+.template-privacy-verklaring .section-rich-text:last-of-type a {
+  color: #ffffff !important;
+}
+.template-privacy-verklaring .section-rich-text:last-of-type h2 {
+  border-color: #ffffff;
+  font-size: 28px;
+}
+
+@media (max-width: 767px) {
+  .template-privacy-verklaring .section-rich-text:nth-of-type(2) {
+    padding: 20px 20px !important;
+  }
+  .template-privacy-verklaring .section-rich-text:last-of-type {
+    padding: 32px 24px !important;
+  }
+  .template-privacy-verklaring table {
+    font-size: 13px;
+  }
+}
+
+/* ==========================================
+   17. FOOTER LAYOUT FIX
+   Main menu links had 36px -- way too large
+========================================== */
+
+/* Footer left column (FAQ, Partnerships, Over ons, Contact) -- bigger */
+.section-footer__menu-block__menu.section-footer__diffrent_menu_style li a {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  font-style: normal;
+  line-height: 1.3 !important;
+  letter-spacing: -0.01em;
+}
+.section-footer__menu-block__menu.section-footer__diffrent_menu_style li {
+  margin-bottom: 14px !important;
+}
+
+/* Footer right column -- keep small */
+.section-footer__menu-block__menu:not(.section-footer__diffrent_menu_style) li a {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+.section-footer__menu-block__menu:not(.section-footer__diffrent_menu_style) li {
+  margin-bottom: 10px !important;
+}
+
+/* ==========================================
+   19. IZY BUYBOX -- Hears.com style
+========================================== */
+
+/* ---- Hide old blocks that izy-bb replaces (NOT on NPL pages which need them) ---- */
+.product-form:not(.izy-npl-form) > .product-block-wrapper .title-row,
+.product-form:not(.izy-npl-form) > .product-block-wrapper .price-button_wapper,
+.product-form:not(.izy-npl-form) > .product-block-wrapper .usp-images,
+.product-form:not(.izy-npl-form) > .product-block-wrapper .svg-with-text-grid,
+.product-form:not(.izy-npl-form) > .product-block-wrapper .input-row,
+.product-form:not(.izy-npl-form) > .product-block-wrapper .custom_product_inventory,
+.product-form:not(.izy-npl-form) > .product-block-wrapper .section-payment-icons,
+.product-form:not(.izy-npl-form) > .product-block-wrapper > div:has([data-loox-id]),
+.product-form:not(.izy-npl-form) > .product-block-wrapper > .not-in-quickbuy:has([data-loox-id]) {
+  display: none !important;
+}
+
+/* ====================================================================
+   B2B (SparkLayer) product page
+   The mix-and-match buybox (.izy-bb) is tagged data-spark="b2c-only", so
+   SparkLayer's JS hides it for B2B accounts — the same proven mechanism that
+   already hides the standard price/buy blocks. We DON'T force-hide <spark-pdp>
+   above, so SparkLayer can render its B2B widget (pricing, qty, add-to-cart)
+   in its place. For B2C the SparkLayer script never loads, so <spark-pdp> stays
+   an empty/invisible custom element. The is-b2b rule below is a CSS backstop.
+   ==================================================================== */
+/* Removed: B2B should see product info (title, bullets, etc). Only data-spark="b2c-only" elements are hidden. */
+
+/* ===================================================
+   PRODUCT PAGE LAYOUT -- Complete rewrite
+   DOM: product-info > product-column-left (mobile only)
+                      > product-column-right
+                          > product-form
+                              > media-gallery.desktop-only
+                              > izy-bb
+                              > product-block-wrapper
+   =================================================== */
+
+@media (min-width: 768px) {
+  /* Hide theme's left column -- only has mobile gallery */
+  .section-new-main-product .product-column-left {
+    display: none !important;
+  }
+
+  /* Parent becomes single-column full-width */
+  .section-new-main-product .product-info {
+    display: block !important;
+  }
+  .section-new-main-product .product-info .detail.product-column-right {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* product-form is our 2-col grid */
+  .section-new-main-product .detail.product-column-right > .product-form {
+    display: grid !important;
+    grid-template-columns: 1.15fr 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 0 48px !important;
+    align-items: start !important;
+  }
+
+  /* Gallery = col 1, spanning both rows, sticky */
+  .section-new-main-product .detail.product-column-right > .product-form > media-gallery {
+    grid-column: 1 !important;
+    grid-row: 1 / -1 !important;
+    position: sticky !important;
+    top: 90px !important;
+    display: block !important;
+  }
+
+  /* Buybox = col 2 row 1 */
+  .section-new-main-product .detail.product-column-right > .product-form > .izy-bb {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  /* Accordions = col 2 row 2 (when buybox also present) */
+  .section-new-main-product .detail.product-column-right > .product-form > .product-block-wrapper {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+  }
+
+  /* NPL products (postcode loterij): restore theme's default 2-col layout.
+     Left column = gallery, right column = product info. Override the block layout. */
+  .section-new-main-product:has(.izy-npl-page) .product-info {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0 48px !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left {
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: 35% !important;
+    max-width: 380px !important;
+  }
+  .section-new-main-product .izy-npl-page .detail.product-column-right {
+    width: auto !important;
+    max-width: none !important;
+    flex: 1 !important;
+  }
+  .section-new-main-product .detail.product-column-right > .izy-npl-form {
+    display: block !important;
+  }
+  .section-new-main-product .detail.product-column-right > .izy-npl-form > media-gallery.desktop-only {
+    display: none !important;
+  }
+  /* NPL: single-image carousel in left column (hide collage, show one slide) */
+  .section-new-main-product .izy-npl-page .product-media-collage,
+  .section-new-main-product .izy-npl-page .product-media-collage.desktop-only {
+    display: none !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .main-image {
+    position: relative;
+    overflow: hidden;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .slider,
+  .section-new-main-product .izy-npl-page .product-column-left .slider__grid {
+    display: block !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .slider__item {
+    display: none !important;
+    width: 100% !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .slider__item.is-active {
+    display: block !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .slider__item.hidden {
+    display: none !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .slider__item .product-media {
+    background: #f5f5f5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left .slider-nav,
+  .section-new-main-product .izy-npl-page .product-column-left .slider-nav--floating {
+    display: none !important;
+  }
+  /* Override mobile-only on the slider wrapper so it shows on desktop for NPL */
+  .section-new-main-product .izy-npl-page .product-column-left .main-image > .mobile-only,
+  .section-new-main-product .izy-npl-page .product-column-left .main-image > div:first-child {
+    display: block !important;
+  }
+  /* Hide thumbnails on NPL -- carousel handles navigation */
+  .section-new-main-product .izy-npl-page .product-column-left .thumbnails {
+    display: none !important;
+  }
+
+  /* NPL logo below the buy button */
+  .izy-npl-logo {
+    text-align: center;
+    margin: 24px 0 8px;
+  }
+  .izy-npl-logo img {
+    max-width: 200px;
+    height: auto;
+  }
+
+  /* Hide sticky-atc anchor (in grid flow) */
+  .section-new-main-product .sticky-atc-anchor {
+    display: none !important;
+  }
+
+  /* Single image carousel -- one image at a time (NOT on NPL pages) */
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider,
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__grid {
+    display: block !important;
+  }
+  /* main-image wraps the slider grid -- next button anchors here */
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .main-image {
+    position: relative;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__item {
+    display: none !important;
+    width: 100% !important;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__item.is-active {
+    display: block !important;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__item.hidden {
+    display: none !important;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__item .product-media {
+    background: #f5f5f5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .img-ar {
+    position: relative;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .img-ar::before {
+    padding-top: 100% !important;
+  }
+  .section-new-main-product .product-form:not(.izy-npl-form) media-gallery .img-ar img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: contain !important;
+    padding: 20px !important;
+  }
+
+  /* Hide theme's slider nav entirely -- we use our own (NOT on NPL) */
+  .section-new-main-product .product-form:not(.izy-npl-form) .slider-nav { display: none !important; }
+
+  /* Reduce spacing between main image and thumbnails - desktop only */
+  @media (min-width: 768px) {
+    .section-new-main-product media-gallery,
+    .section-new-main-product .product-form > media-gallery {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+    media-gallery .main-image {
+      margin-bottom: 0 !important;
+    }
+    media-gallery .slider__grid {
+      margin-top: 0 !important;
+      gap: 12px !important;
+    }
+  }
+
+  /* Our next button -- appended to main-image by JS */
+  .section-new-main-product .izy-gallery-next {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 20;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .section-new-main-product .izy-gallery-next:hover {
+    background: #f5f5f5;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  }
+  .section-new-main-product .izy-gallery-next svg {
+    width: 18px;
+    height: 18px;
+    stroke: #333;
+    fill: none;
+  }
+
+  /* Dot indicators */
+  .izy-gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 0 4px;
+  }
+  .izy-gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .izy-gallery-dot.is-active {
+    background: #111;
+  }
+  .izy-gallery-dot:hover {
+    background: #999;
+  }
+}
+
+/* Gallery custom cursor -- circle with < / > */
+.izy-gallery-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.izy-gallery-cursor--visible {
+  opacity: 1;
+}
+.izy-gallery-cursor__icon {
+  width: 20px;
+  height: 20px;
+  color: #222;
+  transition: transform 0.1s ease;
+  display: block;
+}
+
+/* Old 71px title -- collapse (not for NPL products which use standard blocks) */
+.section-new-main-product .product-title {
+  font-size: 0 !important; margin: 0 !important; padding: 0 !important;
+  line-height: 0 !important; height: 0 !important; overflow: hidden !important;
+}
+.section-new-main-product .izy-npl-form .product-title,
+.section-new-main-product .izy-npl-page .product-title {
+  font-size: 28px !important; height: auto !important;
+  margin: 0 0 8px !important; padding: 0 !important;
+  line-height: 1.2 !important; overflow: visible !important;
+  text-decoration: none !important; font-weight: 700 !important;
+  color: #111 !important;
+}
+
+/* Loox in gallery area -- hide (shown in buybox) */
+.product-column-left [data-loox-id],
+.product-media-gallery-left-side [data-loox-id] {
+  display: none !important;
+}
+
+/* ---- Buybox ---- */
+.izy-bb { max-width: 100%; }
+
+/* Custom qty input in bundle card */
+.izy-bb__custom-qty {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.izy-bb__qty-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+.izy-bb__qty-btn:hover { background: #e5e5e5; }
+.izy-bb__qty-field {
+  width: 52px;
+  height: 36px;
+  border: none;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  -moz-appearance: textfield;
+  font-family: inherit;
+}
+.izy-bb__qty-field::-webkit-inner-spin-button,
+.izy-bb__qty-field::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ---- Subtitle ---- */
+.izy-bb__subtitle {
+  font-size: 15px;
+  color: #666;
+  margin: -8px 0 14px;
+  line-height: 1.4;
+}
+
+/* ---- Rating (Loox) ---- */
+.izy-bb__rating {
+  margin: -6px 0 16px;
+  font-size: 14px;
+  line-height: 1;
+}
+.izy-bb__rating:empty { display: none; }
+.izy-bb__rating .loox-rating,
+.izy-bb__rating [data-loox-id] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+/* Hide the stray (933) at the bottom -- it's a duplicate */
+.izy-bb__pay + .loox-rating,
+.izy-bb .loox-rating:not(.izy-bb__rating .loox-rating) {
+  display: none !important;
+}
+
+/* ---- Category ---- */
+.izy-bb__cat {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  color: #999; margin-bottom: 6px;
+}
+
+/* ---- Title ---- */
+.izy-bb__title {
+  font-size: 34px; font-weight: 800; line-height: 1.12;
+  color: #111; margin: 0 0 14px; letter-spacing: -0.01em;
+}
+
+/* ---- Bullets ---- */
+.izy-bb__bullets {
+  list-style: none; padding: 0; margin: 0 0 20px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.izy-bb__bullets li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 15px; line-height: 1.45; color: #333;
+}
+.izy-bb__bullets svg {
+  width: 22px; height: 22px; flex-shrink: 0; color: #16a34a; margin-top: 1px;
+}
+
+/* ---- Variant pills ---- */
+.izy-bb__option { margin-bottom: 16px; }
+.izy-bb__option-label {
+  font-size: 14px; color: #333; margin-bottom: 8px; display: block;
+}
+.izy-bb__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.izy-bb__pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 46px; padding: 9px 18px;
+  border: 2px solid #e0e0e0; border-radius: 10px;
+  background: #fff; font-size: 14px; font-weight: 500; color: #444;
+  cursor: pointer; transition: all 0.15s;
+  font-family: inherit; line-height: 1;
+}
+.izy-bb__pill:hover { border-color: #999; }
+.izy-bb__pill.is-active {
+  border-color: #111; background: #fafafa; font-weight: 700; color: #111;
+}
+
+/* ---- Price row (for bundle products) ---- */
+.izy-bb__price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.izy-bb__price-row-was {
+  font-size: 18px;
+  color: #aaa;
+  text-decoration: line-through;
+}
+.izy-bb__price-row-now {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+}
+.izy-bb__price-row-badge {
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  background: #16a34a;
+  padding: 4px 10px;
+  border-radius: 5px;
+  letter-spacing: 0.03em;
+}
+
+/* ---- Bundle cards ---- */
+.izy-bb__bundles { margin: 0 0 20px; }
+.izy-bb__bundle {
+  position: relative; border: 2px solid #e5e5e5;
+  background: #fff; cursor: pointer; transition: all 0.15s;
+}
+.izy-bb__bundle:first-child { border-radius: 12px 12px 0 0; }
+.izy-bb__bundle:last-child { border-radius: 0 0 12px 12px; }
+.izy-bb__bundle + .izy-bb__bundle { margin-top: -2px; }
+.izy-bb__bundle.is-active { border-color: #111; z-index: 2; background: #fafafa; }
+.izy-bb__bundle:not(.is-active):hover { border-color: #bbb; }
+
+.izy-bb__bundle-inner {
+  display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+}
+
+/* Radio dot */
+.izy-bb__radio {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+}
+.izy-bb__bundle.is-active .izy-bb__radio { border-color: #111; }
+.izy-bb__radio::after {
+  content: ''; width: 12px; height: 12px; border-radius: 50%;
+  background: transparent; transition: background 0.15s;
+}
+.izy-bb__bundle.is-active .izy-bb__radio::after { background: #111; }
+
+/* Bundle info */
+.izy-bb__bundle-info { flex: 1; min-width: 0; }
+.izy-bb__bundle-name { font-weight: 700; font-size: 15px; color: #111; display: block; }
+.izy-bb__bundle-sub { font-size: 12px; color: #999; }
+.izy-bb__tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.izy-bb__tag {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.03em;
+  padding: 3px 9px; border-radius: 5px;
+  background: #16a34a; color: #fff; text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Bundle price */
+.izy-bb__bundle-price { text-align: right; flex-shrink: 0; min-width: 80px; }
+.izy-bb__price-was {
+  display: block; font-size: 13px; color: #aaa; text-decoration: line-through;
+}
+.izy-bb__price-now { display: block; font-weight: 800; font-size: 18px; color: #111; }
+.izy-bb__price-now--sale { color: #16a34a; }
+.izy-bb__price-per { display: block; font-size: 12px; color: #aaa; }
+
+/* Bundle badges */
+.izy-bb__badge {
+  position: absolute; top: -12px; right: 16px; z-index: 5;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.05em;
+  padding: 4px 12px; border-radius: 5px; color: #fff;
+  text-transform: uppercase; line-height: 1.4; pointer-events: none;
+}
+.izy-bb__badge--hot { background: #16a34a; }
+.izy-bb__badge--best { background: #16a34a; }
+
+/* "GRATIS VERZENDING" tag on tier 2/3 — JS hides it unless the tier total reaches the
+   country's free-shipping threshold. */
+.izy-bb__tag--ship { background: #eaf7ee; color: #15803d; }
+.izy-bb__tag--ship[hidden] { display: none !important; }
+
+/* ===== Mix & Match selector ===== */
+.izy-bb__mixwrap { margin: 0 0 20px; }
+.izy-bb__tiers { margin: 0; }
+
+.izy-bb__tier {
+  position: relative; border: 2px solid #e5e5e5;
+  background: #fff; cursor: pointer; transition: all 0.15s;
+}
+.izy-bb__tier:first-child { border-radius: 12px 12px 0 0; }
+.izy-bb__tier:last-child { border-radius: 0 0 12px 12px; }
+.izy-bb__tier + .izy-bb__tier { margin-top: -2px; }
+.izy-bb__tier.is-active { border-color: #111; z-index: 2; background: #fafafa; }
+.izy-bb__tier:not(.is-active):hover { border-color: #bbb; }
+.izy-bb__tier.is-disabled { opacity: 0.4; pointer-events: none; }
+
+.izy-bb__tier-inner { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
+.izy-bb__tier.is-active .izy-bb__radio { border-color: #111; }
+.izy-bb__tier.is-active .izy-bb__radio::after { background: #111; }
+
+.izy-bb__tier-info { flex: 1; min-width: 0; }
+.izy-bb__tier-name { font-weight: 700; font-size: 15px; color: #111; display: block; }
+.izy-bb__tier-sub { font-size: 12px; color: #999; }
+.izy-bb__tier-price { text-align: right; flex-shrink: 0; min-width: 80px; }
+
+/* Inline design slots inside the tier cards */
+.izy-bb__tslots { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.izy-bb__tslot {
+  width: 46px; height: 46px; border-radius: 8px; flex-shrink: 0; overflow: hidden;
+  background: #eceef1; display: flex; align-items: center; justify-content: center;
+}
+
+/* BUGFIX: the desktop gallery's featured slide was getting both `is-active` and `hidden`
+   for products without a product_page_bottle_image (Miffy / lids) — and `.hidden` won the
+   cascade, blanking single-image galleries. The active slide must always be visible. */
+.section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__item.is-active.hidden,
+.section-new-main-product .product-form:not(.izy-npl-form) media-gallery .slider__item.is-active {
+  display: block !important;
+}
+/* Subtle shadow follows the product's alpha silhouette so light/transparent designs
+   (Nijntje / lids) get a defined edge against the gallery's light backdrop. */
+.section-new-main-product .product-media-gallery-left-side .img-ar img {
+  filter: drop-shadow(0 6px 16px rgba(60, 70, 90, 0.14));
+}
+.izy-bb__tslot-img { width: 100%; height: 100%; object-fit: contain; }
+.izy-bb__tslot.is-empty { background: #fff; border: 1.5px solid #dcdcdc; cursor: pointer; transition: border-color 0.15s; }
+.izy-bb__tslot.is-empty:hover { border-color: #111; }
+.izy-bb__tslot-plus { font-size: 24px; font-weight: 300; color: #bdbdbd; line-height: 1; }
+.izy-bb__tier.is-active .izy-bb__tslot.is-empty { border-color: #111; }
+
+/* Mix panel */
+.izy-bb__mix {
+  border: 2px solid #111; border-top: 0; border-radius: 0 0 12px 12px;
+  margin-top: -2px; padding: 16px 20px 18px; background: #fafafa; position: relative; z-index: 1;
+}
+.izy-bb__mix-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.izy-bb__mix-title { font-weight: 700; font-size: 14px; color: #111; }
+.izy-bb__mix-hint { font-size: 12px; color: #c0392b; font-weight: 600; }
+
+/* Slots */
+.izy-bb__slots { display: flex; gap: 10px; margin-bottom: 14px; }
+.izy-bb__slot {
+  position: relative; flex: 1; min-width: 0; aspect-ratio: 1 / 1;
+  border: 2px dashed #ccc; border-radius: 10px; background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 6px; text-align: center; overflow: hidden;
+}
+.izy-bb__slot.is-filled { border-style: solid; border-color: #111; }
+.izy-bb__slot.is-locked { border-color: #111; background: #fff; }
+.izy-bb__slot-img { width: 60%; height: auto; object-fit: contain; }
+.izy-bb__slot-name { font-size: 11px; font-weight: 600; color: #333; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.izy-bb__slot-plus { font-size: 26px; color: #bbb; line-height: 1; }
+.izy-bb__slot.is-empty .izy-bb__slot-name { color: #999; }
+.izy-bb__slot-x {
+  position: absolute; top: 4px; right: 4px; width: 20px; height: 20px;
+  border: 0; border-radius: 50%; background: #111; color: #fff;
+  font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+/* Picker */
+.izy-bb__picker-label { font-size: 12px; font-weight: 600; color: #777; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
+.izy-bb__picker-track {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px;
+  scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+}
+.izy-bb__pick {
+  flex: 0 0 auto; width: 84px; border: 2px solid #e5e5e5; border-radius: 10px;
+  background: #fff; cursor: pointer; padding: 8px 6px; transition: border-color 0.15s, transform 0.1s;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+}
+.izy-bb__pick:hover { border-color: #111; transform: translateY(-1px); }
+.izy-bb__pick.is-taken { opacity: 0.35; pointer-events: none; border-style: dashed; }
+.izy-bb__pick-img { width: 100%; height: 56px; object-fit: contain; }
+.izy-bb__pick-name { font-size: 10.5px; font-weight: 600; color: #333; line-height: 1.2; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ATC incomplete state */
+.izy-bb__atc.is-incomplete { opacity: 0.55; cursor: not-allowed; }
+
+/* ---- Build-your-set modal ---- */
+html.izy-modal-open { overflow: hidden; }
+
+.izy-bb__modal {
+  position: fixed; inset: 0; z-index: 100000;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.izy-bb__modal[hidden] { display: none; }
+.izy-bb__modal-overlay {
+  position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  animation: izyFadeIn 0.2s ease;
+}
+.izy-bb__modal-panel {
+  position: relative; background: #fff; width: 100%; max-width: 540px;
+  max-height: 92vh; border-radius: 20px 20px 0 0;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.25);
+  animation: izySlideUp 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes izyFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes izySlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.izy-bb__modal-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 18px 20px; border-bottom: 1px solid #eee; flex-shrink: 0;
+}
+.izy-bb__modal-title { font-weight: 800; font-size: 16px; color: #111; line-height: 1.2; }
+.izy-bb__modal-x {
+  flex-shrink: 0; width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: #f2f2f2; color: #555; font-size: 22px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+}
+.izy-bb__modal-x:hover { background: #e7e7e7; }
+
+.izy-bb__modal-slots {
+  display: flex; gap: 10px; padding: 16px 20px 6px; flex-shrink: 0;
+}
+.izy-bb__slot.is-suggested { border-style: dashed; border-color: #111; }
+
+/* "Add another design" upsell inside the modal */
+.izy-bb__modal-upgrade { padding: 0 20px 6px; flex-shrink: 0; }
+.izy-bb__modal-upgrade[hidden] { display: none; }
+.izy-bb__modal-upgrade-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px; border: 1.5px dashed #16a34a; border-radius: 10px;
+  background: #f3fbf5; color: #15803d; font-weight: 800; font-size: 13px; cursor: pointer;
+  transition: background 0.15s;
+}
+.izy-bb__modal-upgrade-btn:hover { background: #eaf7ee; }
+.izy-bb__modal-upgrade-plus { font-size: 18px; line-height: 1; font-weight: 400; }
+
+.izy-bb__modal-body { padding: 10px 20px 4px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+.izy-bb__pool { margin-bottom: 18px; }
+.izy-bb__pool[hidden] { display: none; }
+.izy-bb__pool-label {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 13px; color: #111; margin-bottom: 10px;
+}
+.izy-bb__pool-pop {
+  background: #111; color: #fff; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 20px; letter-spacing: 0.03em; text-transform: uppercase;
+}
+.izy-bb__pool-track {
+  display: flex; gap: 10px; overflow-x: auto; padding: 8px 0 8px;
+  scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+}
+.izy-bb__pick { position: relative; }
+.izy-bb__pick-badge {
+  position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+  background: #c0392b; color: #fff; font-size: 8.5px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px; white-space: nowrap;
+  text-transform: uppercase; letter-spacing: 0.02em; z-index: 2;
+}
+.izy-bb__pick-fmt { font-size: 9px; color: #999; line-height: 1.1; }
+.izy-bb__pick-price { font-size: 11px; font-weight: 800; color: #111; line-height: 1.1; margin-top: 1px; }
+
+.izy-bb__modal-foot {
+  position: sticky; bottom: 0; flex-shrink: 0;
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; border-top: 1px solid #eee; background: #fff;
+}
+.izy-bb__modal-price { display: flex; flex-direction: column; line-height: 1.15; flex: 1; min-width: 0; }
+.izy-bb__modal-price .izy-bb__price-was { font-size: 12px; color: #999; text-decoration: line-through; }
+.izy-bb__modal-price .izy-bb__price-now { font-size: 21px; font-weight: 800; color: #111; }
+.izy-bb__modal-price .izy-bb__price-per { font-size: 11px; color: #777; }
+.izy-bb__modal-cta {
+  flex: 0 0 auto; min-width: 52%; border: 0; border-radius: 12px;
+  background: #111; color: #fff; font-weight: 700; font-size: 15px;
+  padding: 15px 18px; cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+}
+.izy-bb__modal-cta:hover:not(:disabled) { transform: translateY(-1px); }
+.izy-bb__modal-cta:disabled, .izy-bb__modal-cta.is-incomplete { opacity: 0.45; cursor: not-allowed; }
+
+@media (max-width: 768px) {
+  /* Keep mobile tier cards compact (single tidy row of radio + name/badges + price).
+     The inline design slots are hidden here — picking happens in the modal that opens on
+     tap — so the cards don't grow tall and stacked. */
+  .izy-bb__tier-inner { padding: 14px 16px; gap: 10px; align-items: center; }
+  .izy-bb__tier-info { flex: 1 1 auto; min-width: 0; }
+  .izy-bb__tslots { display: none; }
+  .izy-bb__tier-name { font-size: 14px; }
+  .izy-bb__tier-sub { font-size: 11px; }
+  .izy-bb__tags { gap: 4px; }
+  .izy-bb__slot-name { font-size: 10px; }
+  .izy-bb__pick { width: 72px; }
+  .izy-bb__pick-img { height: 48px; }
+  .izy-bb__modal-title { font-size: 15px; }
+  .izy-bb__modal-price .izy-bb__price-now { font-size: 19px; }
+  .izy-bb__modal-cta { font-size: 14px; padding: 14px 14px; min-width: 48%; }
+}
+
+@media (min-width: 769px) {
+  .izy-bb__modal { align-items: center; }
+  .izy-bb__modal-panel { border-radius: 18px; max-height: 86vh; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+  @keyframes izySlideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+}
+
+/* ---- Urgency ---- */
+.izy-bb__urgency {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; margin-bottom: 6px;
+}
+.izy-bb__urgency-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  animation: izyPulse 1.5s ease-in-out infinite;
+}
+@keyframes izyPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+/* ---- Delivery ---- */
+.izy-bb__delivery {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: #666; margin-bottom: 20px;
+}
+.izy-bb__delivery svg { flex-shrink: 0; }
+
+/* ---- ATC Button ---- */
+.izy-bb__atc {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 18px 32px; gap: 10px;
+  background: #111; color: #fff; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; cursor: pointer;
+  transition: background 0.15s; font-family: inherit;
+}
+.izy-bb__atc:hover { background: #333; }
+.izy-bb__atc:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ---- Payment (directly under ATC) ---- */
+.izy-bb__pay {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+  justify-content: center;
+}
+.izy-bb__pay-icon { height: 22px; width: auto; opacity: 0.7; }
+
+/* ---- Guarantee (interactive accordion) ---- */
+.izy-bb__guarantee-details {
+  margin-top: 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.izy-bb__guarantee {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: #333; font-weight: 500;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+.izy-bb__guarantee::-webkit-details-marker { display: none; }
+.izy-bb__guarantee svg:first-child { flex-shrink: 0; color: #16a34a; }
+.izy-bb__guarantee span { flex: 1; }
+.izy-bb__guarantee-chevron {
+  flex-shrink: 0; color: #999;
+  transition: transform 0.2s ease;
+}
+.izy-bb__guarantee-details[open] .izy-bb__guarantee-chevron {
+  transform: rotate(180deg);
+}
+.izy-bb__guarantee-body {
+  padding: 0 14px 14px;
+  font-size: 13px; color: #666; line-height: 1.5;
+}
+
+/* ---- USPs (full width, same as ATC button) ---- */
+.izy-bb__usps {
+  display: flex; gap: 6px; margin-top: 16px; flex-wrap: nowrap;
+  width: 100%; justify-content: space-between;
+}
+.izy-bb__usp-img {
+  flex: 1; height: auto; max-height: 56px; object-fit: contain;
+  border-radius: 8px;
+}
+
+/* ---- Hide old elements replaced by buybox ---- */
+.izy-guarantee-row, .izy-delivery-row, .izy-benefit-bullets,
+.izy-buybox { display: none !important; }
+
+/* ==========================================
+   20. LOOX REVIEWS -- hide messy iframe, use clean widget
+========================================== */
+
+/* Hide all Loox reviews/widgets outside the buybox rating slot */
+.section-apps:has(.loox-widget),
+.shopify-app-block:has(.loox-widget[data-loox-aggregate]) {
+  display: none !important;
+}
+/* Fallback for browsers without :has() + catch-all Loox hiding */
+.loox-reviews-default,
+.section-apps .loox-widget,
+.section-apps [data-loox-id],
+#looxReviews,
+.loox-rating-default {
+  display: none !important;
+}
+/* But SHOW Loox inside our buybox rating slot */
+.izy-bb__rating .loox-rating,
+.izy-bb__rating [data-loox-id] {
+  display: inline-flex !important;
+}
+
+/* Our custom reviews section */
+.izy-reviews {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 40px 20px;
+}
+.izy-reviews__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.izy-reviews__title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 8px;
+}
+.izy-reviews__subtitle {
+  font-size: 15px;
+  color: #888;
+}
+.izy-reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.izy-review-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.izy-review-card__stars {
+  display: flex;
+  gap: 2px;
+}
+.izy-review-card__stars svg {
+  width: 16px;
+  height: 16px;
+  fill: #f59e0b;
+}
+.izy-review-card__text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #333;
+  flex: 1;
+}
+.izy-review-card__author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+.izy-review-card__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #666;
+}
+.izy-review-card__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+.izy-review-card__verified {
+  font-size: 11px;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+@media (max-width: 1024px) {
+  .izy-reviews__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .izy-reviews__grid { grid-template-columns: 1fr; }
+  .izy-reviews__title { font-size: 22px; }
+}
+
+/* ---- Accordion area below buybox ---- */
+.product-block-wrapper {
+  margin-top: 20px;
+  padding-top: 0;
+}
+
+/* ---- Hears-style horizontal image strip ---- */
+.izy-image-strip {
+  overflow: hidden;
+  padding: 12px 0 20px;
+}
+@media (min-width: 768px) {
+  .izy-image-strip {
+    /* Match gallery column width: 1.15fr out of (1.15fr + 1fr) minus gap */
+    max-width: calc(53.5% - 24px);
+  }
+}
+.izy-image-strip__track {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  justify-content: center;
+  padding: 0 16px;
+}
+.izy-image-strip__track::-webkit-scrollbar {
+  display: none;
+}
+.izy-image-strip__item {
+  flex: 0 0 auto;
+  width: 110px;
+  height: 110px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f5f5f5;
+  scroll-snap-align: start;
+}
+.izy-image-strip__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.izy-image-strip__item:hover img {
+  transform: scale(1.05);
+}
+.izy-image-strip__item.is-active {
+  ring: 2px solid #111;
+  box-shadow: 0 0 0 2px #111;
+}
+@media (max-width: 767px) {
+  /* Hide the under-gallery thumbnail strip on mobile —
+     the izy-mobile-gallery already provides next/prev navigation. */
+  .izy-image-strip,
+  #izy-image-strip {
+    display: none !important;
+  }
+}
+
+/* ---- IZY Mobile Gallery (clean replacement) ---- */
+.izy-mobile-gallery {
+  display: none;
+}
+@media (max-width: 767px) {
+  /* Hide the entire native theme gallery wrapper on mobile.
+     We render our own clean .izy-mobile-gallery as a sibling. */
+  .section-new-main-product .product-column-left,
+  .section-new-main-product .media-gallery--layout-carousel-under,
+  .section-new-main-product .product-media-gallery-left-side,
+  .section-new-main-product .product-media-gallery-right-side,
+  .section-new-main-product .product-info > .media-gallery,
+  .section-new-main-product .product-info .product-media-collage,
+  .section-new-main-product .product-info .product-media-collage__item,
+  .section-new-main-product .product-form > media-gallery,
+  .section-new-main-product .product-form > .media-gallery {
+    display: none !important;
+  }
+  /* Keep our clean replacement gallery visible.
+     (Selectors above hide the theme's gallery wrappers; the izy-mobile-gallery
+     is a sibling of those wrappers so it isn't affected.) */
+
+  /* Show our clean mobile gallery */
+  .izy-mobile-gallery {
+    display: block;
+    position: relative;
+    width: 100%;
+    background: #f5f5f5;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  .izy-mobile-gallery__slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .izy-mobile-gallery__slide.is-active {
+    display: block;
+  }
+  .izy-mobile-gallery__slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 24px;
+    display: block;
+  }
+  .izy-mobile-gallery__next {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  .izy-mobile-gallery__dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+  }
+  .izy-mobile-gallery__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .izy-mobile-gallery__dot.is-active {
+    background: #111;
+  }
+
+  /* Full-width layout */
+  .section-new-main-product .product-info {
+    display: block !important;
+    padding: 0 !important;
+  }
+  .section-new-main-product .product-info .product-column-right {
+    max-width: 100% !important;
+    padding: 0 16px !important;
+  }
+  .section-new-main-product .product-info .product-column-left {
+    margin-bottom: 0 !important;
+  }
+
+  /* Hide desktop gallery on mobile */
+  .section-new-main-product media-gallery.desktop-only {
+    display: none !important;
+  }
+
+  /* Mobile gallery: use theme's native slider, clean it up */
+  .section-new-main-product .product-column-left .product-media {
+    border-radius: 0 !important;
+  }
+  .section-new-main-product .product-column-left .slider-nav--floating {
+    display: flex !important;
+  }
+
+  /* Buybox */
+  .izy-bb {
+    max-width: 100%;
+    padding: 16px 0 0;
+  }
+
+  /* Category */
+  .izy-bb__cat { font-size: 10px; margin-bottom: 4px; }
+
+  /* Title */
+  .izy-bb__title { font-size: 24px; margin-bottom: 6px; }
+
+  /* Subtitle */
+  .izy-bb__subtitle { font-size: 14px; margin: -4px 0 10px; }
+
+  /* Rating */
+  .izy-bb__rating { margin: 0 0 12px; }
+
+  /* Bullets */
+  .izy-bb__bullets { margin-bottom: 16px; gap: 6px; }
+  .izy-bb__bullets li { font-size: 13px; gap: 8px; }
+  .izy-bb__bullets svg { width: 18px; height: 18px; }
+
+  /* Variant pills */
+  .izy-bb__option { margin-bottom: 12px; }
+  .izy-bb__option-label { font-size: 13px; margin-bottom: 6px; }
+  .izy-bb__pill { padding: 8px 14px; font-size: 13px; }
+  .izy-bb__pills { gap: 6px; }
+
+  /* Bundle cards */
+  .izy-bb__bundles { gap: 8px; margin-bottom: 14px; }
+  .izy-bb__bundle { border-radius: 10px; }
+  .izy-bb__bundle-inner { padding: 12px; gap: 10px; }
+  .izy-bb__bundle-name { font-size: 14px; }
+  .izy-bb__bundle-sub { font-size: 11px; }
+  .izy-bb__price-now { font-size: 15px; }
+  .izy-bb__price-was { font-size: 12px; }
+  .izy-bb__price-per { font-size: 10px; }
+  .izy-bb__tag { font-size: 9px; padding: 2px 6px; }
+  .izy-bb__tags { gap: 4px; }
+  .izy-bb__badge { font-size: 9px; padding: 3px 8px; }
+  .izy-bb__radio { width: 18px; height: 18px; }
+
+  /* Urgency */
+  .izy-bb__urgency { font-size: 13px; }
+
+  /* Delivery */
+  .izy-bb__delivery { font-size: 13px; padding: 10px 0; }
+
+  /* ATC button */
+  .izy-bb__atc {
+    padding: 16px 20px;
+    font-size: 15px;
+    border-radius: 12px;
+  }
+
+  /* Payment icons */
+  .izy-bb__pay { margin-top: 8px; gap: 4px; }
+  .izy-bb__pay-icon { height: 20px; }
+
+  /* Guarantee */
+  .izy-bb__guarantee-details { margin-top: 12px; }
+  .izy-bb__guarantee { padding: 10px 12px; font-size: 13px; }
+
+  /* USPs */
+  .izy-bb__usps { margin-top: 12px; gap: 4px; }
+  .izy-bb__usp-img { max-height: 44px; }
+
+  /* Price row (bundle products) */
+  .izy-bb__price-row { margin-bottom: 12px; }
+  .izy-bb__price-row-now { font-size: 22px; }
+  .izy-bb__price-row-was { font-size: 14px; }
+
+  /* Accordions below buybox */
+  .products_additional_info { padding: 0 16px; }
+
+  /* Hide custom cursor on mobile (touch devices) */
+  .izy-gallery-cursor { display: none !important; }
+
+  /* Gallery next button: smaller on mobile */
+  .izy-gallery-next {
+    width: 36px !important;
+    height: 36px !important;
+    bottom: 12px !important;
+    right: 12px !important;
+  }
+
+  /* Gallery dots */
+  .izy-gallery-dots { margin-top: 10px; gap: 6px; }
+  .izy-gallery-dot { width: 8px; height: 8px; }
+
+  /* NPL mobile: stack layout */
+  .section-new-main-product .izy-npl-page {
+    display: block !important;
+  }
+  .section-new-main-product .izy-npl-page .product-column-left {
+    width: 100% !important;
+  }
+  .section-new-main-product .izy-npl-page .detail.product-column-right {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+}
+
+/* ==========================================
+   18. FILTER PILLS -- Active state contrast fix
+   White text on black, never black on black
+========================================== */
+
+li.active_menu_links,
+li.active_menu_links a,
+.main-collection-page ul li.active_menu_links,
+.main-collection-page ul li.active_menu_links a {
+  background: #52816b !important;
+  border-color: #52816b !important;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* ==========================================
+   19. IZY TOAST NOTIFICATIONS
+   Add-to-cart success + out-of-stock error
+========================================== */
+
+#izy-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.izy-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 16px 18px 20px;
+  min-width: 280px;
+  max-width: 340px;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  /* Enter: slide in from right */
+  transform: translateX(110%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.25s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.izy-toast--visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.izy-toast--leaving {
+  transform: translateX(110%);
+  opacity: 0;
+  transition: transform 0.28s ease-in, opacity 0.2s ease-in;
+}
+
+/* Icon circle */
+.izy-toast__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.izy-toast--success .izy-toast__icon {
+  background: #111111;
+  color: #ffffff;
+}
+.izy-toast--error .izy-toast__icon {
+  background: #e53e3e;
+  color: #ffffff;
+}
+.izy-toast__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Body */
+.izy-toast__body {
+  flex: 1;
+  min-width: 0;
+}
+.izy-toast__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+.izy-toast__message {
+  font-size: 12px;
+  color: #737373;
+  line-height: 1.4;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+/* Close button */
+.izy-toast__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #aaaaaa;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+.izy-toast__close:hover {
+  color: #111111;
+}
+.izy-toast__close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Progress bar */
+.izy-toast__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: #111111;
+  transform-origin: left;
+  transform: scaleX(1);
+  transition: transform linear;
+  border-radius: 0 0 16px 16px;
+}
+.izy-toast--error .izy-toast__progress {
+  background: #e53e3e;
+}
+.izy-toast__progress--running {
+  transform: scaleX(0);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  #izy-toast-container {
+    top: auto;
+    bottom: 80px; /* above mobile ATC bar */
+    right: 12px;
+    left: 12px;
+  }
+  .izy-toast {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ==========================================
+   20. CART BADGE PULSE ANIMATION
+========================================== */
+
+@keyframes izy-badge-pulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.45); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.izy-badge-pulse {
+  animation: izy-badge-pulse 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ==================================================
+ * Mobile-only overrides (loaded after main.css)
+ * ================================================== */
+@media (max-width: 767px) {
+  /* Hide the non-clickable USP lifestyle images in buybox on mobile */
+  .izy-bb__usps {
+    display: none !important;
+  }
+
+  /* Hide ATC and Spark quickbuy on product cards on mobile — ONLY for non-B2B visitors.
+     B2B customers (.is-b2b) need the Spark card as their only way to add-to-cart on mobile. */
+  body:not(.is-b2b) .collection-listing .product-block .prod_thumb_atc_button,
+  body:not(.is-b2b) .section-featured-collection .product-block .prod_thumb_atc_button,
+  body:not(.is-b2b) .product-block .prod_thumb_atc_button {
+    display: none !important;
+  }
+  body:not(.is-b2b) .product-block spark-product-card {
+    display: none !important;
+  }
+  /* For B2B visitors on mobile: hide OUR hover-quickbuy so Spark is the only ATC shown. */
+  body.is-b2b .product-block .prod_thumb_atc_button {
+    display: none !important;
+  }
+
+  /* Override vertical Slick layout on product gallery (horizontal now via JS) */
+  .section-new-main-product .slider__grid .slick-slide {
+    margin: 0 !important;
+  }
+  .section-new-main-product .slick-horizontal .slick-slide {
+    padding: 0 5px;
+  }
+  /* Make slick dots visible + styled for mobile */
+  .section-new-main-product .slick-dots {
+    display: flex !important;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 0;
+    list-style: none;
+    margin: 0;
+  }
+  .section-new-main-product .slick-dots li button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    font-size: 0;
+    cursor: pointer;
+  }
+  .section-new-main-product .slick-dots li.slick-active button {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* ==================================================
+ * Mobile product gallery — horizontal swipe via CSS scroll-snap
+ * (replaces the old vertical Slick slider)
+ * ================================================== */
+@media (max-width: 767px) {
+  /* Convert the gallery grid to horizontal flex scroll */
+  .section-new-main-product .no-slider-in-mobile .slider__grid,
+  .section-new-main-product .slider__grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 10px !important;
+    padding: 0 10px !important;
+    height: auto !important;
+    grid-gap: 0 !important;
+  }
+  .section-new-main-product .no-slider-in-mobile .slider__grid::-webkit-scrollbar,
+  .section-new-main-product .slider__grid::-webkit-scrollbar {
+    display: none !important;
+  }
+  /* Each slide: full width, snap center */
+  .section-new-main-product .no-slider-in-mobile .slider__grid > .slider__item,
+  .section-new-main-product .slider__grid > .slider__item {
+    flex: 0 0 calc(100% - 20px) !important;
+    max-width: calc(100% - 20px) !important;
+    width: calc(100% - 20px) !important;
+    scroll-snap-align: center !important;
+    margin: 0 !important;
+  }
+  /* Don't hide items past the 4th (user can scroll) */
+  .section-new-main-product .no-slider-in-mobile .slider__grid:not(.slick-initialized) > :nth-child(n+4) {
+    display: block !important;
+  }
+  /* Hide the desktop-only collage */
+  .section-new-main-product .product-media-collage {
+    display: none !important;
+  }
+  /* Reset vertical slick overrides */
+  .section-new-main-product .slick-vertical .slick-slide {
+    margin: 0 !important;
+  }
+}
+
+/* Override the old 40%/60% mobile split — on mobile we want the gallery full-width */
+@media (max-width: 767px) {
+  .section-new-main-product .media-gallery--layout-carousel-under {
+    display: block !important;
+  }
+  .section-new-main-product .product-media-gallery-left-side,
+  .section-new-main-product .product-media-gallery-right-side {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+  /* Tighten the gap between the gallery dots and the thumbnail strip below — it was
+     floating too far down. Collapse the dot + thumbnail-strip vertical spacing. */
+  .section-new-main-product .izy-gallery-dots {
+    margin: 6px 0 0 !important;
+    padding: 0 !important;
+  }
+  .section-new-main-product .product-media-gallery-right-side {
+    margin-top: 8px !important;
+    padding-top: 0 !important;
+  }
+  .section-new-main-product .product-media-gallery-right-side > .media-gallery,
+  .section-new-main-product .product-media-gallery-right-side .media-gallery__inner {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+}
+
+/* ==================================================
+ * 18. Mobile product grid — force 2 columns on phones < 480px
+ * Theme default ramps to 2 cols only at >=480px which leaves
+ * iPhone SE/Mini stuck on 1 huge card per row.
+ * ================================================== */
+@media (max-width: 479px) {
+  .product-grid--per-row-mob-2 {
+    --product-columns-desktop: 2;
+  }
+  /* Tighter gutter so two cards fit cleanly */
+  .product-grid--per-row-mob-2 {
+    column-gap: 8px;
+    row-gap: 16px;
+  }
+  /* The vertical USP icon strip on each card eats too much horizontal space
+     at this card width — drop it on small phones so the product image breathes. */
+  .product-grid--per-row-mob-2 .product-block .button-container,
+  .product-grid--per-row-mob-2 .product-block .icon-button {
+    display: none !important;
+  }
+  /* Vendor/title size tweak so the smaller card stays legible */
+  .product-grid--per-row-mob-2 .product-block .product_vendor span {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .product-grid--per-row-mob-2 .product-block .product-block__title {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+}
+
+/* ==================================================
+ * 19. IZY Tumblers collection — tighten card spacing
+ * The product photos have a tall, near-square frame with a small
+ * bottle centred and lots of empty margin (plus light/near-white
+ * background_color tiles), so the rows looked far apart.
+ * Scope: ONLY collections using the "izy-tumblers" template suffix,
+ * desktop/tablet only. Levers:
+ *   - shorter card via a slightly wider aspect ratio -> cover crops
+ *     the empty top/bottom margin around the bottle (gentle, no clip)
+ *   - smaller in-card padding and row-gap
+ * ================================================== */
+@media (min-width: 768px) {
+  .product-grid.template-suffix-izy-tumblers {
+    row-gap: 12px;
+  }
+  .product-grid.template-suffix-izy-tumblers .block-inner-inner {
+    padding: 10px;
+  }
+  .product-grid.template-suffix-izy-tumblers .image-cont .img-ar {
+    --aspect-ratio: 1.15 !important;
+  }
+}

@@ -1,0 +1,35 @@
+<section class="unrolled">
+  <div class="deg-marker reveal">
+    <span class="deg">{{ section.settings.deg_label }}</span>
+    <span class="rule"></span>
+    <span class="lbl">{{ section.settings.marker_label }}</span>
+  </div>
+  <div class="wrap">
+    <div class="intro reveal">
+      <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.text }}</p>
+    </div>
+    <div class="ribbon-zone reveal">
+      <div class="ribbon" id="ribbon"{% if section.settings.ribbon_image %} style="background-image:url({{ section.settings.ribbon_image | image_url: width: 2400 }})"{% endif %}></div>
+      <div class="ruler">
+        <span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span>
+      </div>
+      <div class="ribbon-caption">{{ section.settings.ribbon_caption }}</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Print uitgerold",
+  "settings": [
+    { "type": "text", "id": "deg_label", "label": "Graden-label", "default": "90°" },
+    { "type": "text", "id": "marker_label", "label": "Marker-label", "default": "De print, uitgerold" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Dit is wat er gebeurt als je <em>onze fles uitrolt.</em>" },
+    { "type": "textarea", "id": "text", "label": "Tekst", "default": "Geen etiket, geen naad, geen achterkant. Het beeld loopt 360 graden door — van begin tot precies hetzelfde begin. Scroll en zie de print zich afrollen." },
+    { "type": "image_picker", "id": "ribbon_image", "label": "Print-strook (afbeelding)", "info": "Laat leeg voor de standaard print." },
+    { "type": "text", "id": "ribbon_caption", "label": "Onderschrift", "default": "— Amandelbloesem, naar Vincent van Gogh. De print loopt 360° rondom door, zonder naad." }
+  ],
+  "presets": [{ "name": "Print uitgerold" }]
+}
+{% endschema %}

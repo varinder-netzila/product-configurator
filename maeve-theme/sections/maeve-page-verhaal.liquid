@@ -1,0 +1,167 @@
+{% render 'maeve-page-verhaal-css' %}
+
+<!-- ===== HERO ===== -->
+<section class="story-hero">
+  <div class="wrap">
+    <span class="eyebrow">{{ section.settings.hero_eyebrow }}</span>
+    <h1>{{ section.settings.hero_heading }}</h1>
+    <p>{{ section.settings.hero_text | newline_to_br }}</p>
+  </div>
+</section>
+
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when 'narrative' %}
+      <!-- ===== NARRATIVE ===== -->
+      <section {{ block.shopify_attributes }}>
+        <div class="wrap narrative{% if block.settings.flip %} flip{% endif %}">
+          <div class="visual reveal">
+            <div class="frame">
+              <div class="art"><img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% else %}{{ block.settings.image_fallback | asset_url }}{% endif %}" alt="{{ block.settings.image_alt }}" loading="lazy"></div>
+              <div class="cap">{{ block.settings.caption }}</div>
+            </div>
+          </div>
+          <div class="copy reveal">
+            <span class="eyebrow">{{ block.settings.eyebrow }}</span>
+            <h2>{{ block.settings.heading }}</h2>
+            <p>{{ block.settings.paragraph_1 | newline_to_br }}</p>
+            <p>{{ block.settings.paragraph_2 | newline_to_br }}</p>
+          </div>
+        </div>
+      </section>
+    {% when 'principe' %}
+  {% endcase %}
+{% endfor %}
+
+<!-- ===== PRINCIPES ===== -->
+<section class="principes">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">{{ section.settings.principes_eyebrow }}</span>
+      <h2>{{ section.settings.principes_heading }}</h2>
+    </div>
+    <div class="p-cols">
+      {% assign p_index = 0 %}
+      {% for block in section.blocks %}
+        {% if block.type == 'principe' %}
+          {% assign p_delay = p_index | times: 7 %}
+          <div class="p-col reveal"{% if p_index > 0 %} style="transition-delay:0.{% if p_delay < 10 %}0{% endif %}{{ p_delay }}s"{% endif %} {{ block.shopify_attributes }}>
+            <span class="roman">{{ block.settings.roman }}</span>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.body }}</p>
+          </div>
+          {% assign p_index = p_index | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== KUNSTENAARS ===== -->
+<section class="makers">
+  <div class="reveal">
+    <span class="eyebrow">{{ section.settings.makers_eyebrow }}</span>
+    <h2>{{ section.settings.makers_heading }}</h2>
+    <p>{{ section.settings.makers_text | newline_to_br }}</p>
+    <a class="btn light" href="{{ section.settings.makers_button_link }}">{{ section.settings.makers_button_label }}</a>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <div class="reveal">
+    <blockquote>{{ section.settings.closing_quote }}</blockquote>
+    <cite>{{ section.settings.closing_cite }}</cite>
+    <a class="btn solid" href="{{ section.settings.closing_button_link }}">{{ section.settings.closing_button_label }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ons verhaal",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow", "default": "Ons verhaal" },
+    { "type": "inline_richtext", "id": "hero_heading", "label": "Heading", "default": "Waarom verstoppen we de mooiste geuren in de <em>saaiste flessen?</em>" },
+    { "type": "textarea", "id": "hero_text", "label": "Text", "default": "Het begon met een simpel idee: geur mag geen bijzaak zijn. Niet bedacht in een marketingmeeting, maar in een drukkerij — tussen machines die iets kunnen wat nergens anders ter wereld bestaat." },
+    { "type": "header", "content": "Principes" },
+    { "type": "text", "id": "principes_eyebrow", "label": "Eyebrow", "default": "Waar we voor staan" },
+    { "type": "inline_richtext", "id": "principes_heading", "label": "Heading", "default": "Vijf merkwaarden, <em>geen kleine lettertjes.</em>" },
+    { "type": "header", "content": "Voor makers" },
+    { "type": "text", "id": "makers_eyebrow", "label": "Eyebrow", "default": "Voor makers" },
+    { "type": "inline_richtext", "id": "makers_heading", "label": "Heading", "default": "Kunstenaar? Jouw werk verdient <em>360 graden.</em>" },
+    { "type": "textarea", "id": "makers_text", "label": "Text", "default": "Elk seizoen verschijnt een nieuwe Artist Edition: jouw werk als 360°-wikkel, in beperkte oplage, met eerlijke vergoeding en je naam op elk museumlabel. Stuur ons je portfolio." },
+    { "type": "text", "id": "makers_button_label", "label": "Button label", "default": "Mail het atelier" },
+    { "type": "text", "id": "makers_button_link", "label": "Button link", "default": "mailto:atelier@maeve.example" },
+    { "type": "header", "content": "Closing" },
+    { "type": "inline_richtext", "id": "closing_quote", "label": "Quote", "default": "\"Wij geloven dat de mooiste geuren geen plek verdienen in een kastje — <em>maar in het zicht.\"</em>" },
+    { "type": "text", "id": "closing_cite", "label": "Citatie", "default": "Het team van Maeve" },
+    { "type": "text", "id": "closing_button_label", "label": "Button label", "default": "Ontdek de collecties" },
+    { "type": "url", "id": "closing_button_link", "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "narrative",
+      "name": "Narratief blok",
+      "settings": [
+        { "type": "checkbox", "id": "flip", "label": "Omdraaien (beeld rechts)", "default": false },
+        { "type": "image_picker", "id": "image", "label": "Afbeelding" },
+        { "type": "text", "id": "image_fallback", "label": "Fallback bestandsnaam", "default": "zonnebloemen-spray.png" },
+        { "type": "text", "id": "image_alt", "label": "Alt-tekst", "default": "Artist Edition" },
+        { "type": "text", "id": "caption", "label": "Bijschrift", "default": "De eerste proefdruk, voorjaar 2026 — rondom, zonder naad." },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Het begin" },
+        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Jaren drukten we op flessen. <em>Toen roken we de kans.</em>" },
+        { "type": "textarea", "id": "paragraph_1", "label": "Paragraaf 1", "default": "Ons team bedrukt al jaren flessen met een techniek die het beeld direct op de fles legt — 360 graden rondom, zonder etiket, zonder naad. Een procedé dat wereldwijd niemand anders beheerst." },
+        { "type": "textarea", "id": "paragraph_2", "label": "Paragraaf 2", "default": "Tot we de geurenmarkt bekeken en iets geks zagen: de duurste interieurgeuren ter wereld staan in de meest verwisselbare flessen. Een wit etiket, een naam erop, klaar. Het mooiste zintuig kreeg het minste oog." }
+      ]
+    },
+    {
+      "type": "principe",
+      "name": "Merkwaarde",
+      "settings": [
+        { "type": "text", "id": "roman", "label": "Romeins cijfer", "default": "I." },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Zintuiglijk" },
+        { "type": "textarea", "id": "body", "label": "Tekst", "default": "Onze geuren zijn vol en gelaagd, ontworpen om sfeer te brengen — door wat je ruikt, maar ook door wat je ziet en voelt." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ons verhaal",
+      "blocks": [
+        {
+          "type": "narrative",
+          "settings": {
+            "flip": false,
+            "image_fallback": "zonnebloemen-spray.png",
+            "image_alt": "Artist Edition",
+            "caption": "De eerste proefdruk, voorjaar 2026 — rondom, zonder naad.",
+            "eyebrow": "Het begin",
+            "heading": "Jaren drukten we op flessen. <em>Toen roken we de kans.</em>",
+            "paragraph_1": "Ons team bedrukt al jaren flessen met een techniek die het beeld direct op de fles legt — 360 graden rondom, zonder etiket, zonder naad. Een procedé dat wereldwijd niemand anders beheerst.",
+            "paragraph_2": "Tot we de geurenmarkt bekeken en iets geks zagen: de duurste interieurgeuren ter wereld staan in de meest verwisselbare flessen. Een wit etiket, een naam erop, klaar. Het mooiste zintuig kreeg het minste oog."
+          }
+        },
+        {
+          "type": "narrative",
+          "settings": {
+            "flip": true,
+            "image_fallback": "korenveld-stokjes.png",
+            "image_alt": "Original Collection",
+            "caption": "Terra No. 3, Original Collection — 360° om de fles.",
+            "eyebrow": "De missie",
+            "heading": "Geur is gevoel. <em>Design is expressie.</em>",
+            "paragraph_1": "Bij Maeve draait alles om geur én design. Met onze artistieke roomsprays en geurstokjes brengen we zintuiglijke luxe in huis — stijlvol vormgegeven en vol karakter, subtiel verweven tot een sfeer die blijft hangen. Kunst van grote meesters, de identiteit van een stad, of — voor bedrijven — een eigen ontwerp.",
+            "paragraph_2": "En omdat het kunstwerk te mooi is om weg te gooien, is elke fles navulbaar. De geur raakt op — het beeld blijft staan."
+          }
+        },
+        { "type": "principe", "settings": { "roman": "I.", "title": "Zintuiglijk", "body": "Onze geuren zijn vol en gelaagd, ontworpen om sfeer te brengen — door wat je ruikt, maar ook door wat je ziet en voelt." } },
+        { "type": "principe", "settings": { "roman": "II.", "title": "Uitgesproken", "body": "Geen producten die opgaan in de massa. Elke flacon is een visueel statement — van stadsplattegrond tot meesterwerk." } },
+        { "type": "principe", "settings": { "roman": "III.", "title": "Persoonlijk", "body": "Kies een geur én een ontwerp dat echt bij je past — van collectie tot maatwerk. En elke fles is navulbaar: gemaakt om te blijven." } },
+        { "type": "principe", "settings": { "roman": "IV.", "title": "Verhalend", "body": "Elk ontwerp draagt een verhaal: een plek, een herinnering, een gevoel. We vertellen altijd het verhaal achter de print." } },
+        { "type": "principe", "settings": { "roman": "V.", "title": "Betrokken", "body": "We werken samen met kunstenaars, musea, merken en klanten — zo word je zelf onderdeel van het merkverhaal." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

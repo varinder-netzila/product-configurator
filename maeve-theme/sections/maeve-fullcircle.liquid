@@ -1,0 +1,38 @@
+<section class="full-circle" id="circle">
+  <div class="ring" aria-hidden="true">
+    <svg viewBox="0 0 200 200">
+      <defs><path id="ringpath" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0"/></defs>
+      <text font-size="9.5" letter-spacing="3.2" fill="rgba(246,241,233,.5)" font-family="Inter, sans-serif">
+        <textPath href="#ringpath">{{ section.settings.ring_text }}&nbsp;</textPath>
+      </text>
+    </svg>
+  </div>
+  <div class="inner reveal">
+    <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.text }}</p>
+    <div class="ctas">
+      {%- if section.settings.cta1_label != blank -%}<a class="btn lightsolid" href="{{ section.settings.cta1_link }}">{{ section.settings.cta1_label }}</a>{%- endif -%}
+      {%- if section.settings.cta2_label != blank -%}<a class="btn light" href="{{ section.settings.cta2_link }}">{{ section.settings.cta2_label }}</a>{%- endif -%}
+    </div>
+    <div class="b2b-line">{{ section.settings.b2b_line }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Zakelijk / 360°",
+  "settings": [
+    { "type": "text", "id": "ring_text", "label": "Ring-tekst (rondom)", "default": "360° · JE BENT ROND · ELKE KANT EEN VERHAAL · 360° · JE BENT ROND · ELKE KANT EEN VERHAAL ·" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "360° — Voor bedrijven" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Jouw eigen ontwerp, <em>rondom de fles.</em>" },
+    { "type": "textarea", "id": "text", "label": "Tekst", "default": "Een kunstwerk, een logo of de kaart van jouw stad — naadloos 360° gedrukt, zonder etiket of naad. Voor relatiegeschenken, hotels, musea en merken, vanaf 25 stuks. Wij vertalen jouw idee naar een proefmodel." },
+    { "type": "text", "id": "cta1_label", "label": "Knop 1 — tekst", "default": "Naar Maeve Zakelijk" },
+    { "type": "url", "id": "cta1_link", "label": "Knop 1 — link" },
+    { "type": "text", "id": "cta2_label", "label": "Knop 2 — tekst", "default": "Of shop de collectie" },
+    { "type": "url", "id": "cta2_link", "label": "Knop 2 — link" },
+    { "type": "text", "id": "b2b_line", "label": "Onderregel", "default": "Particulier? Kies uit onze collecties — elke geur komt met een vast, bijpassend ontwerp." }
+  ],
+  "presets": [{ "name": "Zakelijk / 360°" }]
+}
+{% endschema %}

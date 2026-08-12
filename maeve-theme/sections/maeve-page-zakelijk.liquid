@@ -1,0 +1,245 @@
+{% render 'maeve-page-zakelijk-css' %}
+
+<!-- ===== HERO ===== -->
+<section class="b2b-hero">
+  <div class="wrap">
+    <span class="eyebrow">{{ section.settings.hero_eyebrow }}</span>
+    <h1>{{ section.settings.hero_heading }}</h1>
+    <p>{{ section.settings.hero_text }}</p>
+    <div class="usps">
+      {% for block in section.blocks %}
+        {% if block.type == 'usp' %}
+          <span {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== SEGMENTS ===== -->
+<section class="segments">
+  <div class="wrap seg-grid">
+    {% for block in section.blocks %}
+      {% if block.type == 'segment' %}
+        <div class="seg reveal" {% if block.settings.delay != blank %}style="{{ block.settings.delay }}"{% endif %} {{ block.shopify_attributes }}>
+          <img class="bg" src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% else %}{{ block.settings.image_fallback | asset_url }}{% endif %}" alt="" loading="lazy">
+          <div class="meta"><h3>{{ block.settings.title }}</h3><p>{{ block.settings.subtitle }}</p></div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===== WERKWIJZE ===== -->
+<section class="werkwijze">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">{{ section.settings.werkwijze_eyebrow }}</span>
+      <h2>{{ section.settings.werkwijze_heading }}</h2>
+    </div>
+    <div class="steps">
+      {% for block in section.blocks %}
+        {% if block.type == 'step' %}
+          <div class="step reveal" {% if block.settings.delay != blank %}style="{{ block.settings.delay }}"{% endif %} {{ block.shopify_attributes }}>
+            <span class="num">{{ block.settings.num }}</span>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== STAFFEL ===== -->
+<section class="staffel">
+  <div class="wrap grid2">
+    <div class="copy reveal">
+      <span class="eyebrow">{{ section.settings.staffel_eyebrow }}</span>
+      <h2>{{ section.settings.staffel_heading }}</h2>
+      <p>{{ section.settings.staffel_text1 }}</p>
+      <p>{{ section.settings.staffel_text2 }}</p>
+    </div>
+    <div class="reveal">
+      <table>
+        <thead><tr><th>{{ section.settings.table_col1 }}</th><th>{{ section.settings.table_col2 }}</th><th>{{ section.settings.table_col3 }}</th></tr></thead>
+        <tbody>
+          {% for block in section.blocks %}
+            {% if block.type == 'tier' %}
+              <tr {% if block.settings.highlight %}class="hl"{% endif %} {{ block.shopify_attributes }}><td class="amount">{{ block.settings.amount }}</td><td class="price">{{ block.settings.price1 }}</td><td class="price">{{ block.settings.price2 }}</td></tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="table-note">{{ section.settings.table_note }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AANVRAAG ===== -->
+<section class="aanvraag" id="aanvraag">
+  <div class="wrap grid2">
+    <div class="copy reveal">
+      <span class="eyebrow">{{ section.settings.form_eyebrow }}</span>
+      <h2>{{ section.settings.form_heading }}</h2>
+      <p>{{ section.settings.form_text }}</p>
+      <p>{{ section.settings.form_contact_pre }} <a href="mailto:{{ section.settings.form_email }}" style="border-bottom:1px solid var(--clay); color:var(--clay)">{{ section.settings.form_email }}</a>.</p>
+    </div>
+    <form id="b2bForm" class="reveal">
+      <div class="field"><label>{{ section.settings.label_company }}</label><input type="text" required></div>
+      <div class="field"><label>{{ section.settings.label_contact }}</label><input type="text" required></div>
+      <div class="field"><label>{{ section.settings.label_email }}</label><input type="email" required></div>
+      <div class="field"><label>{{ section.settings.label_orgtype }}</label>
+        <select>
+          {% for block in section.blocks %}
+            {% if block.type == 'orgtype' %}
+              <option {{ block.shopify_attributes }}>{{ block.settings.label }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>{{ section.settings.label_volume }}</label>
+        <select>
+          {% for block in section.blocks %}
+            {% if block.type == 'volume' %}
+              <option {{ block.shopify_attributes }}>{{ block.settings.label }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field full"><label>{{ section.settings.label_message }}</label><textarea placeholder="{{ section.settings.placeholder_message }}"></textarea></div>
+      <div class="field full"><button class="btn solid" type="submit">{{ section.settings.button_label }}</button></div>
+      <p class="form-ok" id="formOk">{{ section.settings.form_ok }}</p>
+    </form>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Zakelijk",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Hero eyebrow", "default": "Maeve Zakelijk" },
+    { "type": "inline_richtext", "id": "hero_heading", "label": "Hero heading", "default": "Jouw merk, <em>rondom op de fles.</em>" },
+    { "type": "textarea", "id": "hero_text", "label": "Hero text", "default": "Museumcollecties met een eigen geur, relatiegeschenken die niet in een la verdwijnen, hotelseries met jouw signatuur. Van loterijcadeau tot signature scent: wij drukken jouw identiteit 360° op roomsprays en geurstokjes — zonder etiket, zonder naad." },
+    { "type": "header", "content": "Werkwijze" },
+    { "type": "text", "id": "werkwijze_eyebrow", "label": "Eyebrow", "default": "Zo werkt het" },
+    { "type": "inline_richtext", "id": "werkwijze_heading", "label": "Heading", "default": "Van briefing tot levering <em>in drie stappen.</em>" },
+    { "type": "header", "content": "Staffel" },
+    { "type": "text", "id": "staffel_eyebrow", "label": "Eyebrow", "default": "Indicatieve staffel" },
+    { "type": "inline_richtext", "id": "staffel_heading", "label": "Heading", "default": "Transparante prijzen, <em>geen verrassingen.</em>" },
+    { "type": "textarea", "id": "staffel_text1", "label": "Text paragraph 1", "default": "Prijzen per stuk, inclusief 360°-druk van jouw ontwerp en geurkeuze uit onze acht composities. Exacte prijs hangt af van uitvoering en verpakking — je ontvangt altijd eerst een offerte." },
+    { "type": "textarea", "id": "staffel_text2", "label": "Text paragraph 2", "default": "Eigen geurontwikkeling (jouw signatuurgeur, samengesteld in Grasse) is mogelijk vanaf 500 stuks." },
+    { "type": "text", "id": "table_col1", "label": "Table column 1", "default": "Oplage" },
+    { "type": "text", "id": "table_col2", "label": "Table column 2", "default": "Roomspray 100 ml" },
+    { "type": "text", "id": "table_col3", "label": "Table column 3", "default": "Geurstokjes 200 ml" },
+    { "type": "textarea", "id": "table_note", "label": "Table note", "default": "Prijzen excl. btw, incl. ontwerpcontrole en digitale proef. Eénmalige instelkosten: € 95 per ontwerp." },
+    { "type": "header", "content": "Aanvraag / formulier" },
+    { "type": "text", "id": "form_eyebrow", "label": "Eyebrow", "default": "Offerte aanvragen" },
+    { "type": "inline_richtext", "id": "form_heading", "label": "Heading", "default": "Vertel ons wat je <em>voor ogen hebt.</em>" },
+    { "type": "textarea", "id": "form_text", "label": "Intro text", "default": "Binnen één werkdag reageert iemand van het atelier — geen ticketsysteem, gewoon een mens die meedenkt over ontwerp, geur en budget." },
+    { "type": "text", "id": "form_contact_pre", "label": "Contact line prefix", "default": "Liever direct contact? Mail" },
+    { "type": "text", "id": "form_email", "label": "Contact email", "default": "zakelijk@maeve.example" },
+    { "type": "text", "id": "label_company", "label": "Label: company", "default": "Bedrijfsnaam" },
+    { "type": "text", "id": "label_contact", "label": "Label: contact person", "default": "Contactpersoon" },
+    { "type": "text", "id": "label_email", "label": "Label: email", "default": "E-mailadres" },
+    { "type": "text", "id": "label_orgtype", "label": "Label: organisation type", "default": "Type organisatie" },
+    { "type": "text", "id": "label_volume", "label": "Label: estimated volume", "default": "Geschatte oplage" },
+    { "type": "text", "id": "label_message", "label": "Label: message", "default": "Waar denk je aan?" },
+    { "type": "text", "id": "placeholder_message", "label": "Placeholder: message", "default": "Bijv. relatiegeschenk voor de feestdagen, logo in goud op donkergroene wikkel…" },
+    { "type": "text", "id": "button_label", "label": "Submit button label", "default": "Verstuur aanvraag" },
+    { "type": "text", "id": "form_ok", "label": "Success message", "default": "Dank voor je aanvraag. Het atelier neemt binnen één werkdag contact met je op. ✓" }
+  ],
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "Hero USP",
+      "settings": [
+        { "type": "text", "id": "text", "label": "USP text", "default": "Vanaf 25 stuks" }
+      ]
+    },
+    {
+      "type": "segment",
+      "name": "Segment card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "image_fallback", "label": "Fallback asset filename", "default": "zonnebloemen-spray.png" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Musea & kunstinstellingen" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Artist Editions bij je tentoonstelling" },
+        { "type": "text", "id": "delay", "label": "Inline transition-delay (optional)" }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Werkwijze step",
+      "settings": [
+        { "type": "text", "id": "num", "label": "Number label", "default": "— 01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Briefing & ontwerp" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Stuur je logo, huisstijl of idee." },
+        { "type": "text", "id": "delay", "label": "Inline transition-delay (optional)" }
+      ]
+    },
+    {
+      "type": "tier",
+      "name": "Pricing tier",
+      "settings": [
+        { "type": "text", "id": "amount", "label": "Volume", "default": "25 — 49" },
+        { "type": "text", "id": "price1", "label": "Price column 1", "default": "€ 21,95" },
+        { "type": "text", "id": "price2", "label": "Price column 2", "default": "€ 26,50" },
+        { "type": "checkbox", "id": "highlight", "label": "Highlight row", "default": false }
+      ]
+    },
+    {
+      "type": "orgtype",
+      "name": "Form: organisation option",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Option label", "default": "Museum of kunstinstelling" }
+      ]
+    },
+    {
+      "type": "volume",
+      "name": "Form: volume option",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Option label", "default": "25 — 49" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Zakelijk",
+      "blocks": [
+        { "type": "usp", "settings": { "text": "Vanaf 25 stuks" } },
+        { "type": "usp", "settings": { "text": "Persoonlijk ontwerpadvies" } },
+        { "type": "usp", "settings": { "text": "Proefmodel vóór productie" } },
+        { "type": "usp", "settings": { "text": "Levering binnen 3 weken" } },
+        { "type": "segment", "settings": { "image_fallback": "zonnebloemen-spray.png", "title": "Musea & kunstinstellingen", "subtitle": "Artist Editions bij je tentoonstelling" } },
+        { "type": "segment", "settings": { "image_fallback": "korenveld-spray.png", "title": "Loterijen & loyaliteitsprogramma's", "subtitle": "Cadeaus met wow-factor", "delay": "transition-delay:.06s" } },
+        { "type": "segment", "settings": { "image_fallback": "amandelbloesem-spray.png", "title": "Relatiegeschenken & branding", "subtitle": "Jouw logo of kaart, 360° gedrukt", "delay": "transition-delay:.12s" } },
+        { "type": "segment", "settings": { "image_fallback": "zonnebloemen-stokjes.png", "title": "Hotels & hospitality", "subtitle": "Signature scent per kamer of lobby", "delay": "transition-delay:.18s" } },
+        { "type": "segment", "settings": { "image_fallback": "korenveld-stokjes.png", "title": "Woonwinkels & warenhuizen", "subtitle": "Onderscheidend in het schap", "delay": "transition-delay:.24s" } },
+        { "type": "segment", "settings": { "image_fallback": "amandelbloesem-stokjes.png", "title": "Spa's & wellness", "subtitle": "Geur per behandelruimte", "delay": "transition-delay:.3s" } },
+        { "type": "step", "settings": { "num": "— 01", "title": "Briefing & ontwerp", "text": "Stuur je logo, huisstijl of idee. Ons atelier vertaalt het naar een 360°-wikkel en je ontvangt binnen drie werkdagen een digitale proef op de fles." } },
+        { "type": "step", "settings": { "num": "— 02", "title": "Proefmodel", "text": "Akkoord op het ontwerp? Dan drukken we één echt exemplaar en sturen het op. Je beoordeelt kleur, geur en afwerking voordat de oplage start.", "delay": "transition-delay:.1s" } },
+        { "type": "step", "settings": { "num": "— 03", "title": "Productie & levering", "text": "Wij produceren in eigen huis en leveren binnen drie weken — desgewenst per stuk verpakt in een doos met jouw boodschap.", "delay": "transition-delay:.2s" } },
+        { "type": "tier", "settings": { "amount": "25 — 49", "price1": "€ 21,95", "price2": "€ 26,50" } },
+        { "type": "tier", "settings": { "amount": "50 — 99", "price1": "€ 19,95", "price2": "€ 23,95" } },
+        { "type": "tier", "settings": { "amount": "100 — 249", "price1": "€ 17,50", "price2": "€ 21,50" } },
+        { "type": "tier", "settings": { "amount": "250 — 499", "price1": "€ 15,95", "price2": "€ 19,50" } },
+        { "type": "tier", "settings": { "amount": "500 +", "price1": "op aanvraag", "price2": "op aanvraag", "highlight": true } },
+        { "type": "orgtype", "settings": { "label": "Museum of kunstinstelling" } },
+        { "type": "orgtype", "settings": { "label": "Loterij of loyaliteitsprogramma" } },
+        { "type": "orgtype", "settings": { "label": "Bedrijf — relatiegeschenken" } },
+        { "type": "orgtype", "settings": { "label": "Hotel of hospitality" } },
+        { "type": "orgtype", "settings": { "label": "Woonwinkel of warenhuis" } },
+        { "type": "orgtype", "settings": { "label": "Spa of wellness" } },
+        { "type": "orgtype", "settings": { "label": "Anders" } },
+        { "type": "volume", "settings": { "label": "25 — 49" } },
+        { "type": "volume", "settings": { "label": "50 — 99" } },
+        { "type": "volume", "settings": { "label": "100 — 249" } },
+        { "type": "volume", "settings": { "label": "250 — 499" } },
+        { "type": "volume", "settings": { "label": "500 +" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,281 @@
+<script>
+  {%- comment -%} Snippet draait in layout-scope: alles zelf afleiden uit product + collections {%- endcomment -%}
+  {%- assign _tt = product.title | split: '—' -%}
+  {%- assign _printname = product.metafields.geur.design.value | default: _tt[0] | strip -%}
+  {%- assign _uit = product.metafields.geur.uitvoering.value | default: _tt[1] | strip -%}
+  {%- assign _relh = '' -%}
+  {%- for c in product.collections -%}{%- if c.handle == 'art' or c.handle == 'city' or c.handle == 'magical-japan' or c.handle == 'sicilian-summer' or c.handle == 'delfts-blauw' -%}{%- assign _relh = c.handle -%}{%- break -%}{%- endif -%}{%- endfor -%}
+  {%- assign _sibSpray = null -%}{%- assign _sibStok = null -%}{%- assign _sibNav = null -%}
+  {%- assign _line = collections[_relh] -%}
+  {%- if _line != blank -%}{%- for p in _line.products -%}{%- if p.metafields.geur.design.value == _printname -%}{%- assign _pu = p.metafields.geur.uitvoering.value -%}{%- if _pu == 'Roomspray' -%}{%- assign _sibSpray = p -%}{%- elsif _pu == 'Geurstokjes' -%}{%- assign _sibStok = p -%}{%- elsif _pu == 'Navulling' -%}{%- assign _sibNav = p -%}{%- endif -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+  {%- if product.featured_image -%}{%- assign _mainimg = product.featured_image | image_url: width: 1000 -%}{%- else -%}{%- assign _mainimg = '' -%}{%- endif -%}
+  var VARIANTS=[{% for v in product.variants %}{id:{{ v.id }},f:{{ v.option1 | json }},cents:{{ v.price }},ok:{{ v.available }},img:{% if v.image %}{{ v.image | image_url: width: 1000 | json }}{% else %}{{ _mainimg | json }}{% endif %},plans:{ {%- for a in v.selling_plan_allocations -%}"{{ a.selling_plan.id }}":{{ a.price }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} }}{% unless forloop.last %},{% endunless %}{% endfor %}];
+  var PLANSET={}; VARIANTS.forEach(function(v){for(var k in v.plans)PLANSET[k]=true;});
+  var PRINTNAME={{ _printname | json }};
+  var CURU={{ _uit | json }};
+  var SPRAY={ {%- if _sibSpray != blank -%}{%- for v in _sibSpray.variants -%}{{ v.option1 | json }}:{id:{{ v.id }},c:{{ v.price }},img:{% if v.image %}{{ v.image | image_url: width: 400 | json }}{% else %}{{ _mainimg | json }}{% endif %}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- endif -%} };
+  var STOK={ {%- if _sibStok != blank -%}{%- for v in _sibStok.variants -%}{{ v.option1 | json }}:{id:{{ v.id }},c:{{ v.price }},img:{% if v.image %}{{ v.image | image_url: width: 400 | json }}{% else %}{{ _mainimg | json }}{% endif %}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- endif -%} };
+  var IMG_SPRAY={% if _sibSpray != blank and _sibSpray.featured_image %}{{ _sibSpray.featured_image | image_url: width: 300 | json }}{% else %}{{ _mainimg | json }}{% endif %};
+  var IMG_STOK={% if _sibStok != blank and _sibStok.featured_image %}{{ _sibStok.featured_image | image_url: width: 300 | json }}{% else %}{{ _mainimg | json }}{% endif %};
+  var NAV={% if _sibNav != blank %}{id:{{ _sibNav.variants.first.id }},c:{{ _sibNav.variants.first.price }},img:{% if _sibNav.featured_image %}{{ _sibNav.featured_image | image_url: width: 400 | json }}{% else %}{{ _mainimg | json }}{% endif %}}{% else %}null{% endif %};
+  (function(){
+    var MT={
+      startSub: {% render 'maeve-t', nl: '"Start abonnement"', en: '"Start subscription"', es: '"Iniciar suscripción"', fr: '"Démarrer l’abonnement"', de: '"Abo starten"' %},
+      addToCart: {% render 'maeve-t', nl: '"In winkelmandje"', en: '"Add to cart"', es: '"Añadir al carrito"', fr: '"Ajouter au panier"', de: '"In den Warenkorb"' %},
+      scents: {% render 'maeve-t', nl: '" geuren · "', en: '" scents · "', es: '" aromas · "', fr: '" parfums · "', de: '" Düfte · "' %},
+      discount: {% render 'maeve-t', nl: '"% korting"', en: '"% off"', es: '"% de descuento"', fr: '"% de réduction"', de: '"% Rabatt"' %},
+      refillAdded: {% render 'maeve-t', nl: '"navulling toegevoegd"', en: '"refill added"', es: '"recarga añadida"', fr: '"recharge ajoutée"', de: '"Nachfüllung hinzugefügt"' %},
+      plusRefill: {% render 'maeve-t', nl: '" + navulling"', en: '" + refill"', es: '" + recarga"', fr: '" + recharge"', de: '" + Nachfüllung"' %},
+      addTogether: {% render 'maeve-t', nl: '"Voeg toe — samen "', en: '"Add — together "', es: '"Añadir — juntos "', fr: '"Ajouter — ensemble "', de: '"Hinzufügen — zusammen "' %},
+      goToCart: {% render 'maeve-t', nl: '"Ga naar winkelmandje"', en: '"Go to cart"', es: '"Ir al carrito"', fr: '"Aller au panier"', de: '"Zum Warenkorb"' %},
+      refill300: {% render 'maeve-t', nl: '" — navulling 300 ml"', en: '" — refill 300 ml"', es: '" — recarga 300 ml"', fr: '" — recharge 300 ml"', de: '" — Nachfüllung 300 ml"' %},
+      setOf: {% render 'maeve-t', nl: '"Set van "', en: '"Set of "', es: '"Set de "', fr: '"Coffret de "', de: '"Set aus "' %},
+      addSet: {% render 'maeve-t', nl: '"Voeg set toe — "', en: '"Add set — "', es: '"Añadir set — "', fr: '"Ajouter le coffret — "', de: '"Set hinzufügen — "' %},
+      busy: {% render 'maeve-t', nl: '"Bezig…"', en: '"Loading…"', es: '"Cargando…"', fr: '"Chargement…"', de: '"Wird geladen…"' %}
+    };
+    var _def={{ product.options_with_values[0].values[0] | json }};
+    var selF=VARIANTS.some(function(v){return v.f==='200 ml';}) ? '200 ml' : _def, qty=1;
+    var $=function(id){return document.getElementById(id)};
+    function money(c){return '€ '+(c/100).toFixed(2).replace('.',',')}
+    function vr(){return VARIANTS.find(function(v){return v.f===selF})}
+    function render(){
+      document.querySelectorAll('#sizeChips .chip').forEach(function(ch){
+        var v=VARIANTS.find(function(x){return x.f===ch.dataset.size});
+        var sm=ch.querySelector('small');
+        if(v){ ch.classList.remove('unavail'); ch.disabled=false; if(sm)sm.textContent=money(v.cents); }
+        else { ch.classList.add('unavail'); ch.disabled=true; if(sm)sm.textContent='—'; }
+        ch.classList.toggle('active', ch.dataset.size===selF);
+      });
+      var v=vr(); if(!v)return;
+      if(v.img){ var im=$('stageImg'); if(im) im.src=v.img;
+        var sc=$('view-p1'); if(sc){var p=sc.querySelector('.scene-photo'); if(p)p.src=v.img;}
+        var gf=$('view-p4'); if(gf){var p2=gf.querySelector('.scene-photo'); if(p2)p2.src=v.img;} }
+      var _sp=selectedPlanId(), _pp=planPrice(v,_sp), _shown=(_pp!=null?_pp:v.cents), _sub=(_pp!=null);
+      $('priceVal').textContent=money(_shown); $('barPrice').textContent=money(_shown);
+      $('addBtn').innerHTML=(_sub?MT.startSub:MT.addToCart)+' — <span id="btnPrice">'+money(_shown)+'</span>';
+      var _ba=$('barAdd'); if(_ba)_ba.textContent=(_sub?MT.startSub:MT.addToCart);
+      var sz=$('sizeSel'); if(sz)sz.textContent=selF;
+      $('barFormat').textContent='— '+CURU.toLowerCase()+' '+selF+', '+PRINTNAME;
+      $('variantId').value=v.id; $('qtyField').value=qty; $('qVal').textContent=qty;
+      updateSet();
+    }
+    function bind(group,setter){
+      var el=$(group); if(!el)return;
+      el.addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b||b.tagName==='A')return;
+        el.querySelectorAll('.chip').forEach(function(x){x.classList.remove('active')});b.classList.add('active');setter(b);render();});
+    }
+    bind('sizeChips',function(b){selF=b.dataset.size});
+    $('qMin').addEventListener('click',function(){qty=Math.max(1,qty-1);render()});
+    $('qPlus').addEventListener('click',function(){qty=Math.min(9,qty+1);render()});
+    // gallery thumbs
+    $('galleryThumbs').addEventListener('click',function(e){var t=e.target.closest('.thumb');if(!t)return;
+      this.querySelectorAll('.thumb').forEach(function(x){x.classList.remove('active')});t.classList.add('active');
+      var is3d=t.dataset.view==='3d';
+      $('stage3d').style.visibility=is3d?'visible':'hidden';
+      document.querySelectorAll('.stage-photo').forEach(function(x){x.classList.remove('on')});
+      if(!is3d)$('view-'+t.dataset.view).classList.add('on');
+    });
+    // welke selling plan is in de widget gekozen? match de aangevinkte radio op bekende plan-id's (one-time = null)
+    function selectedPlanId(){
+      var box=document.querySelector('.maeve-sub-widget'); if(!box)return null;
+      var els=box.querySelectorAll('input[type="radio"]:checked, input[type="hidden"], select');
+      for(var i=0;i<els.length;i++){ var el=els[i], hay=(el.value||'');
+        for(var a=0;a<el.attributes.length;a++) hay+=' '+el.attributes[a].value;
+        for(var sp in PLANSET){ if(hay.indexOf(sp)>-1) return sp; }
+      }
+      return null;
+    }
+    function planPrice(v,sp){ return (sp && v && v.plans && v.plans[sp]!=null) ? v.plans[sp] : null; }
+    function add(){var v=vr();if(!v)return;
+      var body={id:v.id,quantity:qty}; var sp=selectedPlanId(); if(sp)body.selling_plan=sp;
+      fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+        .then(function(r){return r.json()}).then(function(){
+          if(!openXsell()){ if(window.maeveOpenCart)window.maeveOpenCart(); else if(window.maeveUpdateCart)window.maeveUpdateCart(); }
+        });
+    }
+    $('addBtn').addEventListener('click',function(e){e.preventDefault();add()});
+    $('barAdd').addEventListener('click',function(e){e.preventDefault();add()});
+    // cross-sell pop-up: bied de bijpassende uitvoering (spray <-> stokjes) zelfde formaat, met setkorting
+    var XS=$('xsell');
+    function crossVar(){
+      if(!XS||CURU==='Navulling')return null;
+      var map = (CURU==='Roomspray') ? STOK : SPRAY;
+      var tU  = (CURU==='Roomspray') ? 'Geurstokjes' : 'Roomspray';
+      var v = map[selF];
+      if(!v)return null;
+      return {id:v.id, cents:v.c, u:tU, img:(v.img || (tU==='Geurstokjes'?IMG_STOK:IMG_SPRAY))};
+    }
+    function xsRecalc(){
+      if(!XS)return;
+      var pct=parseInt(XS.dataset.pct,10)||10;
+      var base=parseInt(XS.dataset.c1,10)||0;
+      var cross=$('optCross'), refill=$('optRefill');
+      var crossOn = cross && cross.style.display!=='none' && cross.classList.contains('is-on');
+      var refillOn = refill && refill.style.display!=='none' && refill.classList.contains('is-on');
+      // de bundelkorting geldt op de geuren (spray + stokjes); navulling komt er los bij
+      var geuren = base + (crossOn ? parseInt(cross.dataset.cents,10) : 0);
+      var gcount = 1 + (crossOn ? 1 : 0);
+      var disc = gcount>=2 ? pct : 0;
+      var navc = refillOn ? parseInt(refill.dataset.cents,10) : 0;
+      var was = geuren + navc;
+      var now = Math.round(geuren*(1-disc/100)) + navc;
+      var addOns = (crossOn?1:0) + (refillOn?1:0);
+      var btn=$('xsellAdd');
+      if(addOns>0){
+        var lbl = crossOn ? (gcount+MT.scents+disc+MT.discount) : MT.refillAdded;
+        if(crossOn && refillOn) lbl += MT.plusRefill;
+        $('xsellTotalLabel').innerHTML='<strong>'+lbl+'</strong>';
+        $('xsellWas').textContent = disc>0 ? money(was) : '';
+        $('xsellNow').textContent=money(now);
+        btn.textContent=MT.addTogether+money(now); btn.dataset.go='add';
+      } else {
+        $('xsellTotalLabel').textContent='';
+        $('xsellWas').textContent=''; $('xsellNow').textContent='—';
+        btn.textContent=MT.goToCart; btn.dataset.go='cart';
+      }
+    }
+    function openXsell(){
+      if(!XS)return false;
+      var v1=vr(); if(!v1)return false;
+      var c=crossVar();
+      if(!c) return false;
+      XS.dataset.c1=v1.cents;
+      $('xsellName1').textContent=PRINTNAME+' — '+CURU.toLowerCase()+' '+selF;
+      $('xsellP1').textContent=money(v1.cents); $('xsellImg1').src=v1.img||IMG_SPRAY;
+      var cross=$('optCross');
+      cross.style.display=''; cross.classList.add('is-on'); cross.dataset.vid=c.id; cross.dataset.cents=c.cents;
+      $('xsellName2').textContent=PRINTNAME+' — '+c.u.toLowerCase()+' '+selF; $('xsellP2').textContent=money(c.cents); $('xsellImg2').src=c.img;
+      var refill=$('optRefill');
+      if(refill){
+        if(NAV && CURU!=='Navulling'){ refill.style.display=''; refill.classList.remove('is-on'); refill.dataset.vid=NAV.id; refill.dataset.cents=NAV.c;
+          $('xsellName3').textContent=PRINTNAME+MT.refill300; $('xsellP3').textContent=money(NAV.c); $('xsellImg3').src=NAV.img; }
+        else { refill.style.display='none'; refill.classList.remove('is-on'); }
+      }
+      xsRecalc();
+      XS.removeAttribute('hidden'); document.body.style.overflow='hidden';
+      return true;
+    }
+    function closeXsell(go){ if(!XS)return; XS.setAttribute('hidden',''); document.body.style.overflow=''; if(go)location.href='/cart'; }
+    if(XS){
+      $('xsellClose').addEventListener('click',function(){closeXsell(false);});
+      $('xsellOverlay').addEventListener('click',function(){closeXsell(false);});
+      function xsDone(){ closeXsell(false); if(window.maeveOpenCart)window.maeveOpenCart(); else if(window.maeveUpdateCart)window.maeveUpdateCart(); }
+      $('xsellSkip').addEventListener('click',xsDone);
+      ['optCross','optRefill'].forEach(function(idk){var el=$(idk); if(el)el.addEventListener('click',function(){el.classList.toggle('is-on');xsRecalc();});});
+      $('xsellAdd').addEventListener('click',function(){
+        var b=$('xsellAdd');
+        if(b.dataset.go!=='add'){ xsDone(); return; }
+        var items=[], cross=$('optCross'), refill=$('optRefill');
+        if(cross && cross.style.display!=='none' && cross.classList.contains('is-on')) items.push({id:Number(cross.dataset.vid),quantity:1});
+        if(refill && refill.style.display!=='none' && refill.classList.contains('is-on')) items.push({id:Number(refill.dataset.vid),quantity:1});
+        if(!items.length){ xsDone(); return; }
+        b.disabled=true; b.textContent=MT.busy;
+        fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:items})})
+          .then(function(r){return r.json()}).then(function(){ xsDone(); })
+          .catch(function(){b.disabled=false;xsRecalc();});
+      });
+    }
+    // compacte staffel-set bij de koopknop (foto's + prijzen; 2 = -10%, 3 = -20%)
+    var setBox=document.querySelector('.setbox');
+    var SET_LABEL='';
+    function setPicks(){return Array.prototype.slice.call(setBox.querySelectorAll('.setpick:not(.is-base)'));}
+    function setSel(){return setPicks().filter(function(p){return p.classList.contains('selected')});}
+    function updateSet(){
+      if(!setBox)return;
+      // sync add-on producten naar het gekozen formaat
+      var fkey = selF==='200 ml' ? '200' : (selF==='300 ml' ? '300' : '100');
+      setPicks().forEach(function(p){
+        var vid=p.getAttribute('data-v'+fkey), c=p.getAttribute('data-c'+fkey), iu=p.getAttribute('data-img'+fkey);
+        if(vid){ p.dataset.vid=vid; p.dataset.cents=c||'0'; var pe=p.querySelector('.sp-price'); if(pe)pe.textContent=money(parseInt(c,10)||0); }
+        if(iu){ var im=p.querySelector('.sp-img img'); if(im)im.src=iu; }
+      });
+      var d2=parseFloat(setBox.dataset.d2)||0, d3=parseFloat(setBox.dataset.d3)||0;
+      var sel=setSel(), n=sel.length, total=1+n;
+      var cv=vr();
+      var bimg=setBox.querySelector('.setpick.is-base .sp-img img'); if(bimg && cv && cv.img) bimg.src=cv.img;
+      var sum=(cv?cv.cents:0)+sel.reduce(function(a,p){return a+(parseInt(p.dataset.cents,10)||0)},0);
+      var disc=total>=3?d3:(total>=2?d2:0);
+      var now=Math.round(sum*(1-disc/100));
+      var discEl=setBox.querySelector('.set-disc'), wasEl=setBox.querySelector('.set-was'), nowEl=setBox.querySelector('.set-now'), btn=$('setAdd');
+      if(n>0){
+        discEl.textContent=MT.setOf+total+' · −'+disc+'%';
+        wasEl.textContent=money(sum); nowEl.textContent=money(now);
+        btn.disabled=false; btn.textContent=MT.addSet+money(now);
+      }else{
+        discEl.textContent=''; wasEl.textContent=''; nowEl.textContent='—';
+        btn.disabled=true; btn.textContent=SET_LABEL;
+      }
+      setPicks().forEach(function(p){ if(!p.classList.contains('selected')) p.classList.toggle('sp-disabled', n>=2); });
+    }
+    if(setBox){
+      SET_LABEL=$('setAdd').textContent;
+      setPicks().forEach(function(p){
+        p.addEventListener('click',function(){
+          if(p.classList.contains('selected')) p.classList.remove('selected');
+          else if(setSel().length<2) p.classList.add('selected');
+          updateSet();
+        });
+      });
+      $('setAdd').addEventListener('click',function(){
+        var cv=vr(), sel=setSel();
+        if(!cv||sel.length<1)return;
+        var items=[{id:cv.id,quantity:qty}].concat(sel.map(function(p){return {id:Number(p.dataset.vid),quantity:1}}));
+        var btn=$('setAdd');btn.disabled=true;btn.textContent=MT.busy;
+        fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:items})})
+          .then(function(r){return r.json()}).then(function(){ btn.disabled=false; updateSet(); if(window.maeveOpenCart)window.maeveOpenCart(); else if(window.maeveUpdateCart)window.maeveUpdateCart(); })
+          .catch(function(){btn.disabled=false;updateSet();});
+      });
+    }
+    // social-proof strook: voortgangsbalk (slider)
+    (function(){
+      var strip=document.querySelector('.pdp-social-strip'), bar=document.querySelector('.pdp-social-bar');
+      if(!strip||!bar)return;
+      function up(){var max=strip.scrollWidth-strip.clientWidth;var ratio=max>0?strip.scrollLeft/max:0;var vis=strip.clientWidth/strip.scrollWidth;var w=Math.max(vis,0.15)*100;bar.style.width=w+'%';bar.style.marginLeft=(ratio*(100-w))+'%';}
+      strip.addEventListener('scroll',up,{passive:true});addEventListener('resize',up);up();
+    })();
+    // buybar reveal
+    addEventListener('scroll',function(){var bb=$('buybar');if(!bb)return;bb.classList.toggle('on',scrollY>700)},{passive:true});
+    // abonnement-widget: knop + prijs bijwerken bij keuze + zodra de widget (async) inlaadt
+    document.addEventListener('change',function(e){ if(e.target&&e.target.closest&&e.target.closest('.maeve-sub-widget')) render(); });
+    (function(){ var w=document.querySelector('.maeve-sub-widget'); if(w&&window.MutationObserver){ try{ new MutationObserver(function(){render();}).observe(w,{childList:true,subtree:true}); }catch(e){} } })();
+    render();
+  })();
+</script>
+
+<script>
+  {%- comment -%} Vertaalt de Engelse teksten van de Shopify Subscriptions-widget naar NL (winkeltaal is en). In EN-storefront overslaan: widget is dan al Engels. {%- endcomment -%}
+  (function(){
+    if({% render 'maeve-t', nl: 'false', en: 'true', es: 'true', fr: 'true', de: 'true' %})return;
+    var MAP={
+      'One-time purchase':'Eenmalige aankoop',
+      'One time purchase':'Eenmalige aankoop',
+      'Subscription':'Abonnement',
+      'Subscribe & Save':'Abonneer & bespaar',
+      'Subscribe and save':'Abonneer & bespaar',
+      'Auto-renews, skip or cancel anytime.':'Wordt automatisch verlengd — overslaan of opzeggen wanneer je wilt.',
+      'Auto-renews, skip or cancel anytime':'Wordt automatisch verlengd — overslaan of opzeggen wanneer je wilt',
+      'Subscription details':'Abonnementsdetails',
+      'See subscription policy':'Bekijk abonnementsvoorwaarden'
+    };
+    function tr(s){
+      var t=s;
+      t=t.replace(/Deliver every (?:(\d+)\s+)?months?,\s*(\d+)%\s*off/gi,function(m,n,p){return (n?('Elke '+n+' maanden'):'Elke maand')+' · '+p+'% korting';});
+      t=t.replace(/Deliver every (?:(\d+)\s+)?months?/gi,function(m,n){return n?('Elke '+n+' maanden'):'Elke maand';});
+      t=t.replace(/(\d+)%\s*off/gi,'$1% korting');
+      if(MAP[t.trim()]) t=t.replace(t.trim(),MAP[t.trim()]);
+      return t;
+    }
+    function walk(node){
+      if(node.nodeType===3){ var v=node.nodeValue; if(v&&v.trim()){ var nv=tr(v); if(nv!==v) node.nodeValue=nv; } return; }
+      if(node.nodeType===1 && node.childNodes){ for(var i=0;i<node.childNodes.length;i++) walk(node.childNodes[i]); }
+    }
+    function run(){
+      var sels=document.querySelectorAll('.maeve-sub-widget, .shopify_subscriptions_app_block_container, [id^="shopify-block"] .shopify_subscriptions_app_block_container');
+      for(var i=0;i<sels.length;i++) walk(sels[i]);
+    }
+    run();
+    [300,900,2000].forEach(function(ms){setTimeout(run,ms);});
+    var tgt=document.querySelector('.maeve-sub-widget');
+    if(tgt && window.MutationObserver){ try{ new MutationObserver(run).observe(tgt,{childList:true,subtree:true,characterData:true}); }catch(e){} }
+  })();
+</script>

@@ -1,0 +1,280 @@
+{% render 'maeve-abonnement-css' %}
+
+{%- comment -%}
+  Abonnement-landingspagina. Twee sporen, beide op de NAVULLINGEN:
+   A) Vaste geur — kies geur + navulling-formule (geurstokjes/spray) + frequentie (1/2/3 mnd).
+   B) Verrassingsgeur — abonneer op het verrassingsproduct + frequentie.
+  Frequenties & kortingen komen uit variant.selling_plan_allocations (Shopify Subscriptions).
+{%- endcomment -%}
+
+{%- assign lijnen = section.settings.lijn_collections | default: 'art,city,magical-japan,sicilian-summer,delfts-blauw' | split: ',' -%}
+{%- assign vprod = section.settings.verrassing_product -%}
+
+<div class="ab">
+  <section class="ab-hero">
+    <div class="wrap">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Abonnement' }}</span>
+      <h1>{{ section.settings.heading | default: 'Elke maand een geur die <em>je ruimte opnieuw aankleedt.</em>' }}</h1>
+      <p>{{ section.settings.intro | default: 'Abonneer je op de navullingen van je favoriete geur — of laat je verrassen. Hoe vaker, hoe meer korting. Op elk moment opzegbaar.' }}</p>
+      <a class="scroll" href="#ab-kies">{{ section.settings.hero_cta | default: 'Kies je abonnement' }}</a>
+    </div>
+  </section>
+
+  <section class="ab-how">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">{% render 'maeve-t', nl: section.settings.how_eyebrow | default: 'Zo werkt het', en: 'How it works', es: 'Cómo funciona', fr: 'Comment ça marche', de: "So funktioniert's" %}</span>
+        <h2>{% render 'maeve-t', nl: section.settings.how_heading | default: 'Nooit meer zonder je geur.', en: 'Never without your scent again.', es: 'Nunca más sin tu fragancia.', fr: 'Plus jamais sans votre parfum.', de: 'Nie wieder ohne deinen Duft.' %}</h2>
+      </div>
+      <div class="steps">
+        {%- assign hasstep = false -%}
+        {%- for block in section.blocks -%}{%- if block.type == 'step' -%}{%- assign hasstep = true -%}
+          <div class="step" {{ block.shopify_attributes }}><span class="num">{{ block.settings.num }}</span><h3>{{ block.settings.title }}</h3><p>{{ block.settings.text }}</p></div>
+        {%- endif -%}{%- endfor -%}
+        {%- unless hasstep -%}
+          <div class="step"><span class="num">— 01</span><h3>{% render 'maeve-t', nl: 'Kies je navulling', en: 'Choose your refill', es: 'Elige tu recarga', fr: 'Choisissez votre recharge', de: 'Wähle deine Nachfüllung' %}</h3><p>{% render 'maeve-t', nl: 'Je favoriete geur als navulling voor je geurstokje of roomspray.', en: 'Your favourite scent as a refill for your reed diffuser or room spray.', es: 'Tu aroma favorito como recarga para tu difusor de varillas o spray de ambiente.', fr: 'Votre parfum préféré en recharge pour votre diffuseur à bâtonnets ou spray d’ambiance.', de: 'Dein Lieblingsduft als Nachfüllung für deine Duftstäbchen oder dein Raumspray.' %}</p></div>
+          <div class="step"><span class="num">— 02</span><h3>{% render 'maeve-t', nl: 'Kies je ritme', en: 'Choose your rhythm', es: 'Elige tu ritmo', fr: 'Choisissez votre rythme', de: 'Wähle deinen Rhythmus' %}</h3><p>{% render 'maeve-t', nl: 'Elke maand, elke 2 maanden of elke 3 — hoe vaker, hoe hoger de korting.', en: 'Every month, every 2 months or every 3 — the more often, the bigger the discount.', es: 'Cada mes, cada 2 meses o cada 3 — cuanto más a menudo, mayor el descuento.', fr: 'Chaque mois, tous les 2 mois ou tous les 3 — plus c’est fréquent, plus la remise est grande.', de: 'Jeden Monat, alle 2 Monate oder alle 3 — je öfter, desto größer der Rabatt.' %}</p></div>
+          <div class="step"><span class="num">— 03</span><h3>{% render 'maeve-t', nl: 'Wissel of pauzeer', en: 'Swap or pause', es: 'Cambia o pausa', fr: 'Échangez ou suspendez', de: 'Wechseln oder pausieren' %}</h3><p>{% render 'maeve-t', nl: 'Pas je geur, ritme of levering op elk moment aan in je account.', en: 'Adjust your scent, rhythm or delivery anytime in your account.', es: 'Ajusta tu aroma, ritmo o entrega en cualquier momento desde tu cuenta.', fr: 'Ajustez votre parfum, votre rythme ou votre livraison à tout moment dans votre compte.', de: 'Passe deinen Duft, Rhythmus oder deine Lieferung jederzeit in deinem Konto an.' %}</p></div>
+        {%- endunless -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="ab-tracks" id="ab-kies">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">{% render 'maeve-t', nl: section.settings.tracks_eyebrow | default: 'Twee manieren', en: 'Two ways', es: 'Dos maneras', fr: 'Deux façons', de: 'Zwei Wege' %}</span>
+        <h2>{% render 'maeve-t', nl: section.settings.tracks_heading | default: 'Vast of verrast.', en: 'Fixed or surprise.', es: 'Fija o sorpresa.', fr: 'Fixe ou surprise.', de: 'Fest oder überrascht.' %}</h2>
+        <p>{% render 'maeve-t', nl: section.settings.tracks_text | default: 'Allebei op navullingen, allebei opzegbaar wanneer je wilt.', en: 'Both on refills, both cancellable whenever you like.', es: 'Ambas en recargas, ambas cancelables cuando quieras.', fr: 'Toutes deux en recharges, toutes deux résiliables quand vous voulez.', de: 'Beide als Nachfüllung, beide jederzeit kündbar.' %}</p>
+      </div>
+
+      <div class="ab-card-grid">
+        <!-- A: vaste geur (navulling) -->
+        <div class="ab-card feat">
+          <span class="tag">{% render 'maeve-t', nl: 'Vaste geur', en: 'Fixed scent', es: 'Aroma fijo', fr: 'Parfum fixe', de: 'Fester Duft' %}</span>
+          <h3>{% render 'maeve-t', nl: section.settings.fixed_title | default: 'Navulling-abonnement', en: 'Refill subscription', es: 'Suscripción de recarga', fr: 'Abonnement recharge', de: 'Nachfüll-Abo' %}</h3>
+          <p class="lead">{% render 'maeve-t', nl: section.settings.fixed_lead | default: 'Abonneer je op de navulling van je favoriete geur — voor je geurstokje of je roomspray.', en: 'Subscribe to the refill of your favourite scent — for your reed diffuser or room spray.', es: 'Suscríbete a la recarga de tu fragancia favorita — para tu difusor de varillas o spray de ambiente.', fr: "Abonnez-vous à la recharge de votre parfum préféré — pour votre diffuseur à bâtonnets ou spray d'ambiance.", de: 'Abonniere die Nachfüllung deines Lieblingsdufts — für deine Duftstäbchen oder dein Raumspray.' %}</p>
+
+          <div class="ab-field">
+            <label>{% render 'maeve-t', nl: 'Geur', en: 'Scent', es: 'Aroma', fr: 'Parfum', de: 'Duft' %}</label>
+            <select class="ab-select" id="abScent"></select>
+          </div>
+          <div class="ab-field">
+            <label>{% render 'maeve-t', nl: 'Navulling voor', en: 'Refill for', es: 'Recarga para', fr: 'Recharge pour', de: 'Nachfüllung für' %}</label>
+            <div class="ab-seg" id="abFormule">
+              <button type="button" data-f="Geurstokjes" class="active">{% render 'maeve-t', nl: 'Geurstokjes', en: 'Reed diffuser', es: 'Difusor de Varillas', fr: 'Diffuseur à Bâtonnets', de: 'Duftstäbchen' %}</button>
+              <button type="button" data-f="Roomspray">{% render 'maeve-t', nl: 'Roomspray', en: 'Room spray', es: 'Spray de Ambiente', fr: 'Spray d’Ambiance', de: 'Raumspray' %}</button>
+            </div>
+          </div>
+          <div class="ab-field">
+            <label>{% render 'maeve-t', nl: 'Hoe vaak', en: 'How often', es: 'Con qué frecuencia', fr: 'À quelle fréquence', de: 'Wie oft' %}</label>
+            <div class="ab-freqs" id="abFreqs"></div>
+          </div>
+
+          <div class="price"><span class="was" id="abWas"></span><span id="abPrice">—</span> <small id="abPer">{% render 'maeve-t', nl: '/ levering', en: '/ delivery', es: '/ entrega', fr: '/ livraison', de: '/ Lieferung' %}</small></div>
+          <p class="ab-disc-line" id="abDisc"></p>
+          <button class="ab-cta" id="abFixedAdd">{% render 'maeve-t', nl: 'Start abonnement', en: 'Start subscription', es: 'Iniciar suscripción', fr: 'Démarrer l’abonnement', de: 'Abo starten' %}</button>
+          <p class="ab-note" id="abFixedNote"></p>
+
+          <ul class="ab-feats">
+            <li>{% render 'maeve-t', nl: 'Navulbaar — je houdt dezelfde fles', en: 'Refillable — keep the same bottle', es: 'Recargable — conservas la misma botella', fr: 'Rechargeable — gardez le même flacon', de: 'Nachfüllbar — du behältst dieselbe Flasche' %}</li>
+            <li>{% render 'maeve-t', nl: 'Meer korting bij minder vaak leveren', en: 'More discount with less frequent deliveries', es: 'Más descuento con entregas menos frecuentes', fr: 'Plus de remise avec des livraisons moins fréquentes', de: 'Mehr Rabatt bei selteneren Lieferungen' %}</li>
+            <li>{% render 'maeve-t', nl: 'Wissel geur, ritme of pauzeer in je account', en: 'Swap scent, change rhythm or pause in your account', es: 'Cambia el aroma, el ritmo o pausa desde tu cuenta', fr: 'Changez de parfum, de rythme ou suspendez dans votre compte', de: 'Duft oder Rhythmus wechseln oder im Konto pausieren' %}</li>
+          </ul>
+        </div>
+
+        <!-- B: verrassingsgeur -->
+        <div class="ab-card">
+          <span class="tag">{% render 'maeve-t', nl: 'Verrassing', en: 'Surprise', es: 'Sorpresa', fr: 'Surprise', de: 'Überraschung' %}</span>
+          <h3>{% render 'maeve-t', nl: section.settings.surprise_title | default: 'De verrassingsgeur', en: 'The surprise scent', es: 'La fragancia sorpresa', fr: 'Le parfum surprise', de: 'Der Überraschungsduft' %}</h3>
+          <p class="lead">{% render 'maeve-t', nl: section.settings.surprise_lead | default: 'Laat het atelier kiezen. Elke levering een nieuwe, met de hand samengestelde geur — als navulling voor je geurstokje of roomspray.', en: 'Let the atelier choose. Every delivery a new, hand-composed scent — as a refill for your reed diffuser or room spray.', es: 'Deja que el taller elija. Cada entrega una nueva fragancia compuesta a mano — como recarga para tu difusor de varillas o spray de ambiente.', fr: "Laissez l'atelier choisir. À chaque livraison un nouveau parfum composé à la main — en recharge pour votre diffuseur à bâtonnets ou spray d'ambiance.", de: 'Lass das Atelier wählen. Bei jeder Lieferung ein neuer, von Hand komponierter Duft — als Nachfüllung für deine Duftstäbchen oder dein Raumspray.' %}</p>
+
+          <div class="ab-surprise-ph">
+            {%- if vprod != blank and vprod.featured_image -%}<img src="{{ vprod.featured_image | image_url: width: 800 }}" alt="{{ vprod.title }}">
+            {%- else -%}<span class="placeholder">{% render 'maeve-t', nl: 'elke maand iets nieuws', en: 'something new every month', es: 'algo nuevo cada mes', fr: 'du nouveau chaque mois', de: 'jeden Monat etwas Neues' %}</span>{%- endif -%}
+          </div>
+
+          {%- if vprod != blank and vprod.variants.size > 1 -%}
+          <div class="ab-field"><label>{% render 'maeve-t', nl: 'Navulling voor', en: 'Refill for', es: 'Recarga para', fr: 'Recharge pour', de: 'Nachfüllung für' %}</label><div class="ab-chips" id="abVSizes"></div></div>
+          {%- endif -%}
+          <div class="ab-field" id="abVFreqField"><label>{% render 'maeve-t', nl: 'Hoe vaak', en: 'How often', es: 'Con qué frecuencia', fr: 'À quelle fréquence', de: 'Wie oft' %}</label><div class="ab-freqs" id="abVFreqs"></div></div>
+
+          <div class="price"><span class="was" id="abVWas"></span><span id="abVPrice">—</span> <small>{% render 'maeve-t', nl: '/ levering', en: '/ delivery', es: '/ entrega', fr: '/ livraison', de: '/ Lieferung' %}</small></div>
+          <p class="ab-disc-line" id="abVDisc"></p>
+          <button class="ab-cta" id="abSurpriseAdd">{% render 'maeve-t', nl: 'Start verrassingsabonnement', en: 'Start surprise subscription', es: 'Iniciar suscripción sorpresa', fr: 'Démarrer l’abonnement surprise', de: 'Überraschungs-Abo starten' %}</button>
+          <p class="ab-note" id="abSurpriseNote"></p>
+
+          <ul class="ab-feats">
+            <li>{% render 'maeve-t', nl: 'Elke keer een andere geur, door ons gekozen', en: 'A different scent every time, chosen by us', es: 'Un aroma diferente cada vez, elegido por nosotros', fr: 'Un parfum différent à chaque fois, choisi par nos soins', de: 'Jedes Mal ein anderer Duft, von uns ausgewählt' %}</li>
+            <li>{% render 'maeve-t', nl: 'Ontdek geuren die je zelf niet zou kiezen', en: 'Discover scents you would never pick yourself', es: 'Descubre aromas que nunca elegirías por ti mismo', fr: 'Découvrez des parfums que vous n’auriez jamais choisis vous-même', de: 'Entdecke Düfte, die du selbst nie wählen würdest' %}</li>
+            <li>{% render 'maeve-t', nl: 'Opzegbaar wanneer je wilt', en: 'Cancel whenever you like', es: 'Cancela cuando quieras', fr: 'Résiliable quand vous voulez', de: 'Jederzeit kündbar' %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ab-faq">
+    <div class="wrap">
+      <div class="head"><h2>{% render 'maeve-t', nl: section.settings.faq_heading | default: 'Veelgestelde vragen', en: 'Frequently asked questions', es: 'Preguntas frecuentes', fr: 'Questions fréquentes', de: 'Häufige Fragen' %}</h2></div>
+      <div class="list">
+        {%- assign hasfaq = false -%}
+        {%- for block in section.blocks -%}{%- if block.type == 'faq' -%}{%- assign hasfaq = true -%}
+          <details {{ block.shopify_attributes }}><summary>{{ block.settings.q }}</summary><p>{{ block.settings.a }}</p></details>
+        {%- endif -%}{%- endfor -%}
+        {%- unless hasfaq -%}
+          <details><summary>{% render 'maeve-t', nl: 'Waarom een abonnement op de navulling?', en: 'Why subscribe to the refill?', es: '¿Por qué suscribirse a la recarga?', fr: 'Pourquoi s’abonner à la recharge ?', de: 'Warum ein Abo für die Nachfüllung?' %}</summary><p>{% render 'maeve-t', nl: 'Je hebt de fles (geurstokje of roomspray) al — je hoeft alleen de geur bij te vullen. Zo gebruik je minder plastic en zit je nooit zonder. En je krijgt korting.', en: 'You already have the bottle (reed diffuser or room spray) — you only need to top up the scent. That means less plastic, never running out, and a discount on top.', es: 'Ya tienes la botella (difusor de varillas o spray de ambiente) — solo necesitas recargar el aroma. Así usas menos plástico, nunca te quedas sin y encima obtienes un descuento.', fr: 'Vous avez déjà le flacon (diffuseur à bâtonnets ou spray d’ambiance) — il suffit de recharger le parfum. Moins de plastique, jamais à court, et une remise en prime.', de: 'Du hast die Flasche (Duftstäbchen oder Raumspray) bereits — du musst nur den Duft nachfüllen. Das bedeutet weniger Plastik, nie wieder leer und obendrein einen Rabatt.' %}</p></details>
+          <details><summary>{% render 'maeve-t', nl: 'Hoeveel korting krijg ik?', en: 'How much discount do I get?', es: '¿Cuánto descuento obtengo?', fr: 'Quelle remise vais-je obtenir ?', de: 'Wie viel Rabatt bekomme ich?' %}</summary><p>{% render 'maeve-t', nl: 'Hoe vaker je laat leveren, hoe hoger de korting: elke maand levert de meeste korting op, elke 2 of 3 maanden iets minder. Het exacte percentage zie je bij je keuze.', en: 'The more often you have it delivered, the bigger the discount: every month saves the most, every 2 or 3 months slightly less. You see the exact percentage when you choose.', es: 'Cuanto más a menudo lo recibas, mayor el descuento: cada mes ahorras lo máximo, cada 2 o 3 meses algo menos. Verás el porcentaje exacto al elegir.', fr: 'Plus vous êtes livré souvent, plus la remise est grande : chaque mois offre la plus grande économie, tous les 2 ou 3 mois un peu moins. Vous voyez le pourcentage exact lors de votre choix.', de: 'Je öfter du dir liefern lässt, desto größer der Rabatt: jeden Monat sparst du am meisten, alle 2 oder 3 Monate etwas weniger. Den genauen Prozentsatz siehst du bei deiner Auswahl.' %}</p></details>
+          <details><summary>{% render 'maeve-t', nl: 'Kan ik pauzeren of opzeggen?', en: 'Can I pause or cancel?', es: '¿Puedo pausar o cancelar?', fr: 'Puis-je suspendre ou résilier ?', de: 'Kann ich pausieren oder kündigen?' %}</summary><p>{% render 'maeve-t', nl: 'Altijd. Je beheert je abonnement zelf: overslaan, pauzeren, ritme aanpassen of stoppen — zonder opzegtermijn.', en: 'Anytime. You manage your subscription yourself: skip, pause, adjust the rhythm or stop — with no notice period.', es: 'En cualquier momento. Gestionas tu suscripción tú mismo: omitir, pausar, ajustar el ritmo o detener — sin plazo de preaviso.', fr: 'À tout moment. Vous gérez votre abonnement vous-même : passer une livraison, suspendre, ajuster le rythme ou arrêter — sans préavis.', de: 'Jederzeit. Du verwaltest dein Abo selbst: überspringen, pausieren, Rhythmus anpassen oder beenden — ohne Kündigungsfrist.' %}</p></details>
+        {%- endunless -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var MT={
+    freq3: {% render 'maeve-t', nl: '"1× per 3 maanden"', en: '"once every 3 months"', es: '"una vez cada 3 meses"', fr: '"une fois tous les 3 mois"', de: '"einmal alle 3 Monate"' %},
+    freq2: {% render 'maeve-t', nl: '"1× per 2 maanden"', en: '"once every 2 months"', es: '"una vez cada 2 meses"', fr: '"une fois tous les 2 mois"', de: '"einmal alle 2 Monate"' %},
+    freq1: {% render 'maeve-t', nl: '"1× per maand"', en: '"once a month"', es: '"una vez al mes"', fr: '"une fois par mois"', de: '"einmal im Monat"' %},
+    perDelivery: {% render 'maeve-t', nl: '"/ levering ("', en: '"/ delivery ("', es: '"/ entrega ("', fr: '"/ livraison ("', de: '"/ Lieferung ("' %},
+    saveA: {% render 'maeve-t', nl: '"Je bespaart "', en: '"You save "', es: '"Ahorras "', fr: '"Vous économisez "', de: '"Du sparst "' %},
+    savePerDelivery: {% render 'maeve-t', nl: '"% per levering"', en: '"% per delivery"', es: '"% por entrega"', fr: '"% par livraison"', de: '"% pro Lieferung"' %},
+    notAvailable: {% render 'maeve-t', nl: '"Niet beschikbaar."', en: '"Not available."', es: '"No disponible."', fr: '"Non disponible."', de: '"Nicht verfügbar."' %},
+    notActiveYet: {% render 'maeve-t', nl: '"Abonnement nog niet actief"', en: '"Subscription not active yet"', es: '"Suscripción aún no activa"', fr: '"Abonnement pas encore actif"', de: '"Abo noch nicht aktiv"' %},
+    linkPlanNote: {% render 'maeve-t', nl: '"Koppel de navulling-varianten aan het plan in de Shopify&nbsp;Subscriptions-app om dit te activeren."', en: '"Link the refill variants to the plan in the Shopify&nbsp;Subscriptions app to activate this."', es: '"Vincula las variantes de recarga al plan en la app Shopify&nbsp;Subscriptions para activarlo."', fr: '"Associez les variantes de recharge au plan dans l’app Shopify&nbsp;Subscriptions pour l’activer."', de: '"Verknüpfe die Nachfüllvarianten mit dem Plan in der Shopify&nbsp;Subscriptions-App, um dies zu aktivieren."' %},
+    startSubPrice: {% render 'maeve-t', nl: '"Start abonnement — "', en: '"Start subscription — "', es: '"Iniciar suscripción — "', fr: '"Démarrer l’abonnement — "', de: '"Abo starten — "' %},
+    cancelAnytime: {% render 'maeve-t', nl: '"Op elk moment opzegbaar of te wisselen."', en: '"Cancel or swap at any time."', es: '"Cancela o cambia en cualquier momento."', fr: '"Résiliable ou modifiable à tout moment."', de: '"Jederzeit kündbar oder wechselbar."' %},
+    busy: {% render 'maeve-t', nl: '"Bezig…"', en: '"Loading…"', es: '"Cargando…"', fr: '"Chargement…"', de: '"Lädt…"' %},
+    comingSoon: {% render 'maeve-t', nl: '"Binnenkort beschikbaar"', en: '"Coming soon"', es: '"Próximamente"', fr: '"Bientôt disponible"', de: '"Demnächst verfügbar"' %},
+    surpriseNote: {% render 'maeve-t', nl: '"De verrassingsgeur wordt als abonnement geactiveerd zodra het product aan het plan is gekoppeld."', en: '"The surprise scent becomes available as a subscription once the product is linked to the plan."', es: '"El aroma sorpresa estará disponible como suscripción en cuanto el producto se vincule al plan."', fr: '"Le parfum surprise devient disponible en abonnement dès que le produit est associé au plan."', de: '"Der Überraschungsduft wird als Abo verfügbar, sobald das Produkt mit dem Plan verknüpft ist."' %},
+    startSurprisePrice: {% render 'maeve-t', nl: '"Start verrassingsabonnement — "', en: '"Start surprise subscription — "', es: '"Iniciar suscripción sorpresa — "', fr: '"Démarrer l’abonnement surprise — "', de: '"Überraschungs-Abo starten — "' %},
+    cancelAnytimeShort: {% render 'maeve-t', nl: '"Op elk moment opzegbaar."', en: '"Cancel at any time."', es: '"Cancela en cualquier momento."', fr: '"Résiliable à tout moment."', de: '"Jederzeit kündbar."' %},
+    surpriseMissing: {% render 'maeve-t', nl: '"Verrassingsproduct ontbreekt"', en: '"Surprise product missing"', es: '"Falta el producto sorpresa"', fr: '"Produit surprise manquant"', de: '"Überraschungsprodukt fehlt"' %}
+  };
+  var $=function(id){return document.getElementById(id)};
+  function money(c){return '€ '+(c/100).toFixed(2).replace('.',',')}
+  function pct(p){return p&&p.was?Math.round((1-p.price/p.was)*100):0}
+  function nlFreq(name){ if(/3\s*month/i.test(name))return MT.freq3; if(/2\s*month/i.test(name))return MT.freq2; if(/month/i.test(name))return MT.freq1; return name; }
+  function sortPlans(plans){ return (plans||[]).slice().sort(function(a,b){return (a.price/a.was)-(b.price/b.was);}); }
+  function freqHTML(plans,sel){ return sortPlans(plans).map(function(p,i){ var pc=pct(p);
+    return '<label class="ab-freq'+(i===sel?' active':'')+'" data-i="'+i+'"><input type="radio" '+(i===sel?'checked':'')+'>'+nlFreq(p.name)+
+      '<span class="pr"><span class="was">'+money(p.was)+'</span>'+money(p.price)+'</span>'+(pc>0?'<span class="pc">−'+pc+'%</span>':'')+'</label>';
+  }).join(''); }
+
+  // ---------- A: navulling per geur ----------
+  var NAV={}, NORDER=[];
+  {%- for h in lijnen -%}{%- assign hh = h | strip -%}{%- assign col = collections[hh] -%}{%- if col != blank -%}
+    {%- for p in col.products -%}{%- if p.handle contains 'navulling' -%}
+      {%- assign pdesign = p.metafields.geur.design.value | default: p.title -%}
+      (function(){ var d={{ pdesign | json }}; if(!NAV[d]){NAV[d]={};NORDER.push(d);}
+        {%- assign pfb = p.featured_image | image_url: width: 600 -%}
+        {%- for v in p.variants -%}
+          NAV[d][{{ v.option1 | json }}]={id:{{ v.id }},c:{{ v.price }},img:{% if v.image %}{{ v.image | image_url: width: 600 | json }}{% else %}{{ pfb | json }}{% endif %},plans:[{%- for a in v.selling_plan_allocations -%}{sp:{{ a.selling_plan.id }},price:{{ a.price }},was:{{ a.compare_at_price | default: v.price }},name:{{ a.selling_plan.name | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]};
+        {%- endfor -%}
+      })();
+    {%- endif -%}{%- endfor -%}
+  {%- endif -%}{%- endfor -%}
+
+  var A={design:NORDER[0]||null, formule:'Geurstokjes', i:0};
+  function aVar(){ return NAV[A.design] && NAV[A.design][A.formule]; }
+  function aPlans(){ var v=aVar(); return v?sortPlans(v.plans):[]; }
+  function aSelPlan(){ var ps=aPlans(); return ps[A.i]||ps[0]||null; }
+  function aScentOpts(){ $('abScent').innerHTML=NORDER.map(function(d){return '<option value="'+d.replace(/"/g,'&quot;')+'"'+(d===A.design?' selected':'')+'>'+d+'</option>';}).join(''); }
+  function aRender(){
+    var v=aVar(), ps=aPlans();
+    $('abFreqs').innerHTML=ps.length?freqHTML(v.plans,A.i):'';
+    var p=aSelPlan();
+    var btn=$('abFixedAdd'), note=$('abFixedNote');
+    if(!v){ $('abPrice').textContent='—'; $('abWas').textContent=''; $('abDisc').textContent=''; btn.disabled=true; note.textContent=MT.notAvailable; return; }
+    if(!p){ $('abPrice').textContent=money(v.c); $('abWas').textContent=''; $('abDisc').textContent=''; btn.disabled=true; btn.textContent=MT.notActiveYet;
+      note.innerHTML=MT.linkPlanNote; return; }
+    $('abWas').textContent=money(p.was); $('abPrice').textContent=money(p.price); $('abPer').textContent=MT.perDelivery+nlFreq(p.name).toLowerCase()+')';
+    var pc=pct(p); $('abDisc').textContent=pc>0?(MT.saveA+pc+MT.savePerDelivery):'';
+    btn.disabled=false; btn.textContent=MT.startSubPrice+money(p.price);
+    note.textContent=MT.cancelAnytime;
+  }
+  $('abScent').addEventListener('change',function(){A.design=this.value;A.i=0;aRender();});
+  $('abFormule').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;this.querySelectorAll('button').forEach(function(x){x.classList.remove('active')});b.classList.add('active');A.formule=b.dataset.f;A.i=0;aRender();});
+  $('abFreqs').addEventListener('click',function(e){var l=e.target.closest('.ab-freq');if(!l)return;A.i=parseInt(l.dataset.i,10);aRender();});
+  $('abFixedAdd').addEventListener('click',function(){
+    var v=aVar(), p=aSelPlan(); if(!v||!p)return;
+    var btn=this; btn.disabled=true; var old=btn.textContent; btn.textContent=MT.busy;
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:1,selling_plan:p.sp}]})})
+      .then(function(r){return r.json()}).then(function(){btn.disabled=false;btn.textContent=old;if(window.maeveOpenCart)window.maeveOpenCart();else location.href='/cart';})
+      .catch(function(){btn.disabled=false;btn.textContent=old;});
+  });
+  aScentOpts(); aRender();
+
+  /* B: verrassingsgeur */
+  {%- if vprod != blank -%}
+  var VV=[{%- for v in vprod.variants -%}{f:{{ v.option1 | json }},id:{{ v.id }},c:{{ v.price }},ok:{{ v.available }},plans:[{%- for a in v.selling_plan_allocations -%}{sp:{{ a.selling_plan.id }},price:{{ a.price }},was:{{ a.compare_at_price | default: v.price }},name:{{ a.selling_plan.name | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}];
+  var B={vi:0,i:0};
+  function bVar(){return VV[B.vi]||VV[0];}
+  function bPlans(){var v=bVar();return v?sortPlans(v.plans):[];}
+  function bSel(){var ps=bPlans();return ps[B.i]||ps[0]||null;}
+  function bSizes(){var el=$('abVSizes');if(!el)return;el.innerHTML=VV.map(function(v,i){return '<button type="button" class="ab-chip'+(i===B.vi?' active':'')+(v.ok?'':' unavail')+'" data-i="'+i+'"'+(v.ok?'':' disabled')+'>'+v.f+'</button>';}).join('');}
+  function bRender(){
+    bSizes(); var v=bVar(), ps=bPlans();
+    $('abVFreqs').innerHTML=ps.length?freqHTML(v.plans,B.i):'';
+    var p=bSel(), btn=$('abSurpriseAdd'), note=$('abSurpriseNote'), ff=$('abVFreqField');
+    if(!p){ if(ff)ff.style.display='none'; $('abVPrice').textContent=v?money(v.c):'—'; $('abVWas').textContent=''; $('abVDisc').textContent=''; btn.disabled=true; btn.textContent=MT.comingSoon;
+      note.innerHTML=MT.surpriseNote; return; }
+    if(ff)ff.style.display=''; $('abVWas').textContent=money(p.was); $('abVPrice').textContent=money(p.price);
+    var pc=pct(p); $('abVDisc').textContent=pc>0?(MT.saveA+pc+MT.savePerDelivery):'';
+    btn.disabled=false; btn.textContent=MT.startSurprisePrice+money(p.price); note.textContent=MT.cancelAnytimeShort;
+  }
+  try{ bRender(); }catch(err){}
+  var vs=$('abVSizes'); if(vs)vs.addEventListener('click',function(e){var b=e.target.closest('.ab-chip');if(!b||b.disabled)return;B.vi=parseInt(b.dataset.i,10);B.i=0;bRender();});
+  var vf=$('abVFreqs'); if(vf)vf.addEventListener('click',function(e){var l=e.target.closest('.ab-freq');if(!l)return;B.i=parseInt(l.dataset.i,10);bRender();});
+  var vb=$('abSurpriseAdd'); if(vb)vb.addEventListener('click',function(){var v=bVar(),p=bSel();if(!v||!p)return;var btn=this;btn.disabled=true;var old=btn.textContent;btn.textContent=MT.busy;
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:1,selling_plan:p.sp}]})})
+      .then(function(r){return r.json()}).then(function(){btn.disabled=false;btn.textContent=old;if(window.maeveOpenCart)window.maeveOpenCart();else location.href='/cart';})
+      .catch(function(){btn.disabled=false;btn.textContent=old;});});
+  {%- else -%}
+  (function(){var b=$('abSurpriseAdd');if(b){b.disabled=true;b.textContent=MT.surpriseMissing;}})();
+  {%- endif -%}
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Maeve Abonnement",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Abonnement" },
+    { "type": "text", "id": "heading", "label": "Hero-titel", "default": "Elke maand een geur die <em>je ruimte opnieuw aankleedt.</em>" },
+    { "type": "textarea", "id": "intro", "label": "Hero-introtekst", "default": "Abonneer je op de navullingen van je favoriete geur — of laat je verrassen. Hoe vaker, hoe meer korting. Op elk moment opzegbaar." },
+    { "type": "text", "id": "hero_cta", "label": "Hero-knop", "default": "Kies je abonnement" },
+    { "type": "header", "content": "Bronnen" },
+    { "type": "text", "id": "lijn_collections", "label": "Lijn-collecties (komma-gescheiden handles)", "default": "art,city,magical-japan,sicilian-summer,delfts-blauw", "info": "Bron voor de navullingen." },
+    { "type": "product", "id": "verrassing_product", "label": "Verrassingsgeur-product" },
+    { "type": "header", "content": "Zo werkt het" },
+    { "type": "text", "id": "how_eyebrow", "label": "Eyebrow", "default": "Zo werkt het" },
+    { "type": "text", "id": "how_heading", "label": "Titel", "default": "Nooit meer zonder je geur." },
+    { "type": "header", "content": "Twee sporen" },
+    { "type": "text", "id": "tracks_eyebrow", "label": "Eyebrow", "default": "Twee manieren" },
+    { "type": "text", "id": "tracks_heading", "label": "Titel", "default": "Vast of verrast." },
+    { "type": "text", "id": "tracks_text", "label": "Tekst", "default": "Allebei op navullingen, allebei opzegbaar wanneer je wilt." },
+    { "type": "text", "id": "fixed_title", "label": "Kaart A — titel", "default": "Navulling-abonnement" },
+    { "type": "textarea", "id": "fixed_lead", "label": "Kaart A — tekst", "default": "Abonneer je op de navulling van je favoriete geur — voor je geurstokje of je roomspray." },
+    { "type": "text", "id": "surprise_title", "label": "Kaart B — titel", "default": "De verrassingsgeur" },
+    { "type": "textarea", "id": "surprise_lead", "label": "Kaart B — tekst", "default": "Laat het atelier kiezen. Elke levering een nieuwe, met de hand samengestelde geur — als navulling voor je geurstokje of roomspray." },
+    { "type": "header", "content": "FAQ" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ-titel", "default": "Veelgestelde vragen" }
+  ],
+  "blocks": [
+    { "type": "step", "name": "Stap", "settings": [
+      { "type": "text", "id": "num", "label": "Nummer", "default": "— 01" },
+      { "type": "text", "id": "title", "label": "Titel", "default": "Kies je navulling" },
+      { "type": "textarea", "id": "text", "label": "Tekst", "default": "Je favoriete geur als navulling." }
+    ]},
+    { "type": "faq", "name": "FAQ-vraag", "settings": [
+      { "type": "text", "id": "q", "label": "Vraag", "default": "Vraag?" },
+      { "type": "textarea", "id": "a", "label": "Antwoord", "default": "Antwoord." }
+    ]}
+  ],
+  "presets": [{ "name": "Maeve Abonnement" }]
+}
+{% endschema %}

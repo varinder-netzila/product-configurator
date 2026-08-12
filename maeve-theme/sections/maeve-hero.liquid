@@ -1,0 +1,69 @@
+{%- liquid
+  assign img_main = section.settings.img_main
+  assign img_left = section.settings.img_left
+  assign img_right = section.settings.img_right
+-%}
+{%- if section.settings.show_dial -%}
+<div id="dial" aria-hidden="true">
+  <svg viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="rgba(246,241,233,.85)" stroke="rgba(33,29,24,.25)" stroke-width="1"/>
+    <g id="dialTicks"></g>
+    <g id="dialNeedle">
+      <line x1="50" y1="50" x2="50" y2="9" stroke="#A65A3F" stroke-width="1.6"/>
+      <circle cx="50" cy="9" r="3" fill="#A65A3F"/>
+    </g>
+  </svg>
+  <div class="deg-num" id="degNum">0°</div>
+</div>
+{%- endif -%}
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <div class="hero-type">
+      <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      <h1>{{ section.settings.heading_line1 }}<br>{{ section.settings.heading_line2 }}</h1>
+      <div class="hero-sub">
+        <p>{{ section.settings.sub_text }}</p>
+        <div class="hero-ctas">
+          {%- if section.settings.cta1_label != blank -%}<a class="btn solid" href="{{ section.settings.cta1_link }}">{{ section.settings.cta1_label }}</a>{%- endif -%}
+          {%- if section.settings.cta2_label != blank -%}<a class="btn ghost" href="{{ section.settings.cta2_link }}">{{ section.settings.cta2_label }}</a>{%- endif -%}
+        </div>
+        <div class="hero-trust">
+          <span><span class="stars">{{ section.settings.trust_stars }}</span> {{ section.settings.trust_left }}</span>
+          <span class="dot"></span>
+          <span>{{ section.settings.trust_right }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-bottle" id="heroBottle">
+      <img class="b-side" src="{% if img_left %}{{ img_left | image_url: width: 700 }}{% else %}{{ 'korenveld-spray.png' | asset_url }}{% endif %}" alt="" loading="eager" fetchpriority="high">
+      <img class="b-main" src="{% if img_main %}{{ img_main | image_url: width: 900 }}{% else %}{{ 'zonnebloemen-spray.png' | asset_url }}{% endif %}" alt="{{ section.settings.img_main_alt | escape }}">
+      <img class="b-side" src="{% if img_right %}{{ img_right | image_url: width: 700 }}{% else %}{{ 'amandelbloesem-stokjes.png' | asset_url }}{% endif %}" alt="" loading="eager">
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "checkbox", "id": "show_dial", "label": "Toon scroll-wijzer (graden-dial)", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow (bovenregel)", "default": "0° — Where scents meet design · 's werelds enige 360° geprinte geurcollectie" },
+    { "type": "inline_richtext", "id": "heading_line1", "label": "Kop — regel 1", "default": "Geur die je niet <em>wegzet,</em>" },
+    { "type": "inline_richtext", "id": "heading_line2", "label": "Kop — regel 2", "default": "maar <em>neerzet.</em>" },
+    { "type": "richtext", "id": "sub_text", "label": "Tekst", "default": "<p>Roomsprays en geurstokjes, rondom bedrukt met kunst van grote meesters en steden die je kent. Deze pagina is één volle rotatie om de fles — scroll, en draai mee.</p>" },
+    { "type": "text", "id": "cta1_label", "label": "Knop 1 — tekst", "default": "Bekijk de geuren" },
+    { "type": "url", "id": "cta1_link", "label": "Knop 1 — link" },
+    { "type": "text", "id": "cta2_label", "label": "Knop 2 — tekst", "default": "Ons verhaal" },
+    { "type": "url", "id": "cta2_link", "label": "Knop 2 — link" },
+    { "type": "text", "id": "trust_stars", "label": "Trust — sterren", "default": "★★★★★" },
+    { "type": "inline_richtext", "id": "trust_left", "label": "Trust links", "default": "<b>4,9</b> uit 2.000+ beoordelingen" },
+    { "type": "inline_richtext", "id": "trust_right", "label": "Trust rechts", "default": "Gratis verzending vanaf <b>€ 40</b>" },
+    { "type": "header", "content": "Flessen (afbeeldingen)" },
+    { "type": "image_picker", "id": "img_main", "label": "Hoofdfles (midden)" },
+    { "type": "text", "id": "img_main_alt", "label": "Hoofdfles — alt-tekst", "default": "Zonnebloemen — roomspray Amber Sun" },
+    { "type": "image_picker", "id": "img_left", "label": "Fles links" },
+    { "type": "image_picker", "id": "img_right", "label": "Fles rechts" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

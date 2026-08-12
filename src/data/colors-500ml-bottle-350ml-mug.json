@@ -1,0 +1,71 @@
+{
+  "colors": [
+    {
+      "id": 1,
+      "name": "Stone",
+      "hex": "#9ea2a2",
+      "description": "Stone"
+    },
+    {
+      "id": 2,
+      "name": "Burgundy",
+      "hex": "#7c2629",
+      "description": "Burgundy"
+    },
+    {
+      "id": 3,
+      "name": "Forest",
+      "hex": "#284735",
+      "description": "Forest"
+    },
+    {
+      "id": 4,
+      "name": "Sky Blue",
+      "hex": "#b9d9eb",
+      "description": "Sky Blue"
+    },
+    {
+      "id": 5,
+      "name": "Gold",
+      "hex": "#d1b249",
+      "description": "Gold"
+    },
+    {
+      "id": 6,
+      "name": "Burnt Orange",
+      "hex": "#b86126",
+      "description": "Burnt Orange"
+    },
+    {
+      "id": 7,
+      "name": "Rose",
+      "hex": "#e0c2c4",
+      "description": "Rose"
+    },
+    {
+      "id": 8,
+      "name": "Navy",
+      "hex": "#2d2e65",
+      "description": "Navy"
+    },
+    {
+      "id": 9,
+      "name": "White",
+      "hex": "#FFFFFF",
+      "description": "White"
+    },
+    {
+      "id": 10,
+      "name": "Black",
+      "hex": "#000000",
+      "description": "Black"
+    },
+    {
+      "id": 11,
+      "name": "Silver",
+      "hex": "#CED2D2",
+      "description": "Silver"
+    }
+  ],
+  "products": ["500ml-bottle", "350ml-mug", "plank-met-handvat-beuken-37x19-cm-copy"]
+}

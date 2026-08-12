@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="{{ 'maeve-favicon.png' | asset_url }}">
+  <link rel="apple-touch-icon" href="{{ 'maeve-favicon.png' | asset_url }}">
+  <title>{{ page_title }}{% unless page_title contains shop.name %} | {{ shop.name }}{% endunless %}</title>
+  {% if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  {{ 'maeve.css' | asset_url | stylesheet_tag }}
+  {%- if template.name == 'index' -%}{% render 'maeve-index-css' %}{%- endif -%}
+  {%- if template.name == 'product' -%}{% render 'maeve-product-css' %}{%- endif -%}
+  {%- if template.name == 'collection' -%}{% render 'maeve-collection-css' %}{%- endif -%}
+  {%- if template.suffix == 'verhaal' -%}{% render 'maeve-page-verhaal-css' %}{%- endif -%}
+  {%- if template.suffix == 'zakelijk' -%}{% render 'maeve-page-zakelijk-css' %}{%- endif -%}
+  {%- if template.suffix == 'faq' -%}{% render 'maeve-page-faq-css' %}{%- endif -%}
+  {{ content_for_header }}
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <div class="nav-side">
+        <button class="menu-btn" id="menuBtn">Menu</button>
+        <div class="nav-links">
+          {% for link in linklists.main-menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+        </div>
+      </div>
+      <a class="logo" href="{{ routes.root_url }}">{{ shop.name }}</a>
+      <div class="nav-side right">
+        {%- if localization.available_languages.size > 1 -%}
+          {%- form 'localization', class: 'lang-switch' -%}
+            <div class="lang-dd" id="langDd">
+              <button type="button" class="lang-current" id="langToggle" aria-haspopup="listbox" aria-expanded="false">{{ localization.language.iso_code | upcase }}<span class="lang-caret" aria-hidden="true">▾</span></button>
+              <div class="lang-menu" role="listbox">
+                {%- for language in localization.available_languages -%}
+                  <button type="submit" name="locale_code" value="{{ language.iso_code }}" class="lang-opt{% if language.iso_code == localization.language.iso_code %} active{% endif %}" role="option"{% if language.iso_code == localization.language.iso_code %} aria-selected="true"{% endif %}><span class="lang-code">{{ language.iso_code | upcase }}</span><span class="lang-name">{{ language.endonym_name | default: language.name | capitalize }}</span></button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endform -%}
+          <script>
+            (function(){var dd=document.getElementById('langDd');if(!dd)return;var tg=document.getElementById('langToggle');tg.addEventListener('click',function(e){e.stopPropagation();var o=dd.classList.toggle('open');tg.setAttribute('aria-expanded',o?'true':'false');});document.addEventListener('click',function(e){if(!dd.contains(e.target)){dd.classList.remove('open');tg.setAttribute('aria-expanded','false');}});document.addEventListener('keydown',function(e){if(e.key==='Escape'){dd.classList.remove('open');tg.setAttribute('aria-expanded','false');}});})();
+          </script>
+        {%- endif -%}
+        <a class="nav-search" href="{{ routes.search_url }}">{% render 'maeve-t', nl: 'Zoeken', en: 'Search', es: 'Buscar', fr: 'Rechercher', de: 'Suchen' %}</a>
+        <a href="{{ routes.cart_url }}" id="cartLink">{% render 'maeve-t', nl: 'Winkelmandje', en: 'Cart', es: 'Cesta', fr: 'Panier', de: 'Warenkorb' %} ({{ cart.item_count }})</a>
+      </div>
+    </nav>
+  </header>
+  <div class="mobile-menu" id="mobileMenu">
+    {% for link in linklists.main-menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+    <a href="{{ routes.search_url }}">{% render 'maeve-t', nl: 'Zoeken', en: 'Search', es: 'Buscar', fr: 'Rechercher', de: 'Suchen' %}</a>
+    <a href="{{ routes.cart_url }}">{% render 'maeve-t', nl: 'Winkelmandje', en: 'Cart', es: 'Cesta', fr: 'Panier', de: 'Warenkorb' %} ({{ cart.item_count }})</a>
+  </div>
+
+  <main>{{ content_for_layout }}</main>
+
+  {%- comment -%} Cart drawer (schuift in vanaf rechts) {%- endcomment -%}
+  <style>
+    /* Voorkom dat afbeeldingen/links op mobiel als 'losse' elementen versleept kunnen worden (native long-press drag) */
+    img{-webkit-user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;user-drag:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+    a{-webkit-user-drag:none;user-drag:none}
+    .lang-switch{position:relative;display:inline-flex;align-items:center;margin-right:8px;vertical-align:middle}
+    .lang-dd{position:relative}
+    .lang-current{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--line);border-radius:999px;cursor:pointer;font:inherit;font-size:11px;letter-spacing:.06em;color:var(--ink-soft);padding:5px 11px;line-height:1;transition:color .2s,border-color .2s}
+    .lang-current:hover{color:var(--ink);border-color:var(--ink-soft)}
+    .lang-caret{font-size:8px;line-height:1;transition:transform .2s}
+    .lang-dd.open .lang-caret{transform:rotate(180deg)}
+    .lang-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:158px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 34px rgba(33,29,24,.14);padding:5px;display:flex;flex-direction:column;gap:1px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .18s ease,transform .18s ease,visibility .18s;z-index:1100}
+    .lang-dd.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0)}
+    .lang-menu .lang-opt{display:flex;align-items:center;gap:9px;background:none;border:0;cursor:pointer;font:inherit;font-size:12.5px;color:var(--ink-soft);padding:9px 12px;border-radius:8px;text-align:left;width:100%;transition:background .15s,color .15s}
+    .lang-menu .lang-opt:hover{background:var(--sand)}
+    .lang-menu .lang-opt,.lang-menu .lang-opt:hover{color:var(--ink)}
+    .lang-menu .lang-opt.active{font-weight:600}
+    .lang-menu .lang-code{font-size:10px;letter-spacing:.07em;color:var(--ink-soft);min-width:20px}
+    .lang-menu .lang-opt.active .lang-code{color:var(--ink)}
+    .cart-drawer-overlay{position:fixed;inset:0;background:rgba(33,29,24,.42);z-index:1000;opacity:0;transition:opacity .3s ease}
+    .cart-drawer-overlay.on{opacity:1}
+    .cart-drawer{position:fixed;top:0;right:0;height:100%;width:430px;max-width:92vw;background:var(--ivory);z-index:1001;transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-14px 0 50px rgba(33,29,24,.18)}
+    .cart-drawer.on{transform:translateX(0)}
+    .cd-head{display:flex;align-items:center;justify-content:space-between;padding:22px 26px;border-bottom:1px solid var(--line)}
+    .cd-title{font-family:var(--serif);font-size:21px}
+    .cd-close{border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;color:var(--ink)}
+    .cd-body{flex:1;overflow-y:auto;padding:4px 26px}
+    .cd-empty{padding:60px 0;text-align:center;color:var(--ink-soft);font-family:var(--serif);font-style:italic;font-size:17px}
+    .cd-item{display:grid;grid-template-columns:66px 1fr auto;gap:15px;padding:18px 0;border-bottom:1px solid var(--line)}
+    .cd-item img{width:66px;height:66px;object-fit:cover;background:var(--sand)}
+    .cd-it-name{font-family:var(--serif);font-size:15px;line-height:1.25}
+    .cd-it-variant{font-size:12px;color:var(--ink-soft);margin-top:3px}
+    .cd-it-qty{display:inline-flex;align-items:center;border:1px solid var(--line);margin-top:10px}
+    .cd-it-qty button{width:28px;height:28px;border:0;background:transparent;cursor:pointer;font-size:15px;color:var(--ink)}
+    .cd-it-qty span{min-width:28px;text-align:center;font-size:13px}
+    .cd-it-right{text-align:right;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end}
+    .cd-it-price{font-family:var(--serif);font-size:14px;white-space:nowrap}
+    .cd-it-remove{font-size:11px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;margin-top:8px}
+    .cd-was{text-decoration:line-through;color:var(--ink-soft);font-weight:400;margin-right:6px}
+    .cd-it-disc{display:block;font-family:var(--sans);font-size:10.5px;color:var(--clay);margin-top:3px;letter-spacing:.02em}
+    .cd-foot{border-top:1px solid var(--line);padding:20px 26px}
+    .cd-discount{display:flex;justify-content:space-between;align-items:baseline;color:var(--clay);font-size:13px;margin-bottom:8px}
+    .cd-discount .cd-disc-amt{font-family:var(--serif)}
+    .cd-subtotal{display:flex;justify-content:space-between;font-family:var(--serif);font-size:18px;margin-bottom:6px}
+    .cd-note{font-size:11.5px;color:var(--ink-soft);margin-bottom:14px}
+    .cd-ship{font-size:11.5px;color:var(--ink);background:var(--sand);padding:10px 13px;margin-bottom:14px;line-height:1.4}
+    .cd-ship.is-free{color:#3E6B4E}
+    .cd-ship strong{font-family:var(--serif)}
+    .cd-ship-bar{display:block;height:4px;background:var(--line);margin-top:8px;overflow:hidden}
+    .cd-ship-bar i{display:block;height:100%;background:var(--clay);transition:width .35s ease}
+    .cd-ship.is-free .cd-ship-bar i{background:#3E6B4E}
+    .cd-checkout{width:100%;text-align:center}
+    .cd-viewcart{display:block;text-align:center;margin-top:12px;font-size:11.5px;letter-spacing:.04em;color:var(--ink-soft);text-decoration:underline}
+    body.cd-open{overflow:hidden}
+  </style>
+  <div class="cart-drawer-overlay" id="cartOverlay" hidden></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-label="Winkelmandje">
+    <div class="cd-head"><span class="cd-title">{% render 'maeve-t', nl: 'Winkelmandje', en: 'Cart', es: 'Cesta', fr: 'Panier', de: 'Warenkorb' %}</span><button class="cd-close" id="cdClose" aria-label="{% render 'maeve-t', nl: 'Sluiten', en: 'Close', es: 'Cerrar', fr: 'Fermer', de: 'Schließen' %}">&times;</button></div>
+    <div class="cd-body" id="cdBody"></div>
+    <div class="cd-foot" id="cdFoot">
+      <div class="cd-ship" id="cdShip" style="display:none"></div>
+      <div class="cd-discount" id="cdDiscount" style="display:none"></div>
+      <div class="cd-subtotal"><span>{% render 'maeve-t', nl: 'Subtotaal', en: 'Subtotal', es: 'Subtotal', fr: 'Sous-total', de: 'Zwischensumme' %}</span><span id="cdSubtotal">€ 0,00</span></div>
+      <p class="cd-note">{% render 'maeve-t', nl: 'Verzendkosten en kortingen worden bij het afrekenen berekend.', en: 'Shipping and discounts are calculated at checkout.', es: 'Los gastos de envío y los descuentos se calculan al finalizar la compra.', fr: 'Les frais de livraison et les remises sont calculés au moment du paiement.', de: 'Versandkosten und Rabatte werden an der Kasse berechnet.' %}</p>
+      <a class="btn solid cd-checkout" href="/checkout" id="cdCheckout">{% render 'maeve-t', nl: 'Afrekenen', en: 'Checkout', es: 'Finalizar compra', fr: 'Paiement', de: 'Zur Kasse' %}</a>
+      <a class="cd-viewcart" href="{{ routes.cart_url }}">{% render 'maeve-t', nl: 'Bekijk volledige winkelmandje', en: 'View full cart', es: 'Ver cesta completa', fr: 'Voir le panier complet', de: 'Gesamten Warenkorb ansehen' %}</a>
+    </div>
+  </aside>
+  {%- unless template.name == 'product' -%}{% render 'maeve-xsell' %}{%- endunless -%}
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <span class="logo">{{ shop.name }}</span>
+          <div class="foot-tagline">Where scents meet design</div>
+          <p>{% render 'maeve-t', nl: 'Roomsprays en geurstokjes met 360° print. Het enige merk ter wereld dat geur en beeld rondom samenbrengt.', en: 'Room sprays and reed diffusers with a 360° print. The only brand in the world that brings scent and image together all around.', es: 'Sprays de ambiente y difusores de varillas con estampado 360°. La única marca del mundo que une aroma e imagen alrededor del frasco.', fr: "Sprays d'ambiance et diffuseurs à bâtonnets à impression 360°. La seule marque au monde à réunir parfum et image tout autour du flacon.", de: 'Raumsprays und Duftstäbchen mit 360°-Druck. Die einzige Marke der Welt, die Duft und Bild rundum vereint.' %}</p>
+        </div>
+        <div>
+          <h4>Shop</h4>
+          <ul>
+            {%- assign footColl = 'alle-geuren,art,city,magical-japan,sicilian-summer,delfts-blauw,navullingen' | split: ',' -%}
+            {%- for ch in footColl -%}{%- assign fc = collections[ch] -%}{%- if fc != blank -%}<li><a href="{{ fc.url }}">{{ fc.title }}</a></li>{%- endif -%}{%- endfor -%}
+          </ul>
+        </div>
+        <div>
+          <h4>Maeve</h4>
+          <ul>
+            <li><a href="/pages/ons-verhaal">{% render 'maeve-t', nl: 'Ons verhaal', en: 'Our Story', es: 'Nuestra historia', fr: 'Notre histoire', de: 'Unsere Geschichte' %}</a></li>
+            <li><a href="/pages/zakelijk">{% render 'maeve-t', nl: 'Zakelijk', en: 'For Business', es: 'Empresas', fr: 'Entreprises', de: 'Für Unternehmen' %}</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Service</h4>
+          <ul>
+            <li><a href="/pages/veelgestelde-vragen">{% render 'maeve-t', nl: 'Veelgestelde vragen', en: 'FAQ', es: 'Preguntas frecuentes', fr: 'FAQ', de: 'Häufige Fragen' %}</a></li>
+            <li><a href="{{ routes.search_url }}">{% render 'maeve-t', nl: 'Zoeken', en: 'Search', es: 'Buscar', fr: 'Rechercher', de: 'Suchen' %}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. Alle rechten voorbehouden.</span>
+        <span>Where scents meet design</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    var MT = {
+      cart: {% render 'maeve-t', nl: '"Winkelmandje"', en: '"Cart"', es: '"Cesta"', fr: '"Panier"', de: '"Warenkorb"' %},
+      empty: {% render 'maeve-t', nl: '"Je winkelmandje is nog leeg."', en: '"Your cart is empty."', es: '"Tu cesta está vacía."', fr: '"Votre panier est vide."', de: '"Dein Warenkorb ist leer."' %},
+      remove: {% render 'maeve-t', nl: '"verwijder"', en: '"remove"', es: '"eliminar"', fr: '"retirer"', de: '"entfernen"' %},
+      inclShort: {% render 'maeve-t', nl: '"Inclusief korting"', en: '"Discount included"', es: '"Descuento incluido"', fr: '"Remise incluse"', de: '"Rabatt inklusive"' %},
+      incl: {% render 'maeve-t', nl: '"Inclusief "', en: '"Includes "', es: '"Incluye "', fr: '"Comprend "', de: '"Inklusive "' %},
+      shipFree: {% render 'maeve-t', nl: '"✓ Je bestelling wordt <strong>gratis verzonden</strong>"', en: '"✓ Your order ships <strong>free</strong>"', es: '"✓ Tu pedido se <strong>envía gratis</strong>"', fr: '"✓ Votre commande est <strong>livrée gratuitement</strong>"', de: '"✓ Deine Bestellung wird <strong>kostenlos versendet</strong>"' %},
+      shipLeftA: {% render 'maeve-t', nl: '"Nog <strong>"', en: '"<strong>"', es: '"Aún <strong>"', fr: '"Plus que <strong>"', de: '"Noch <strong>"' %},
+      shipLeftB: {% render 'maeve-t', nl: '"</strong> tot gratis verzending"', en: '"</strong> to go for free shipping"', es: '"</strong> para envío gratis"', fr: '"</strong> pour la livraison gratuite"', de: '"</strong> bis zum kostenlosen Versand"' %},
+      busy: {% render 'maeve-t', nl: '"Bezig…"', en: '"Loading…"', es: '"Cargando…"', fr: '"Chargement…"', de: '"Lädt…"' %}
+    };
+    document.getElementById('menuBtn').addEventListener('click',function(){
+      document.getElementById('mobileMenu').classList.toggle('open');
+    });
+    (function(){
+      var drawer=document.getElementById('cartDrawer'), ov=document.getElementById('cartOverlay'),
+          body=document.getElementById('cdBody'), foot=document.getElementById('cdFoot');
+      function money(c){return '€ '+(c/100).toFixed(2).replace('.',',')}
+      function render(cart){
+        document.querySelectorAll('#cartLink').forEach(function(el){el.textContent=MT.cart+' ('+cart.item_count+')'});
+        if(!body)return;
+        if(!cart.item_count){ body.innerHTML='<div class="cd-empty">'+MT.empty+'</div>'; if(foot)foot.style.display='none'; return; }
+        if(foot)foot.style.display='';
+        var h='';
+        cart.items.forEach(function(it){
+          var img=it.image?it.image:'';
+          var disc=(it.original_line_price>it.final_line_price);
+          var price=disc
+            ? '<s class="cd-was">'+money(it.original_line_price)+'</s>'+money(it.final_line_price)
+            : money(it.final_line_price);
+          var dtitle='';
+          if(it.line_level_discount_allocations && it.line_level_discount_allocations.length){
+            var t=it.line_level_discount_allocations[0].discount_application; dtitle=(t&&t.title)?t.title:'';
+          }
+          h+='<div class="cd-item" data-key="'+it.key+'">'
+            +'<a href="'+it.url+'"><img src="'+img+'" alt=""></a>'
+            +'<div><div class="cd-it-name">'+it.product_title+'</div>'
+            +(it.variant_title?'<div class="cd-it-variant">'+it.variant_title+'</div>':'')
+            +(disc&&dtitle?'<span class="cd-it-disc">✓ '+dtitle+'</span>':'')
+            +'<div class="cd-it-qty"><button data-act="dec" aria-label="Minder">−</button><span>'+it.quantity+'</span><button data-act="inc" aria-label="Meer">+</button></div></div>'
+            +'<div class="cd-it-right"><span class="cd-it-price">'+price+'</span><button class="cd-it-remove" data-act="rm">'+MT.remove+'</button></div>'
+            +'</div>';
+        });
+        body.innerHTML=h;
+        var st=document.getElementById('cdSubtotal'), dl=document.getElementById('cdDiscount');
+        if(cart.total_discount>0){
+          var titles=(cart.cart_level_discount_applications||[]).map(function(d){return d.title;});
+          (cart.items||[]).forEach(function(it){(it.line_level_discount_allocations||[]).forEach(function(a){var t=a.discount_application; if(t&&t.title&&titles.indexOf(t.title)<0)titles.push(t.title);});});
+          if(dl){ dl.style.display=''; dl.innerHTML='<span>'+(titles.length?(MT.incl+titles.join(', ')):MT.inclShort)+'</span><span class="cd-disc-amt">− '+money(cart.total_discount)+'</span>'; }
+          if(st)st.innerHTML='<s class="cd-was">'+money(cart.original_total_price)+'</s>'+money(cart.total_price);
+        } else {
+          if(dl)dl.style.display='none';
+          if(st)st.textContent=money(cart.total_price);
+        }
+        var sh=document.getElementById('cdShip');
+        if(sh){
+          var FREE=4000, t=cart.total_price;
+          if(t>=FREE){ sh.className='cd-ship is-free'; sh.innerHTML='<span>'+MT.shipFree+'</span><span class="cd-ship-bar"><i style="width:100%"></i></span>'; }
+          else { var pct=Math.max(2,Math.round(t/FREE*100)); sh.className='cd-ship'; sh.innerHTML='<span>'+MT.shipLeftA+money(FREE-t)+MT.shipLeftB+'</span><span class="cd-ship-bar"><i style="width:'+pct+'%"></i></span>'; }
+          sh.style.display='';
+        }
+      }
+      window.maeveUpdateCart=function(cb){ fetch('/cart.js').then(function(r){return r.json()}).then(function(c){render(c); if(cb)cb(c);}); };
+      window.maeveOpenCart=function(){ if(!drawer)return; window.maeveUpdateCart(); drawer.classList.add('on'); drawer.setAttribute('aria-hidden','false'); if(ov){ov.hidden=false; requestAnimationFrame(function(){ov.classList.add('on')});} document.body.classList.add('cd-open'); };
+      window.maeveCloseCart=function(){ if(!drawer)return; drawer.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); if(ov){ov.classList.remove('on'); setTimeout(function(){ov.hidden=true},320);} document.body.classList.remove('cd-open'); };
+      function change(key,qty){ fetch('/cart/change.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:key,quantity:qty})}).then(function(r){return r.json()}).then(render); }
+      if(body)body.addEventListener('click',function(e){
+        var b=e.target.closest('button'); if(!b)return; var item=e.target.closest('.cd-item'); if(!item)return;
+        var key=item.getAttribute('data-key'); var q=parseInt(item.querySelector('.cd-it-qty span').textContent,10)||1; var act=b.getAttribute('data-act');
+        if(act==='inc')change(key,q+1); else if(act==='dec')change(key,Math.max(0,q-1)); else if(act==='rm')change(key,0);
+      });
+      var cc=document.getElementById('cdClose'); if(cc)cc.addEventListener('click',window.maeveCloseCart);
+      if(ov)ov.addEventListener('click',window.maeveCloseCart);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')window.maeveCloseCart();});
+      document.querySelectorAll('#cartLink, #mobileMenu a[href$="/cart"]').forEach(function(a){ a.addEventListener('click',function(e){e.preventDefault(); window.maeveOpenCart();}); });
+    })();
+    (function(){
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.1});
+      document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+    })();
+  </script>
+  {%- if template.name == 'index' -%}{% render 'maeve-index-js' %}{%- endif -%}
+  {%- if template.name == 'product' -%}{% render 'maeve-product-js' %}{%- endif -%}
+</body>
+</html>

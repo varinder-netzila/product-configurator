@@ -1,0 +1,17 @@
+{%- liquid
+  assign _iso = localization.language.iso_code | default: request.locale.iso_code | default: 'nl'
+  assign _out = nl
+  if _iso == 'en'
+    assign _out = en
+  elsif _iso == 'es'
+    assign _out = es | default: en
+  elsif _iso == 'fr'
+    assign _out = fr | default: en
+  elsif _iso == 'de'
+    assign _out = de | default: en
+  endif
+  if _out == blank
+    assign _out = nl
+  endif
+  echo _out
+-%}

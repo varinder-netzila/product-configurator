@@ -1,0 +1,55 @@
+<section class="values">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+    <div class="vgrid">
+      {%- for block in section.blocks -%}
+        <div class="vcol reveal" {{ block.shopify_attributes }}{% unless forloop.first %} style="transition-delay:.{{ forloop.index0 | times: 7 }}s"{% endunless %}>
+          <span class="num">{{ block.settings.num }}</span>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.shopall_label != blank -%}
+      <div class="shopall reveal">
+        <a class="btn solid" href="{{ section.settings.shopall_link }}">{{ section.settings.shopall_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Waarom Maeve",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Waarom Maeve" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Geur die je <em>ziet, ruikt en houdt.</em>" },
+    { "type": "text", "id": "shopall_label", "label": "Knop-tekst", "default": "Geef geur met karakter" },
+    { "type": "url", "id": "shopall_link", "label": "Knop-link" }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Pijler",
+      "settings": [
+        { "type": "text", "id": "num", "label": "Nummer", "default": "I." },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Geur & design in één" },
+        { "type": "textarea", "id": "text", "label": "Tekst", "default": "Verfijnde geurformules in een flacon die rondom een kunstwerk draagt." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Waarom Maeve",
+    "blocks": [
+      { "type": "value", "settings": { "num": "I.", "title": "Geur & design in één", "text": "Verfijnde geurformules in een flacon die rondom een kunstwerk draagt. Decoratief én voelbaar." } },
+      { "type": "value", "settings": { "num": "II.", "title": "Jouw eigen ontwerp", "text": "Dankzij onze 360°-druk maak je van elke fles een eigen verhaal — een foto, een kaart, jouw idee." } },
+      { "type": "value", "settings": { "num": "III.", "title": "Gemaakt om te blijven", "text": "Elke fles is navulbaar. De geur raakt op, het beeld blijft staan — jaar na jaar." } },
+      { "type": "value", "settings": { "num": "IV.", "title": "Een cadeau met karakter", "text": "Stijlvol verpakt en klaar om te geven. Persoonlijk, verfijnd en niet-alledaags." } }
+    ]
+  }]
+}
+{% endschema %}

@@ -1,0 +1,120 @@
+<section class="maeve-compare">
+  <div class="wrap cmp-wrap">
+    <div class="cmp-intro reveal">
+      <h2>{% render 'maeve-t', nl: section.settings.heading, en: 'Why MAEVE is the <em>right choice.</em>', es: 'Por qué MAEVE es la <em>elección acertada.</em>', fr: 'Pourquoi MAEVE est le <em>bon choix.</em>', de: 'Warum MAEVE die <em>richtige Wahl</em> ist.' %}</h2>
+      {%- if section.settings.subheading != blank -%}<p>{% render 'maeve-t', nl: section.settings.subheading, en: 'Scent, art and sustainability — brought together in one bottle.', es: 'Aroma, arte y sostenibilidad — reunidos en un solo frasco.', fr: 'Parfum, art et durabilité — réunis dans un seul flacon.', de: 'Duft, Kunst und Nachhaltigkeit — vereint in einer Flasche.' %}</p>{%- endif -%}
+    </div>
+
+    <div class="cmp-table reveal">
+      <div class="cmp-grid">
+        <div class="cmp-bglayer" aria-hidden="true">
+          <span class="cmp-bg cmp-bg-labels"></span>
+          <span class="cmp-bg cmp-bg-brand"></span>
+        </div>
+
+        <div class="cmp-h cmp-h-empty"></div>
+        <div class="cmp-h cmp-h-brand"><span class="cmp-brandname">{{ section.settings.brand_name }}</span></div>
+        <div class="cmp-h">
+          {%- if section.settings.col2_image -%}<img class="cmp-thumb" src="{{ section.settings.col2_image | image_url: width: 120 }}" alt="">{%- endif -%}
+          <span>{% render 'maeve-t', nl: section.settings.col2_name, en: 'Ordinary room sprays', es: 'Sprays de ambiente corrientes', fr: "Sprays d'ambiance ordinaires", de: 'Gewöhnliche Raumsprays' %}</span>
+        </div>
+        <div class="cmp-h">
+          {%- if section.settings.col3_image -%}<img class="cmp-thumb" src="{{ section.settings.col3_image | image_url: width: 120 }}" alt="">{%- endif -%}
+          <span>{% render 'maeve-t', nl: section.settings.col3_name, en: 'Standard reed diffusers', es: 'Difusores de varillas estándar', fr: 'Diffuseurs à bâtonnets standard', de: 'Standard-Duftstäbchen' %}</span>
+        </div>
+
+        {%- for b in section.blocks -%}
+          <div class="cmp-cell cmp-cell-label" {{ b.shopify_attributes }}>{{ b.settings.label }}</div>
+          <div class="cmp-cell cmp-cell-brand">{% if b.settings.brand %}<span class="ico ico-yes">✓</span>{% else %}<span class="ico ico-no">✕</span>{% endif %}</div>
+          <div class="cmp-cell">{% if b.settings.col2 %}<span class="ico ico-yes">✓</span>{% else %}<span class="ico ico-no">✕</span>{% endif %}</div>
+          <div class="cmp-cell">{% if b.settings.col3 %}<span class="ico ico-yes">✓</span>{% else %}<span class="ico ico-no">✕</span>{% endif %}</div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.maeve-compare { padding: 64px 0; }
+.cmp-wrap { display: flex; align-items: center; gap: 56px; }
+.cmp-intro { flex: 0 0 34%; }
+.cmp-intro h2 { font-family: var(--serif); font-size: clamp(32px, 3.4vw, 50px); line-height: 1.08; color: var(--ink); }
+.cmp-intro h2 em { font-style: italic; color: var(--clay); }
+.cmp-intro p { color: var(--ink-soft); margin-top: 16px; max-width: 38ch; }
+.cmp-table { flex: 1; }
+.cmp-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; position: relative; }
+.cmp-bglayer { position: absolute; inset: 0; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; grid-template-rows: 1fr; z-index: 0; pointer-events: none; }
+.cmp-bg { border-radius: 16px; }
+.cmp-bg-labels { grid-column: 1; background: #FBF8F2; border: 1px solid var(--line); }
+.cmp-bg-brand { grid-column: 2; background: linear-gradient(180deg, #A65A3F, #D9A07F); box-shadow: 0 18px 40px rgba(166,90,63,.22); }
+.cmp-h, .cmp-cell { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; }
+.cmp-h { flex-direction: column; gap: 6px; min-height: 96px; padding: 16px 10px; font-size: 13px; color: var(--ink-soft); text-align: center; line-height: 1.25; }
+.cmp-h-brand { color: #fff; }
+.cmp-brandname { font-family: var(--serif); font-size: 22px; color: #fff; }
+.cmp-thumb { height: 38px; width: auto; object-fit: contain; }
+.cmp-cell { min-height: 56px; padding: 12px 6px; }
+.cmp-cell-label { justify-content: flex-start; text-align: left; font-size: 14.5px; color: var(--ink); padding-left: 24px; padding-right: 16px; line-height: 1.3; }
+.ico { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 13px; line-height: 1; flex: none; }
+.ico-yes { background: rgba(166,90,63,.13); color: var(--clay); }
+.ico-no { color: #BC5640; font-size: 16px; }
+.cmp-cell-brand .ico-yes { background: #fff; color: var(--clay); }
+.cmp-cell-brand .ico-no { color: #fff; }
+@media (max-width: 900px) {
+  .maeve-compare { padding: 56px 0; }
+  .cmp-wrap { flex-direction: column; align-items: stretch; gap: 28px; }
+  .cmp-intro { flex: none; }
+  .cmp-intro p { max-width: none; }
+}
+@media (max-width: 640px) {
+  .cmp-grid { grid-template-columns: 1.5fr .9fr .9fr .9fr; }
+  .cmp-h { min-height: 84px; padding: 14px 4px; font-size: 11.5px; }
+  .cmp-brandname { font-size: 17px; }
+  .cmp-thumb { height: 28px; }
+  .cmp-cell { min-height: 52px; padding: 11px 4px; }
+  .cmp-cell-label { font-size: 12.5px; padding-left: 14px; padding-right: 8px; }
+  .cmp-bg, .cmp-bg-brand { border-radius: 12px; }
+  .ico { width: 22px; height: 22px; font-size: 11px; }
+  .ico-no { font-size: 13px; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Vergelijking",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Waarom MAEVE de <em>juiste keuze</em> is." },
+    { "type": "textarea", "id": "subheading", "label": "Subtekst", "default": "Geur, kunst en duurzaamheid — samengebracht in één fles." },
+    { "type": "text", "id": "brand_name", "label": "Merk-kolom naam", "default": "MAEVE" },
+    { "type": "text", "id": "col2_name", "label": "Kolom 2 naam", "default": "Gewone roomsprays" },
+    { "type": "image_picker", "id": "col2_image", "label": "Kolom 2 afbeelding (optioneel)" },
+    { "type": "text", "id": "col3_name", "label": "Kolom 3 naam", "default": "Standaard geurstokjes" },
+    { "type": "image_picker", "id": "col3_image", "label": "Kolom 3 afbeelding (optioneel)" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Kenmerk",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Kenmerk", "default": "Kenmerk" },
+        { "type": "checkbox", "id": "brand", "label": "MAEVE", "default": true },
+        { "type": "checkbox", "id": "col2", "label": "Kolom 2", "default": false },
+        { "type": "checkbox", "id": "col3", "label": "Kolom 3", "default": false }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Vergelijking",
+    "blocks": [
+      { "type": "row", "settings": { "label": "Hoogwaardige geurformule", "brand": true, "col2": true, "col3": true } },
+      { "type": "row", "settings": { "label": "Verkrijgbaar als spray én stokjes", "brand": true, "col2": true, "col3": true } },
+      { "type": "row", "settings": { "label": "Stijlvol op je dressoir", "brand": true, "col2": true, "col3": false } },
+      { "type": "row", "settings": { "label": "Navulbaar, minder verspilling", "brand": true, "col2": true, "col3": false } },
+      { "type": "row", "settings": { "label": "360° kunstprint rondom de fles", "brand": true, "col2": false, "col3": false } },
+      { "type": "row", "settings": { "label": "Geur én design in één", "brand": true, "col2": false, "col3": false } },
+      { "type": "row", "settings": { "label": "Eigen ontwerp mogelijk", "brand": true, "col2": false, "col3": false } },
+      { "type": "row", "settings": { "label": "Zonder etiket of naad", "brand": true, "col2": false, "col3": false } }
+    ]
+  }]
+}
+{% endschema %}

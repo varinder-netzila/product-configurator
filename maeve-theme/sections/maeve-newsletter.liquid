@@ -1,0 +1,23 @@
+<section class="newsletter">
+  <div class="reveal">
+    <h2 class="serif">{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.text }}</p>
+    <form class="nl-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Welkom ✓';">
+      <input type="email" placeholder="{{ section.settings.placeholder | escape }}" required>
+      <button type="submit">{{ section.settings.button_label }}</button>
+    </form>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Nieuwsbrief",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Als eerste de nieuwe prints zien?" },
+    { "type": "textarea", "id": "text", "label": "Tekst", "default": "Elke maand één nieuwe kunstenaarssamenwerking. Schrijf je in en ontvang 10% korting op je eerste rotatie." },
+    { "type": "text", "id": "placeholder", "label": "Veld-placeholder", "default": "Je e-mailadres" },
+    { "type": "text", "id": "button_label", "label": "Knop-tekst", "default": "Inschrijven" }
+  ],
+  "presets": [{ "name": "Nieuwsbrief" }]
+}
+{% endschema %}

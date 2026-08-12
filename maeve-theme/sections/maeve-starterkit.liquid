@@ -1,0 +1,306 @@
+{% render 'maeve-starterkit-css' %}
+
+{%- comment -%}
+  Starterkit-builder — geleide flow met auto-doorgaan:
+   1) geurstokje (geur + formaat)  2) roomspray (geur + formaat)
+   3) navulling van beide (auto; per formule: stokjes-navulling + spray-navulling)
+   4) eenmalig, of een maandabonnement op ALLEEN de navullingen (25% korting)
+  Navullingen hebben 2 varianten: "Navulling voor: Roomspray" en "...Geurstokjes".
+  Kortingen/frequenties komen uit variant.selling_plan_allocations (Shopify Subscriptions).
+{%- endcomment -%}
+
+{%- assign lijnen = section.settings.lijn_collections | default: 'art,city,magical-japan,sicilian-summer,delfts-blauw' | split: ',' -%}
+
+<div class="sk">
+  <section class="sk-hero">
+    <div class="wrap">
+      <span class="eyebrow">{% render 'maeve-t', nl: section.settings.eyebrow, en: 'Starter kit', es: 'Kit de inicio', fr: 'Kit de démarrage', de: 'Starter-Set' %}</span>
+      <h1>{% render 'maeve-t', nl: section.settings.heading, en: 'Compose your own <em>starter kit</em>.', es: 'Compón tu propio <em>kit de inicio</em>.', fr: "Composez votre propre <em>kit de démarrage</em>.", de: 'Stellen Sie Ihr eigenes <em>Starter-Set</em> zusammen.' %}</h1>
+      <p>{% render 'maeve-t', nl: section.settings.intro, en: 'A reed diffuser for a constant base, a room spray for a fresh touch — plus the refill for both. Composed in four steps.', es: 'Un difusor de varillas para una base constante, un spray de ambiente para un toque fresco — más la recarga de ambos. Compuesto en cuatro pasos.', fr: "Un diffuseur à bâtonnets pour une base constante, un spray d'ambiance pour une touche fraîche — plus la recharge des deux. Composé en quatre étapes.", de: 'Ein Duftstäbchen für eine konstante Basis, ein Raumspray für einen frischen Akzent — plus die Nachfüllung für beide. In vier Schritten zusammengestellt.' %}</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="sk-grid">
+      <div class="sk-builder">
+
+        <div class="sk-step" id="skStep1">
+          <div class="sk-step-head"><span class="n">1</span><h2>{% render 'maeve-t', nl: section.settings.s1_heading, en: 'Choose your reed diffuser', es: 'Elige tu difusor de varillas', fr: 'Choisissez votre diffuseur à bâtonnets', de: 'Wählen Sie Ihr Duftstäbchen' %}</h2><span class="hint" id="skStkHint"></span></div>
+          <p class="sk-step-sub">{% render 'maeve-t', nl: 'Begin hier — kies de geur voor je <strong>geurstokje</strong> en het formaat. De foto past zich aan je keuze aan.', en: 'Start here — choose the scent for your <strong>reed diffuser</strong> and the size. The photo adapts to your choice.', es: 'Comienza aquí — elige el aroma de tu <strong>difusor de varillas</strong> y el tamaño. La foto se adapta a tu elección.', fr: 'Commencez ici — choisissez le parfum de votre <strong>diffuseur à bâtonnets</strong> et la taille. La photo s’adapte à votre choix.', de: 'Beginnen Sie hier — wählen Sie den Duft für Ihr <strong>Duftstäbchen</strong> und die Größe. Das Foto passt sich Ihrer Wahl an.' %}</p>
+          <div class="sk-chips" id="skStkSizes"></div>
+          <div class="sk-scents" id="skStkScents"></div>
+        </div>
+
+        <div class="sk-step" id="skStep2">
+          <div class="sk-step-head"><span class="n">2</span><h2>{% render 'maeve-t', nl: section.settings.s2_heading, en: 'Choose your room spray', es: 'Elige tu spray de ambiente', fr: "Choisissez votre spray d'ambiance", de: 'Wählen Sie Ihr Raumspray' %}</h2><span class="hint" id="skSprHint"></span></div>
+          <p class="sk-step-sub">{% render 'maeve-t', nl: 'Voeg nu een <strong>roomspray</strong> toe — dezelfde geur als je stokje, of juist een andere.', en: 'Now add a <strong>room spray</strong> — the same scent as your diffuser, or a different one.', es: 'Ahora añade un <strong>spray de ambiente</strong> — el mismo aroma que tu difusor, o uno diferente.', fr: 'Ajoutez maintenant un <strong>spray d’ambiance</strong> — le même parfum que votre diffuseur, ou un autre.', de: 'Fügen Sie nun ein <strong>Raumspray</strong> hinzu — derselbe Duft wie Ihr Diffusor oder ein anderer.' %}</p>
+          <div class="sk-chips" id="skSprSizes"></div>
+          <div class="sk-scents" id="skSprScents"></div>
+        </div>
+
+        <div class="sk-step" id="skStep3">
+          <div class="sk-step-head"><span class="n">3</span><h2>{% render 'maeve-t', nl: section.settings.s3_heading, en: 'The refill for both', es: 'La recarga de ambos', fr: 'La recharge des deux', de: 'Die Nachfüllung für beide' %}</h2></div>
+          <p class="sk-step-sub">{% render 'maeve-t', nl: 'Automatisch erbij: de <strong>navulling</strong> voor je geurstokje én je roomspray (300 ml, eigen formule per uitvoering). Liever niet? Vink uit.', en: 'Included automatically: the <strong>refill</strong> for both your reed diffuser and your room spray (300 ml, a dedicated formula for each). Rather not? Untick.', es: 'Incluida automáticamente: la <strong>recarga</strong> para tu difusor de varillas y tu spray de ambiente (300 ml, una fórmula propia para cada uno). ¿Prefieres que no? Desmárcala.', fr: 'Incluse automatiquement : la <strong>recharge</strong> pour votre diffuseur à bâtonnets et votre spray d’ambiance (300 ml, une formule dédiée à chacun). Vous préférez non ? Décochez.', de: 'Automatisch enthalten: die <strong>Nachfüllung</strong> für Ihr Duftstäbchen und Ihr Raumspray (300 ml, eine eigene Formel für jedes). Lieber nicht? Abwählen.' %}</p>
+          <div class="sk-freq" style="grid-template-columns:1fr">
+            <label class="active" id="skRefillToggle">
+              <span class="t"><input type="checkbox" id="skRefillChk" checked> {% render 'maeve-t', nl: 'Voeg de navullingen toe', en: 'Add the refills', es: 'Añadir las recargas', fr: 'Ajouter les recharges', de: 'Nachfüllungen hinzufügen' %}</span>
+              <span class="d">{% render 'maeve-t', nl: 'Twee navullingen: één voor je geurstokje, één voor je roomspray.', en: 'Two refills: one for your reed diffuser, one for your room spray.', es: 'Dos recargas: una para tu difusor de varillas y otra para tu spray de ambiente.', fr: 'Deux recharges : une pour votre diffuseur à bâtonnets, une pour votre spray d’ambiance.', de: 'Zwei Nachfüllungen: eine für Ihr Duftstäbchen, eine für Ihr Raumspray.' %}</span>
+            </label>
+          </div>
+          <div class="sk-refills" id="skRefills"></div>
+        </div>
+
+        <div class="sk-step" id="skStep4">
+          <div class="sk-step-head"><span class="n">4</span><h2>{% render 'maeve-t', nl: section.settings.s4_heading | default: 'Navulling-abonnement of eenmalig', en: 'Refill subscription or one-time', es: 'Suscripción de recarga o única', fr: 'Abonnement recharge ou achat unique', de: 'Nachfüll-Abo oder einmalig' %}</h2></div>
+          <p class="sk-step-sub">{% render 'maeve-t', nl: 'Je geurstokje en roomspray koop je eenmalig. Neem je een <strong>abonnement op de navullingen</strong>, dan krijg je', en: 'Your reed diffuser and room spray are a one-time purchase. Subscribe to the <strong>refills</strong> and you get', es: 'Tu difusor de varillas y tu spray de ambiente son una compra única. Suscríbete a las <strong>recargas</strong> y obtienes', fr: 'Votre diffuseur à bâtonnets et votre spray d’ambiance sont un achat unique. Abonnez-vous aux <strong>recharges</strong> et bénéficiez de', de: 'Ihr Duftstäbchen und Ihr Raumspray sind ein einmaliger Kauf. Abonnieren Sie die <strong>Nachfüllungen</strong> und erhalten Sie' %} <strong class="sk-save" id="skSavePct">25%</strong> {% render 'maeve-t', nl: 'korting — elke maand vers, op elk moment opzegbaar.', en: 'off — fresh every month, cancel anytime.', es: 'de descuento — fresco cada mes, cancela cuando quieras.', fr: 'de réduction — frais chaque mois, annulable à tout moment.', de: 'Rabatt — jeden Monat frisch, jederzeit kündbar.' %}</p>
+          <div class="sk-freq" id="skFreq">
+            <label data-freq="once">
+              <span class="t"><input type="radio" name="skfreq" value="once" checked> {% render 'maeve-t', nl: 'Eenmalig', en: 'One-time', es: 'Compra única', fr: 'Achat unique', de: 'Einmalig' %}</span>
+              <span class="d">{% render 'maeve-t', nl: 'Alles wordt één keer geleverd, navullingen tegen normale prijs.', en: 'Everything is delivered once, refills at the regular price.', es: 'Todo se entrega una vez, las recargas a precio normal.', fr: 'Tout est livré une fois, recharges au prix normal.', de: 'Alles wird einmal geliefert, Nachfüllungen zum regulären Preis.' %}</span>
+            </label>
+            <label data-freq="month" class="active-target">
+              <span class="t"><input type="radio" name="skfreq" value="month"> {% render 'maeve-t', nl: 'Navulling-abonnement', en: 'Refill subscription', es: 'Suscripción de recarga', fr: 'Abonnement recharge', de: 'Nachfüll-Abonnement' %} <span class="badge save" id="skFreqBadge">−25%</span></span>
+              <span class="d save-line" id="skFreqDesc">{% render 'maeve-t', nl: 'Elke maand de navullingen, met 25% korting. Stokje &amp; spray blijven eenmalig.', en: 'The refills every month, 25% off. Diffuser &amp; spray stay one-time.', es: 'Las recargas cada mes, 25% de descuento. El difusor &amp; spray siguen siendo compra única.', fr: 'Les recharges chaque mois, 25% de réduction. Le diffuseur &amp; spray restent en achat unique.', de: 'Die Nachfüllungen jeden Monat, 25% Rabatt. Diffusor &amp; Spray bleiben einmalig.' %}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="sk-sum">
+          <h3>{% render 'maeve-t', nl: section.settings.sum_heading | default: 'Jouw starterkit', en: 'Your starter kit', es: 'Tu kit de inicio', fr: 'Votre coffret découverte', de: 'Dein Starter-Set' %}</h3>
+          <p class="sub" id="skSubtitle">{% render 'maeve-t', nl: 'Geurstokje · roomspray · navulling', en: 'Reed diffuser · room spray · refill', es: 'Difusor de varillas · spray de ambiente · recarga', fr: 'Diffuseur à bâtonnets · spray d’ambiance · recharge', de: 'Duftstäbchen · Raumspray · Nachfüllung' %}</p>
+          <div class="sk-slots" id="skSlots"></div>
+          <div class="sk-prices"><span>{% render 'maeve-t', nl: 'Subtotaal', en: 'Subtotal', es: 'Subtotal', fr: 'Sous-total', de: 'Zwischensumme' %}</span><span id="skNow">—</span></div>
+          <div class="sk-total">
+            <span class="lab" id="skTotalLab">{% render 'maeve-t', nl: 'Totaal', en: 'Total', es: 'Total', fr: 'Total', de: 'Gesamt' %}</span>
+            <span class="val" id="skTotal">—</span>
+          </div>
+          <p class="sk-note" id="skNote"></p>
+          <button class="sk-cta" id="skAdd" disabled>{% render 'maeve-t', nl: 'Kies je geuren', en: 'Choose your scents', es: 'Elige tus aromas', fr: 'Choisissez vos parfums', de: 'Wählen Sie Ihre Düfte' %}</button>
+          <div class="sk-usps">
+            <span>{% render 'maeve-t', nl: 'Gratis verzending vanaf € 35', en: 'Free shipping from € 35', es: 'Envío gratis a partir de € 35', fr: 'Livraison gratuite dès € 35', de: 'Kostenloser Versand ab € 35' %}</span>
+            <span>{% render 'maeve-t', nl: 'Navulbaar — minder plastic', en: 'Refillable — less plastic', es: 'Recargable — menos plástico', fr: 'Rechargeable — moins de plastique', de: 'Nachfüllbar — weniger Plastik' %}</span>
+            <span>{% render 'maeve-t', nl: 'Abonnement maandelijks opzegbaar', en: 'Subscription cancellable monthly', es: 'Suscripción cancelable mensualmente', fr: 'Abonnement résiliable chaque mois', de: 'Abonnement monatlich kündbar' %}</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var RAW=[
+    {%- for h in lijnen -%}{%- assign hh = h | strip -%}{%- assign col = collections[hh] -%}{%- if col != blank -%}
+      {%- for p in col.products -%}
+        {%- assign pdesign = p.metafields.geur.design.value | default: p.title -%}
+        {%- assign puit = 'Roomspray' -%}{%- if p.handle contains 'geurstokjes' -%}{%- assign puit = 'Geurstokjes' -%}{%- elsif p.handle contains 'navulling' -%}{%- assign puit = 'Navulling' -%}{%- endif -%}
+        {%- assign pfb = p.featured_image | image_url: width: 600 -%}
+        { design: {{ pdesign | json }}, uit: {{ puit | json }}, variants: [
+          {%- for v in p.variants -%}
+            { opt: {{ v.option1 | json }}, id: {{ v.id }}, c: {{ v.price }}, ok: {{ v.available }}, img: {% if v.image %}{{ v.image | image_url: width: 600 | json }}{% else %}{{ pfb | json }}{% endif %}
+            {%- if p.handle contains 'navulling' -%}, plans: [{%- for a in v.selling_plan_allocations -%}{sp:{{ a.selling_plan.id }},price:{{ a.price }},was:{{ a.compare_at_price | default: v.price }},name:{{ a.selling_plan.name | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endif -%} }
+            {%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ] },
+      {%- endfor -%}
+    {%- endif -%}{%- endfor -%}
+  ];
+
+  var DES={}, ORDER=[];
+  RAW.forEach(function(r){
+    if(!DES[r.design]){ DES[r.design]={}; ORDER.push(r.design); }
+    if(r.uit==='Navulling'){ DES[r.design].Navulling={}; r.variants.forEach(function(v){ DES[r.design].Navulling[v.opt]=v; }); }
+    else if(r.uit==='Geurstokjes'||r.uit==='Roomspray'){ var o={vars:{}}; r.variants.forEach(function(v){ o.vars[v.opt]=v; }); DES[r.design][r.uit]=o; }
+  });
+  var STK_ORDER=ORDER.filter(function(d){return DES[d].Geurstokjes;});
+  var SPR_ORDER=ORDER.filter(function(d){return DES[d].Roomspray;});
+
+  var SIZES=['100 ml','200 ml','300 ml'];
+  var S={ stk:{d:null,s:'200 ml'}, spr:{d:null,s:'200 ml'}, refills:true, freq:'once' };
+  var MT={
+    diffuser: {% render 'maeve-t', nl: '"geurstokje"', en: '"reed diffuser"', es: '"difusor de varillas"', fr: '"diffuseur à bâtonnets"', de: '"Duftstäbchen"' %},
+    spray: {% render 'maeve-t', nl: '"roomspray"', en: '"room spray"', es: '"spray de ambiente"', fr: '"spray d’ambiance"', de: '"Raumspray"' %},
+    chooseFirst: {% render 'maeve-t', nl: '"Kies eerst je geurstokje en roomspray."', en: '"First choose your reed diffuser and room spray."', es: '"Primero elige tu difusor de varillas y tu spray de ambiente."', fr: '"Choisissez d’abord votre diffuseur à bâtonnets et votre spray d’ambiance."', de: '"Wählen Sie zuerst Ihr Duftstäbchen und Ihr Raumspray."' %},
+    refillDash: {% render 'maeve-t', nl: '"Navulling — "', en: '"Refill — "', es: '"Recarga — "', fr: '"Recharge — "', de: '"Nachfüllung — "' %},
+    forLabel: {% render 'maeve-t', nl: '"voor "', en: '"for "', es: '"para "', fr: '"pour "', de: '"für "' %},
+    toBeChosen: {% render 'maeve-t', nl: '" — nog te kiezen"', en: '" — still to choose"', es: '" — aún por elegir"', fr: '" — encore à choisir"', de: '" — noch zu wählen"' %},
+    monthly: {% render 'maeve-t', nl: '" · maandelijks"', en: '" · monthly"', es: '" · mensual"', fr: '" · mensuel"', de: '" · monatlich"' %},
+    payNow: {% render 'maeve-t', nl: '"Nu te betalen"', en: '"Pay now"', es: '"A pagar ahora"', fr: '"À payer maintenant"', de: '"Jetzt zu zahlen"' %},
+    total: {% render 'maeve-t', nl: '"Totaal"', en: '"Total"', es: '"Total"', fr: '"Total"', de: '"Gesamt"' %},
+    chooseScents: {% render 'maeve-t', nl: '"Kies je geuren"', en: '"Choose your scents"', es: '"Elige tus aromas"', fr: '"Choisissez vos parfums"', de: '"Wählen Sie Ihre Düfte"' %},
+    chooseBoth: {% render 'maeve-t', nl: '"Kies een geurstokje én een roomspray."', en: '"Choose both a reed diffuser and a room spray."', es: '"Elige un difusor de varillas y un spray de ambiente."', fr: '"Choisissez à la fois un diffuseur à bâtonnets et un spray d’ambiance."', de: '"Wählen Sie sowohl ein Duftstäbchen als auch ein Raumspray."' %},
+    subNotActive: {% render 'maeve-t', nl: '"Navulling-abonnement nog niet actief"', en: '"Refill subscription not active yet"', es: '"Suscripción de recarga aún no activa"', fr: '"Abonnement recharge pas encore actif"', de: '"Nachfüll-Abonnement noch nicht aktiv"' %},
+    subNotActiveNote: {% render 'maeve-t', nl: '"De navullingen moeten nog aan het abonnementsplan gekoppeld worden in de Shopify Subscriptions-app. Eenmalig bestellen kan al wel."', en: '"The refills still need to be linked to the subscription plan in the Shopify Subscriptions app. A one-time order already works."', es: '"Las recargas aún deben vincularse al plan de suscripción en la app Shopify Subscriptions. El pedido único ya funciona."', fr: '"Les recharges doivent encore être liées au plan d’abonnement dans l’application Shopify Subscriptions. La commande unique fonctionne déjà."', de: '"Die Nachfüllungen müssen noch in der Shopify Subscriptions-App mit dem Abonnementplan verknüpft werden. Eine Einmalbestellung funktioniert bereits."' %},
+    startKitSub: {% render 'maeve-t', nl: '"Start kit + navulling-abonnement — "', en: '"Start kit + refill subscription — "', es: '"Kit de inicio + suscripción de recarga — "', fr: '"Kit de démarrage + abonnement recharge — "', de: '"Starter-Set + Nachfüll-Abonnement — "' %},
+    addKit: {% render 'maeve-t', nl: '"Voeg starterkit toe — "', en: '"Add starter kit — "', es: '"Añadir kit de inicio — "', fr: '"Ajouter le kit de démarrage — "', de: '"Starter-Set hinzufügen — "' %},
+    subNote: {% render 'maeve-t', nl: '"Stokje & spray eenmalig; navullingen elke maand met korting, opzegbaar wanneer je wilt."', en: '"Diffuser & spray one-time; refills every month at a discount, cancel whenever you like."', es: '"Difusor & spray una sola vez; recargas cada mes con descuento, cancela cuando quieras."', fr: '"Diffuseur & spray en achat unique ; recharges chaque mois avec réduction, annulable quand vous voulez."', de: '"Diffusor & Spray einmalig; Nachfüllungen jeden Monat mit Rabatt, jederzeit kündbar."' %},
+    refillsIncluded: {% render 'maeve-t', nl: '"Inclusief de navulling van beide."', en: '"Includes the refill for both."', es: '"Incluye la recarga de ambos."', fr: '"Inclut la recharge pour les deux."', de: '"Inklusive der Nachfüllung für beide."' %},
+    busy: {% render 'maeve-t', nl: '"Bezig…"', en: '"Loading…"', es: '"Cargando…"', fr: '"Chargement…"', de: '"Wird geladen…"' %},
+    everyMonthA: {% render 'maeve-t', nl: '"Elke maand de navullingen, met "', en: '"The refills every month, "', es: '"Las recargas cada mes, "', fr: '"Les recharges chaque mois, "', de: '"Die Nachfüllungen jeden Monat, "' %},
+    everyMonthB: {% render 'maeve-t', nl: '"% korting. Stokje & spray blijven eenmalig."', en: '"% off. Diffuser & spray stay one-time."', es: '"% de descuento. El difusor & spray siguen siendo compra única."', fr: '"% de réduction. Le diffuseur & spray restent en achat unique."', de: '"% Rabatt. Diffusor & Spray bleiben einmalig."' %}
+  };
+  var $=function(id){return document.getElementById(id)};
+  function money(c){return '€ '+(c/100).toFixed(2).replace('.',',')}
+  function leg(d,u){ return DES[d] && DES[d][u]; }
+  function variant(d,u,size){ var l=leg(d,u); return l ? (l.vars[size]||null) : null; }
+  function imgFor(d,u,size){ var v=variant(d,u,size); if(v && v.img) return v.img; var l=leg(d,u); if(l){ for(var k in l.vars){ if(l.vars[k].img) return l.vars[k].img; } } return ''; }
+  // navulling-variant voor een uitvoering (Geurstokjes-formule of Roomspray-formule)
+  function nav(d,formule){ return DES[d] && DES[d].Navulling ? DES[d].Navulling[formule] : null; }
+  function monthly(v){ if(!v||!v.plans||!v.plans.length)return null;
+    var m=v.plans.filter(function(p){return /every month/i.test(p.name) && !/2 month|3 month/i.test(p.name);})[0];
+    if(m)return m; // anders: hoogste korting
+    return v.plans.slice().sort(function(a,b){return (a.price/a.was)-(b.price/b.was);})[0];
+  }
+  function pct(p){ return p && p.was ? Math.round((1-p.price/p.was)*100) : 0; }
+
+  function renderSizes(boxId,order,u,cur){
+    var avail={};
+    order.forEach(function(d){var l=leg(d,u); if(l){for(var s in l.vars){if(l.vars[s].ok)avail[s]=true;}}});
+    $(boxId).innerHTML=SIZES.map(function(s){var ok=avail[s];
+      return '<button type="button" class="sk-chip'+(s===cur?' active':'')+(ok?'':' unavail')+'" data-size="'+s+'"'+(ok?'':' disabled')+'>'+s+'</button>';
+    }).join('');
+  }
+  function renderScents(boxId,order,u,sel,size){
+    $(boxId).innerHTML=order.map(function(d){
+      var isSel=d===sel; var img=imgFor(d,u,size); var im=img?'<img src="'+img+'" alt="'+d+'">':'';
+      return '<div class="sk-scent'+(isSel?' selected':'')+'" data-d="'+d.replace(/"/g,'&quot;')+'">'+
+        '<div class="pick">'+(isSel?'✓':'+')+'</div><div class="ph">'+im+'</div>'+
+        '<div class="meta"><h3>'+d+'</h3><p>'+u+' · '+size+'</p></div></div>';
+    }).join('');
+  }
+
+  // de twee navullingen: stokje-formule van stokje-geur, spray-formule van spray-geur
+  function refillList(){
+    var out=[];
+    if(S.stk.d){ var ng=nav(S.stk.d,'Geurstokjes'); if(ng) out.push({d:S.stk.d,formule:'Geurstokjes',v:ng,label:MT.diffuser}); }
+    if(S.spr.d){ var nr=nav(S.spr.d,'Roomspray'); if(nr) out.push({d:S.spr.d,formule:'Roomspray',v:nr,label:MT.spray}); }
+    return out;
+  }
+  function renderRefills(){
+    var box=$('skRefills');
+    if(!S.refills){ box.innerHTML=''; box.style.display='none'; return; }
+    box.style.display='';
+    var ds=refillList();
+    if(!ds.length){ box.innerHTML='<div class="sk-refill empty">'+MT.chooseFirst+'</div>'; return; }
+    box.innerHTML=ds.map(function(r){
+      return '<div class="sk-refill"><img src="'+(r.v.img||'')+'" alt=""><div class="rt">'+MT.refillDash+r.d+'<small>'+MT.forLabel+r.label+' · 300 ml · '+money(r.v.c)+'</small></div></div>';
+    }).join('');
+  }
+
+  function collect(){
+    var out=[];
+    var sv=variant(S.stk.d,'Geurstokjes',S.stk.s);
+    var pv=variant(S.spr.d,'Roomspray',S.spr.s);
+    if(sv) out.push({id:sv.id,c:sv.c,sub:false});
+    if(pv) out.push({id:pv.id,c:pv.c,sub:false});
+    if(S.refills){ refillList().forEach(function(r){
+      var m=S.freq==='month'?monthly(r.v):null;
+      out.push({id:r.v.id, c:(m?m.price:r.v.c), was:(m?m.was:null), sp:(m?m.sp:null), sub:!!m});
+    }); }
+    return out;
+  }
+
+  function renderSummary(){
+    var slots='';
+    function row(d,u,size,labelU){
+      if(!d){ return '<div class="sk-slot"><span class="dot">·</span><span style="color:var(--ink-soft)">'+labelU+MT.toBeChosen+'</span></div>'; }
+      var v=variant(d,u,size);
+      return '<div class="sk-slot filled"><img class="thumb" src="'+(imgFor(d,u,size)||'')+'" alt=""><span class="lines">'+d+'<small>'+labelU.toLowerCase()+' '+size+'</small></span><span class="amt">'+(v?money(v.c):'')+'</span></div>';
+    }
+    var capDiffuser=MT.diffuser.charAt(0).toUpperCase()+MT.diffuser.slice(1);
+    var capSpray=MT.spray.charAt(0).toUpperCase()+MT.spray.slice(1);
+    slots+=row(S.stk.d,'Geurstokjes',S.stk.s,capDiffuser);
+    slots+=row(S.spr.d,'Roomspray',S.spr.s,capSpray);
+    if(S.refills){ refillList().forEach(function(r){
+      var m=S.freq==='month'?monthly(r.v):null;
+      var amt = m ? '<span class="was">'+money(m.was)+'</span><span class="sk-save">'+money(m.price)+'</span>' : money(r.v.c);
+      slots+='<div class="sk-slot filled"><img class="thumb" src="'+(r.v.img||'')+'" alt=""><span class="lines">'+MT.refillDash+r.d+'<small>'+MT.forLabel+r.label+(m?MT.monthly:'')+'</small></span><span class="amt">'+amt+'</span></div>';
+    }); }
+    $('skSlots').innerHTML=slots;
+
+    var items=collect(), sum=0, missingPlan=false, hasSubItem=false;
+    items.forEach(function(it){ sum+=it.c; });
+    if(S.freq==='month'){ refillList().forEach(function(r){ if(!monthly(r.v)) missingPlan=true; else hasSubItem=true; }); }
+    var both=S.stk.d && S.spr.d;
+    var sub=S.freq==='month' && S.refills;
+
+    $('skNow').textContent=items.length?money(sum):'—';
+    $('skTotal').textContent=items.length?money(sum):'—';
+    $('skTotalLab').textContent=sub?MT.payNow:MT.total;
+
+    var btn=$('skAdd'), note=$('skNote');
+    if(!both){ btn.disabled=true; btn.textContent=MT.chooseScents; note.textContent=MT.chooseBoth; return; }
+    if(sub && missingPlan){
+      btn.disabled=true; btn.textContent=MT.subNotActive;
+      note.innerHTML=MT.subNotActiveNote;
+      return;
+    }
+    btn.disabled=false;
+    btn.textContent=sub?(MT.startKitSub+money(sum)):(MT.addKit+money(sum));
+    note.textContent=sub?MT.subNote:(S.refills?MT.refillsIncluded:'');
+  }
+
+  function renderAll(){
+    renderSizes('skStkSizes',STK_ORDER,'Geurstokjes',S.stk.s);
+    renderScents('skStkScents',STK_ORDER,'Geurstokjes',S.stk.d,S.stk.s);
+    $('skStkHint').textContent=S.stk.d?(S.stk.d+' · '+S.stk.s):'';
+    renderSizes('skSprSizes',SPR_ORDER,'Roomspray',S.spr.s);
+    renderScents('skSprScents',SPR_ORDER,'Roomspray',S.spr.d,S.spr.s);
+    $('skSprHint').textContent=S.spr.d?(S.spr.d+' · '+S.spr.s):'';
+    renderRefills();
+    renderSummary();
+  }
+
+  function goTo(id){ var el=$(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+  $('skStkSizes').addEventListener('click',function(e){var b=e.target.closest('.sk-chip');if(!b||b.disabled)return;S.stk.s=b.dataset.size;renderAll();});
+  $('skSprSizes').addEventListener('click',function(e){var b=e.target.closest('.sk-chip');if(!b||b.disabled)return;S.spr.s=b.dataset.size;renderAll();});
+  $('skStkScents').addEventListener('click',function(e){var c=e.target.closest('.sk-scent');if(!c)return;var d=c.dataset.d;var was=S.stk.d;S.stk.d=(S.stk.d===d?null:d);renderAll();if(S.stk.d&&was!==S.stk.d)setTimeout(function(){goTo('skStep2')},120);});
+  $('skSprScents').addEventListener('click',function(e){var c=e.target.closest('.sk-scent');if(!c)return;var d=c.dataset.d;var was=S.spr.d;S.spr.d=(S.spr.d===d?null:d);renderAll();if(S.spr.d&&was!==S.spr.d)setTimeout(function(){goTo('skStep3')},120);});
+  $('skRefillChk').addEventListener('change',function(){S.refills=this.checked;$('skRefillToggle').classList.toggle('active',this.checked);renderAll();if(this.checked)setTimeout(function(){goTo('skStep4')},120);});
+  $('skFreq').addEventListener('click',function(e){var l=e.target.closest('label');if(!l)return;
+    this.querySelectorAll('label').forEach(function(x){x.classList.remove('active')});l.classList.add('active');
+    var r=l.querySelector('input'); if(r)r.checked=true; S.freq=l.dataset.freq; renderSummary();
+  });
+  $('skAdd').addEventListener('click',function(){
+    if(!(S.stk.d && S.spr.d))return;
+    var items=collect().map(function(it){ var o={id:it.id,quantity:1}; if(it.sub && it.sp)o.selling_plan=it.sp; return o; });
+    var btn=$('skAdd'); btn.disabled=true; var old=btn.textContent; btn.textContent=MT.busy;
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:items})})
+      .then(function(r){return r.json()}).then(function(){ btn.disabled=false; btn.textContent=old;
+        if(window.maeveOpenCart)window.maeveOpenCart(); else if(window.maeveUpdateCart)window.maeveUpdateCart(); else location.href='/cart';
+      }).catch(function(){btn.disabled=false;btn.textContent=old;});
+  });
+
+  // dynamische korting in stap-4 tekst (uit allocations), fallback 25%
+  (function(){
+    var p=null;
+    for(var d in DES){ if(DES[d].Navulling){ for(var f in DES[d].Navulling){ var m=monthly(DES[d].Navulling[f]); if(m){p=m;break;} } } if(p)break; }
+    if(p){ var pc=pct(p); if(pc>0){ $('skSavePct').textContent=pc+'%'; $('skFreqBadge').textContent='−'+pc+'%'; $('skFreqDesc').textContent=MT.everyMonthA+pc+MT.everyMonthB; } }
+  })();
+
+  renderAll();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Maeve Starterkit",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Starterkit" },
+    { "type": "text", "id": "heading", "label": "Titel", "default": "Stel je eigen <em>starterkit</em> samen." },
+    { "type": "textarea", "id": "intro", "label": "Introtekst", "default": "Een geurstokje voor de constante basis, een roomspray voor een frisse zet — plus de navulling van allebei. In vier stappen samengesteld." },
+    { "type": "text", "id": "lijn_collections", "label": "Lijn-collecties (komma-gescheiden handles)", "default": "art,city,magical-japan,sicilian-summer,delfts-blauw", "info": "Bron voor geurstokjes, roomsprays én navullingen." },
+    { "type": "header", "content": "Stap-titels" },
+    { "type": "text", "id": "s1_heading", "label": "Stap 1", "default": "Kies je geurstokje" },
+    { "type": "text", "id": "s2_heading", "label": "Stap 2", "default": "Kies je roomspray" },
+    { "type": "text", "id": "s3_heading", "label": "Stap 3", "default": "De navulling van beide" },
+    { "type": "text", "id": "s4_heading", "label": "Stap 4", "default": "Navulling-abonnement of eenmalig" },
+    { "type": "text", "id": "sum_heading", "label": "Samenvatting-titel", "default": "Jouw starterkit" }
+  ],
+  "presets": [{ "name": "Maeve Starterkit" }]
+}
+{% endschema %}

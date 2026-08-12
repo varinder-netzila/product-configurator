@@ -1,0 +1,44 @@
+<section class="reviews">
+  <div class="wrap">
+    <div class="head reveal"><span class="eyebrow">{% render 'maeve-t', nl: section.settings.eyebrow, en: '312 reviews · 4.9 / 5', es: '312 reseñas · 4,9 / 5', fr: '312 avis · 4,9 / 5', de: '312 Bewertungen · 4,9 / 5' %}</span><h2>{% render 'maeve-t', nl: section.settings.heading, en: 'Seen, smelled, <em>loved.</em>', es: 'Visto, olido, <em>adorado.</em>', fr: 'Vu, senti, <em>adoré.</em>', de: 'Gesehen, gerochen, <em>geliebt.</em>' %}</h2></div>
+    <div class="rev-grid">
+      {%- for block in section.blocks -%}
+        <div class="rev reveal" {{ block.shopify_attributes }}{% unless forloop.first %} style="transition-delay:.{{ forloop.index0 | times: 8 }}s"{% endunless %}>
+          <div class="stars">{{ block.settings.stars }}</div>
+          <blockquote>{{ block.settings.quote }}</blockquote>
+          <cite>{{ block.settings.who }}</cite>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product — reviews",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "312 beoordelingen · 4,9 / 5" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Gezien, geroken, <em>geliefd.</em>" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "text", "id": "stars", "label": "Sterren", "default": "★★★★★" },
+        { "type": "textarea", "id": "quote", "label": "Citaat", "default": "\"De geur is warm zonder zwaar te zijn.\"" },
+        { "type": "text", "id": "who", "label": "Naam — plaats", "default": "Marit — Haarlem" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Product — reviews",
+    "blocks": [
+      { "type": "review", "settings": { "quote": "\"De geur is warm zonder zwaar te zijn, en de fles staat op de schouw alsof hij daar altijd al hoorde.\"", "who": "Marit — Haarlem" } },
+      { "type": "review", "settings": { "quote": "\"Tweede fles inmiddels. De navulling is een uitkomst — het kunstwerk blijft gewoon staan.\"", "who": "Jeroen — Gent" } },
+      { "type": "review", "settings": { "stars": "★★★★☆", "quote": "\"Gekocht om het ontwerp, gebleven om de geur.\"", "who": "Linda — Eindhoven" } }
+    ]
+  }]
+}
+{% endschema %}

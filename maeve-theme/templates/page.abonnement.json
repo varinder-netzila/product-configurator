@@ -1,0 +1,81 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "maeve-abonnement",
+      "blocks": {
+        "step1": {
+          "type": "step",
+          "settings": {
+            "num": "— 01",
+            "title": "Kies je navulling",
+            "text": "Je favoriete geur als navulling voor je geurstokje of roomspray."
+          }
+        },
+        "step2": {
+          "type": "step",
+          "settings": {
+            "num": "— 02",
+            "title": "Kies je ritme",
+            "text": "Elke maand, elke 2 maanden of elke 3 — hoe vaker, hoe hoger de korting."
+          }
+        },
+        "step3": {
+          "type": "step",
+          "settings": {
+            "num": "— 03",
+            "title": "Wissel of pauzeer",
+            "text": "Pas je geur, ritme of levering op elk moment aan in je account."
+          }
+        },
+        "faq1": {
+          "type": "faq",
+          "settings": {
+            "q": "Waarom een abonnement op de navulling?",
+            "a": "Je hebt de fles (geurstokje of roomspray) al — je hoeft alleen de geur bij te vullen. Zo gebruik je minder plastic en zit je nooit zonder. En je krijgt korting."
+          }
+        },
+        "faq2": {
+          "type": "faq",
+          "settings": {
+            "q": "Hoeveel korting krijg ik?",
+            "a": "Hoe vaker je laat leveren, hoe hoger de korting: elke maand levert de meeste korting op, elke 2 of 3 maanden iets minder. Het exacte percentage zie je bij je keuze."
+          }
+        },
+        "faq3": {
+          "type": "faq",
+          "settings": {
+            "q": "Kan ik pauzeren of opzeggen?",
+            "a": "Altijd. Je beheert je abonnement zelf: overslaan, pauzeren, ritme aanpassen of stoppen — zonder opzegtermijn."
+          }
+        }
+      },
+      "block_order": [
+        "step1",
+        "step2",
+        "step3",
+        "faq1",
+        "faq2",
+        "faq3"
+      ],
+      "settings": {
+        "eyebrow": "Abonnement",
+        "heading": "Elke maand een geur die <em>je ruimte opnieuw aankleedt.</em>",
+        "intro": "Abonneer je op de navullingen van je favoriete geur — voor je geurstokje of je roomspray. Hoe vaker je laat leveren, hoe meer korting. Op elk moment opzegbaar.",
+        "hero_cta": "Kies je abonnement",
+        "verrassing_product": "maeve-verrassingsgeur-abonnement"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

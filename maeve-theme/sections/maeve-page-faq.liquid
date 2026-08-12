@@ -1,0 +1,125 @@
+{% render 'maeve-page-faq-css' %}
+
+<div class="wrap faq-head">
+  {% if section.settings.eyebrow != blank %}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{% endif %}
+  {% if section.settings.heading != blank %}<h1>{{ section.settings.heading }}</h1>{% endif %}
+</div>
+
+<div class="wrap">
+  {%- assign rendered_cats = '' -%}
+  {%- assign open_cat = false -%}
+  {%- assign printed_any = false -%}
+
+  {%- comment -%} Category nav — built from the unique block categories {%- endcomment -%}
+  {%- assign nav_cats = '' -%}
+  {%- assign nav_ids = '' -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.category != blank -%}
+      {%- assign cat_key = block.settings.category -%}
+      {%- unless nav_cats contains cat_key -%}
+        {%- assign nav_cats = nav_cats | append: cat_key | append: '|||' -%}
+        {%- assign nav_ids = nav_ids | append: block.settings.category_id | append: '|||' -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- assign nav_cat_list = nav_cats | split: '|||' -%}
+  {%- assign nav_id_list = nav_ids | split: '|||' -%}
+  {%- if nav_cat_list.size > 0 -%}
+    <div class="cat-nav">
+      {%- for c in nav_cat_list -%}
+        <a href="#{{ nav_id_list[forloop.index0] }}">{{ c }}</a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- assign current_cat = '' -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.category != blank and block.settings.category != current_cat -%}
+      {%- unless current_cat == '' -%}
+    </section>
+      {%- endunless -%}
+      {%- assign current_cat = block.settings.category -%}
+    <section class="cat" id="{{ block.settings.category_id }}">
+      <h2>{% if block.settings.roman != blank %}<span class="roman serif">{{ block.settings.roman }}</span>{% endif %}{{ block.settings.category }}</h2>
+    {%- endif -%}
+    <details{% if block.settings.open %} open{% endif %}{% if block.settings.anchor_id != blank %} id="{{ block.settings.anchor_id }}"{% endif %} {{ block.shopify_attributes }}>
+      <summary>{{ block.settings.question }}</summary>
+      <div class="body">{{ block.settings.answer }}</div>
+    </details>
+  {%- endfor -%}
+  {%- unless current_cat == '' -%}
+    </section>
+  {%- endunless -%}
+</div>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  {% if section.settings.contact_eyebrow != blank %}<span class="eyebrow">{{ section.settings.contact_eyebrow }}</span>{% endif %}
+  {% if section.settings.contact_heading != blank %}<h2>{{ section.settings.contact_heading }}</h2>{% endif %}
+  {% if section.settings.contact_text != blank %}<p>{{ section.settings.contact_text }}</p>{% endif %}
+  <div class="ways">
+    {% if section.settings.contact_email != blank %}<div class="way"><small>{{ section.settings.contact_email_label }}</small>{{ section.settings.contact_email }}</div>{% endif %}
+    {% if section.settings.contact_phone != blank %}<div class="way"><small>{{ section.settings.contact_phone_label }}</small>{{ section.settings.contact_phone }}</div>{% endif %}
+    {% if section.settings.contact_hours != blank %}<div class="way"><small>{{ section.settings.contact_hours_label }}</small>{{ section.settings.contact_hours }}</div>{% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Veelgestelde vragen",
+  "settings": [
+    { "type": "header", "content": "Header" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Service" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Veelgestelde <em>vragen.</em>" },
+    { "type": "header", "content": "Contact" },
+    { "type": "text", "id": "contact_eyebrow", "label": "Contact eyebrow", "default": "Nog een vraag?" },
+    { "type": "inline_richtext", "id": "contact_heading", "label": "Contact heading", "default": "Het atelier denkt <em>met je mee.</em>" },
+    { "type": "textarea", "id": "contact_text", "label": "Contact text", "default": "Geen ticketsysteem, geen chatbot — gewoon iemand van Maeve die binnen één werkdag antwoordt." },
+    { "type": "text", "id": "contact_email_label", "label": "Email label", "default": "E-mail" },
+    { "type": "text", "id": "contact_email", "label": "Email", "default": "atelier@maeve.example" },
+    { "type": "text", "id": "contact_phone_label", "label": "Phone label", "default": "Telefoon" },
+    { "type": "text", "id": "contact_phone", "label": "Phone", "default": "+31 (0)20 — 123 45 67" },
+    { "type": "text", "id": "contact_hours_label", "label": "Hours label", "default": "Ma t/m vr" },
+    { "type": "text", "id": "contact_hours", "label": "Hours", "default": "09:00 — 17:30" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        { "type": "text", "id": "category", "label": "Category heading (start of a new category)", "info": "Leave blank to keep this question in the previous category." },
+        { "type": "text", "id": "category_id", "label": "Category anchor id", "info": "Used for the category nav links, e.g. druk" },
+        { "type": "text", "id": "roman", "label": "Category roman numeral", "info": "e.g. I., II." },
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false },
+        { "type": "text", "id": "anchor_id", "label": "Item anchor id (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "faq", "settings": { "category": "De 360°-druk", "category_id": "druk", "roman": "I.", "open": true, "question": "Wat maakt de druk van Maeve anders dan een etiket?", "answer": "<p>Wij drukken het beeld direct op de fles — rondom, zonder naad en zonder etiket. De linkerrand van het ontwerp sluit exact aan op de rechterrand, dus waar je de fles ook draait: het beeld loopt door. Dit procedé beheerst wereldwijd alleen Maeve.</p>" } },
+        { "type": "faq", "settings": { "question": "Is de print krasvast en watervast?", "answer": "<p>Ja. De inkt wordt op de fles gehard en is bestand tegen water, parfumolie en dagelijks gebruik. Schoonmaken kan gewoon met een vochtige doek; alleen schuursponsjes raden we af.</p>" } },
+        { "type": "faq", "settings": { "question": "Wijkt de kleur af van wat ik op het scherm zie?", "answer": "<p>Minimaal. Het beeld krijgt op de fles iets meer diepte en glans dan op een plat scherm. Zakelijke klanten ontvangen altijd een fysiek proefmodel voordat de oplage start.</p>" } },
+        { "type": "faq", "settings": { "category": "Geuren & navullen", "category_id": "geuren", "roman": "II.", "question": "Welke geuren zijn er?", "answer": "<p>Acht composities, samengesteld met parfumeurs in Grasse — van warm amber (Amber Sun) tot groen vetiver (Jardin Vert). Elke print uit de collectie heeft een vaste, bijpassende geur; bij zakelijk maatwerk kies je de geur zelf.</p>" } },
+        { "type": "faq", "settings": { "anchor_id": "navullen", "question": "Hoe werkt navullen?", "answer": "<p>De geur raakt op, het kunstwerk blijft. Navullingen (vanaf € 14,95) passen op elke Maeve-fles: bij de roomspray vervang je de binnenvulling, bij geurstokjes giet je bij en vervang je de stokjes. Zo gaat je fles jaren mee.</p>" } },
+        { "type": "faq", "settings": { "question": "Hoe lang gaat een fles mee?", "answer": "<p>De roomspray 100 ml is goed voor zo'n 400 verstuivingen. Geurstokjes 200 ml geuren ongeveer 12 weken, afhankelijk van temperatuur en luchtcirculatie. Groter formaat = navenant langer.</p>" } },
+        { "type": "faq", "settings": { "question": "Zijn de geuren vegan en dierproefvrij?", "answer": "<p>Ja. Alle composities zijn vegan, dierproefvrij en zonder ftalaten, en worden gemaakt in Europa.</p>" } },
+        { "type": "faq", "settings": { "category": "Eigen ontwerp (zakelijk)", "category_id": "ontwerp", "roman": "III.", "question": "Kan ik als particulier mijn eigen fles ontwerpen?", "answer": "<p>Onze collecties zijn voor iedereen, met bij elke print een vaste, bijpassende geur. Een volledig eigen ontwerp maken we op aanvraag voor bedrijven — relatiegeschenken, hotels, musea en merken, vanaf 25 stuks. Bekijk <a href=\"/pages/zakelijk\">Maeve Zakelijk</a>.</p>" } },
+        { "type": "faq", "settings": { "question": "Wat kan er op de fles?", "answer": "<p>Bijna alles: een kunstwerk, een logo, een patroon of de kaart van een stad — 360° rondom gedrukt, zonder etiket of naad. Je levert een JPG of PNG van minimaal 2048 pixels breed; ons atelier vertaalt het naar een proefmodel.</p>" } },
+        { "type": "faq", "settings": { "question": "Wat kost een zakelijke oplage en hoe snel is het er?", "answer": "<p>Vanaf € 21,95 per fles, afhankelijk van de oplage, plus eenmalige instelkosten. Na akkoord op het proefmodel leveren we doorgaans binnen drie weken. Bekijk de staffel op <a href=\"/pages/zakelijk\">Maeve Zakelijk</a>.</p>" } },
+        { "type": "faq", "settings": { "question": "Mag elk beeld?", "answer": "<p>Je hebt de rechten op het beeld nodig en we drukken geen kwetsend materiaal. Twijfel je over rechten (bijv. bij een kunstwerk van iemand anders)? <a href=\"#contact\">Mail het atelier</a>, we denken mee.</p>" } },
+        { "type": "faq", "settings": { "category": "Verzending & retour", "category_id": "verzending", "roman": "IV.", "question": "Wat zijn de levertijden en verzendkosten?", "answer": "<p>Voor 16:00 besteld is morgen in huis (NL & BE). Verzending kost € 4,95 en is gratis vanaf € 40. Zakelijke maatwerk-orders leveren we in overleg, doorgaans binnen drie weken.</p>" } },
+        { "type": "faq", "settings": { "question": "Kan ik mijn bestelling retourneren?", "answer": "<p>Collectie-items kun je binnen 30 dagen kosteloos retourneren, ook als de fles bedrukt is — het is tenslotte onze collectie. Zakelijk maatwerk kan alleen retour bij een productiefout; dan vervangen we de fles uiteraard gratis.</p>" } },
+        { "type": "faq", "settings": { "question": "Wat als de fles beschadigd aankomt?", "answer": "<p>Stuur binnen 48 uur een foto naar <a href=\"#contact\">het atelier</a> en we sturen direct een nieuwe — je hoeft de beschadigde fles niet terug te sturen.</p>" } },
+        { "type": "faq", "settings": { "category": "Zakelijk", "category_id": "zakelijk", "roman": "V.", "question": "Vanaf welke aantallen kan ik zakelijk bestellen?", "answer": "<p>Vanaf 25 stuks voor events en bruiloften, vanaf 50 stuks voor relatiegeschenken en retail. Zie de <a href=\"/pages/zakelijk\">zakelijke pagina</a> voor de staffel en werkwijze.</p>" } },
+        { "type": "faq", "settings": { "question": "Kunnen jullie een eigen geur voor mijn merk ontwikkelen?", "answer": "<p>Ja, vanaf 500 stuks ontwikkelen we samen met onze parfumeurs in Grasse een signatuurgeur die exclusief van jouw merk blijft.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

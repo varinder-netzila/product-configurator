@@ -1,0 +1,86 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "maeve-page-zakelijk",
+      "settings": {
+        "hero_eyebrow": "Maeve Zakelijk",
+        "hero_heading": "Jouw merk, <em>rondom op de fles.</em>",
+        "hero_text": "Museumcollecties met een eigen geur, relatiegeschenken die niet in een la verdwijnen, hotelseries met jouw signatuur. Van loterijcadeau tot signature scent: wij drukken jouw identiteit 360° op roomsprays en geurstokjes — zonder etiket, zonder naad.",
+        "werkwijze_eyebrow": "Zo werkt het",
+        "werkwijze_heading": "Van briefing tot levering <em>in drie stappen.</em>",
+        "staffel_eyebrow": "Indicatieve staffel",
+        "staffel_heading": "Transparante prijzen, <em>geen verrassingen.</em>",
+        "staffel_text1": "Prijzen per stuk, inclusief 360°-druk van jouw ontwerp en geurkeuze uit onze acht composities. Exacte prijs hangt af van uitvoering en verpakking — je ontvangt altijd eerst een offerte.",
+        "staffel_text2": "Eigen geurontwikkeling (jouw signatuurgeur, samengesteld in Grasse) is mogelijk vanaf 500 stuks.",
+        "table_col1": "Oplage",
+        "table_col2": "Roomspray 100 ml",
+        "table_col3": "Geurstokjes 200 ml",
+        "table_note": "Prijzen excl. btw, incl. ontwerpcontrole en digitale proef. Eénmalige instelkosten: € 95 per ontwerp.",
+        "form_eyebrow": "Offerte aanvragen",
+        "form_heading": "Vertel ons wat je <em>voor ogen hebt.</em>",
+        "form_text": "Binnen één werkdag reageert iemand van het atelier — geen ticketsysteem, gewoon een mens die meedenkt over ontwerp, geur en budget.",
+        "form_contact_pre": "Liever direct contact? Mail",
+        "form_email": "zakelijk@maeve.example",
+        "label_company": "Bedrijfsnaam",
+        "label_contact": "Contactpersoon",
+        "label_email": "E-mailadres",
+        "label_orgtype": "Type organisatie",
+        "label_volume": "Geschatte oplage",
+        "label_message": "Waar denk je aan?",
+        "placeholder_message": "Bijv. relatiegeschenk voor de feestdagen, logo in goud op donkergroene wikkel…",
+        "button_label": "Verstuur aanvraag",
+        "form_ok": "Dank voor je aanvraag. Het atelier neemt binnen één werkdag contact met je op. ✓"
+      },
+      "blocks": {
+        "usp1": { "type": "usp", "settings": { "text": "Vanaf 25 stuks" } },
+        "usp2": { "type": "usp", "settings": { "text": "Persoonlijk ontwerpadvies" } },
+        "usp3": { "type": "usp", "settings": { "text": "Proefmodel vóór productie" } },
+        "usp4": { "type": "usp", "settings": { "text": "Levering binnen 3 weken" } },
+        "seg1": { "type": "segment", "settings": { "image_fallback": "zonnebloemen-spray.png", "title": "Musea & kunstinstellingen", "subtitle": "Artist Editions bij je tentoonstelling" } },
+        "seg2": { "type": "segment", "settings": { "image_fallback": "korenveld-spray.png", "title": "Loterijen & loyaliteitsprogramma's", "subtitle": "Cadeaus met wow-factor", "delay": "transition-delay:.06s" } },
+        "seg3": { "type": "segment", "settings": { "image_fallback": "amandelbloesem-spray.png", "title": "Relatiegeschenken & branding", "subtitle": "Jouw logo of kaart, 360° gedrukt", "delay": "transition-delay:.12s" } },
+        "seg4": { "type": "segment", "settings": { "image_fallback": "zonnebloemen-stokjes.png", "title": "Hotels & hospitality", "subtitle": "Signature scent per kamer of lobby", "delay": "transition-delay:.18s" } },
+        "seg5": { "type": "segment", "settings": { "image_fallback": "korenveld-stokjes.png", "title": "Woonwinkels & warenhuizen", "subtitle": "Onderscheidend in het schap", "delay": "transition-delay:.24s" } },
+        "seg6": { "type": "segment", "settings": { "image_fallback": "amandelbloesem-stokjes.png", "title": "Spa's & wellness", "subtitle": "Geur per behandelruimte", "delay": "transition-delay:.3s" } },
+        "step1": { "type": "step", "settings": { "num": "— 01", "title": "Briefing & ontwerp", "text": "Stuur je logo, huisstijl of idee. Ons atelier vertaalt het naar een 360°-wikkel en je ontvangt binnen drie werkdagen een digitale proef op de fles." } },
+        "step2": { "type": "step", "settings": { "num": "— 02", "title": "Proefmodel", "text": "Akkoord op het ontwerp? Dan drukken we één echt exemplaar en sturen het op. Je beoordeelt kleur, geur en afwerking voordat de oplage start.", "delay": "transition-delay:.1s" } },
+        "step3": { "type": "step", "settings": { "num": "— 03", "title": "Productie & levering", "text": "Wij produceren in eigen huis en leveren binnen drie weken — desgewenst per stuk verpakt in een doos met jouw boodschap.", "delay": "transition-delay:.2s" } },
+        "tier1": { "type": "tier", "settings": { "amount": "25 — 49", "price1": "€ 21,95", "price2": "€ 26,50" } },
+        "tier2": { "type": "tier", "settings": { "amount": "50 — 99", "price1": "€ 19,95", "price2": "€ 23,95" } },
+        "tier3": { "type": "tier", "settings": { "amount": "100 — 249", "price1": "€ 17,50", "price2": "€ 21,50" } },
+        "tier4": { "type": "tier", "settings": { "amount": "250 — 499", "price1": "€ 15,95", "price2": "€ 19,50" } },
+        "tier5": { "type": "tier", "settings": { "amount": "500 +", "price1": "op aanvraag", "price2": "op aanvraag", "highlight": true } },
+        "org1": { "type": "orgtype", "settings": { "label": "Museum of kunstinstelling" } },
+        "org2": { "type": "orgtype", "settings": { "label": "Loterij of loyaliteitsprogramma" } },
+        "org3": { "type": "orgtype", "settings": { "label": "Bedrijf — relatiegeschenken" } },
+        "org4": { "type": "orgtype", "settings": { "label": "Hotel of hospitality" } },
+        "org5": { "type": "orgtype", "settings": { "label": "Woonwinkel of warenhuis" } },
+        "org6": { "type": "orgtype", "settings": { "label": "Spa of wellness" } },
+        "org7": { "type": "orgtype", "settings": { "label": "Anders" } },
+        "vol1": { "type": "volume", "settings": { "label": "25 — 49" } },
+        "vol2": { "type": "volume", "settings": { "label": "50 — 99" } },
+        "vol3": { "type": "volume", "settings": { "label": "100 — 249" } },
+        "vol4": { "type": "volume", "settings": { "label": "250 — 499" } },
+        "vol5": { "type": "volume", "settings": { "label": "500 +" } }
+      },
+      "block_order": [
+        "usp1", "usp2", "usp3", "usp4",
+        "seg1", "seg2", "seg3", "seg4", "seg5", "seg6",
+        "step1", "step2", "step3",
+        "tier1", "tier2", "tier3", "tier4", "tier5",
+        "org1", "org2", "org3", "org4", "org5", "org6", "org7",
+        "vol1", "vol2", "vol3", "vol4", "vol5"
+      ]
+    }
+  },
+  "order": ["main"]
+}

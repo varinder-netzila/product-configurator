@@ -1,0 +1,86 @@
+{
+  "innerCircleImages": [
+    {
+      "src": "/assets/images/350ml_Mug_Amsterdam.webp",
+      "deg": 75
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_Heineken.webp",
+      "deg": 255
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Friesland Campina.webp",
+      "deg": 165
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_KLM.webp",
+      "deg": 300
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Bol.webp",
+      "deg": 120
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_Chocomel.webp",
+      "deg": 210
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Amandelbloesem.webp",
+      "deg": 30
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_Vodafone.webp",
+      "deg": 345
+    }
+  ],
+  "outerCircleImages": [
+    {
+      "src": "/assets/images/900ml_Bottle_City.webp",
+      "deg": 60
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Bol.webp",
+      "deg": 240
+    },
+    {
+      "src": "/assets/images/900ml_Bottle_Tony's.webp",
+      "deg": 120
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_Heineken.webp",
+      "deg": 330
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Amandelbloesem.webp",
+      "deg": 180
+    },
+    {
+      "src": "/assets/images/900ml_Bottle_New York.webp",
+      "deg": 90
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_KLM.webp",
+      "deg": 360
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Amsterdam.webp",
+      "deg": 210
+    },
+    {
+      "src": "/assets/images/900ml_Bottle_Ziggo.webp",
+      "deg": 150
+    },
+    {
+      "src": "/assets/images/350ml_Mug_Friesland Campina.webp",
+      "deg": 270
+    },
+    {
+      "src": "/assets/images/500ml_Bottle_Chocomel.webp",
+      "deg": 300
+    },
+    {
+      "src": "/assets/images/500ml_Mug_Liverpool.webp",
+      "deg": 30
+    }
+  ]
+}

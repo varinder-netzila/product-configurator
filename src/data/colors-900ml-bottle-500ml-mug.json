@@ -1,0 +1,53 @@
+{
+  "colors": [
+    {
+      "id": 1,
+      "name": "Olive",
+      "hex": "#c3c6a8",
+      "description": "Olive"
+    },
+    {
+      "id": 2,
+      "name": "Sand",
+      "hex": "#e0c09f",
+      "description": "Sand"
+    },
+    {
+      "id": 3,
+      "name": "Sky",
+      "hex": "#d1dde6",
+      "description": "Sky blue"
+    },
+    {
+      "id": 4,
+      "name": "Lavender",
+      "hex": "#b8acd6",
+      "description": "Lavender"
+    },
+    {
+      "id": 5,
+      "name": "Rose",
+      "hex": "#d6938a",
+      "description": "Rose"
+    },
+    {
+      "id": 6,
+      "name": "Lemon",
+      "hex": "#f1e6b2",
+      "description": "Lemon"
+    },
+    {
+      "id": 7,
+      "name": "White",
+      "hex": "#FFFFFF",
+      "description": "White"
+    },
+    {
+      "id": 8,
+      "name": "Black",
+      "hex": "#000000",
+      "description": "Black"
+    }
+  ],
+  "products": ["900ml-bottle", "500ml-mug", "plank-met-handvat-beuken-37x19-cm-copy"]
+}
