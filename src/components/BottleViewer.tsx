@@ -576,18 +576,18 @@ const BottleModel = ({
           selectedBottleType
         );
       });
-  const newColor =
-    selectedColor?.Body?.hex || "#FFFFFF";
-  scene.traverse((child: any) => {
-    console.log(child.name);
-    if (
-      child.isMesh &&
-      child.name === "Mesh_0"
-    ) {
-      child.material.color.set(newColor);
-      child.material.needsUpdate = true;
-    }
-  });     
+  // const newColor =
+  //   selectedColor?.Body?.hex || "#FFFFFF";
+  // scene.traverse((child: any) => {
+  //   console.log(child.name);
+  //   if (
+  //     child.isMesh &&
+  //     child.name === "Mesh_0"
+  //   ) {
+  //     child.material.color.set(newColor);
+  //     child.material.needsUpdate = true;
+  //   }
+  // });     
     }
 
     // Apply final composed texture ONLY to base body scene
