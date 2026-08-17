@@ -4,8 +4,8 @@ export async function getBottleTypes() {
   if (cache) {
     return cache;
   }
-
-  const response = await fetch("/api/bottle-types", {
+  const shop = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL;
+  const response = await fetch("/api/bottle-types?shop="+shop, {
     cache: "no-store",
   });
 

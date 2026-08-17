@@ -2594,7 +2594,7 @@ export const RESELLERS: Record<string, ResellerConfig> = {
     email: "demo-reseller@example.com",
     stripPrefix: "IZY ",
     // Example: this reseller has City Map + Brand disabled.
-    features: { map: false, brand: false },
+    features: { map: true, brand: false },
     pricing: {
       "IZY Bottle": {
         retail: 34.99,

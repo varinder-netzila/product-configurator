@@ -15,60 +15,6 @@ export async function POST(request: NextRequest) {
     }
 
 const client = await getShopifyClientGraphql(shop);
-
-// if (!session) {
-//   throw new Error("No active session");
-// }
-
-// const graphqlClient = new client.Graphql({
-//   session,
-// });
-
-    // const query = `
-    //   query GetProducts {
-    //     products(first: 50, query: "product_type:Bottle") {
-    //       nodes {
-    //         id
-    //         title
-    //         handle
-    //         descriptionHtml
-    //         productType
-    //         tags
-
-    //         variants(first: 1) {
-    //           nodes {
-    //             id
-    //             price
-    //           }
-    //         }
-
-    //         media(first: 20) {
-    //           nodes {
-    //             mediaContentType
-
-    //             ... on MediaImage {
-    //               image {
-    //                 url
-    //               }
-    //             }
-
-    //             ... on Model3d {
-    //               sources {
-    //                 url
-    //                 mimeType
-    //                 format
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // `;
-
-    // const response = await client.query({query});
-
-    console.log("==================================================")
  const response = await client.query({
   data: `#graphql
     query GetProducts {
@@ -128,14 +74,6 @@ const data = response.body as any;
 
 const products =
   data?.data?.products?.nodes ?? [];
-    //    console.log("++++++++++++++++++++++++++++++++++++++++++++++")
-
-    // const data = await response.json();
-   // console.log("=== product data === : ", JSON.stringify(data))
-
-    // const products =
-    //   data.data?.products?.nodes || [];
-//console.log("=== product data === : ", JSON.stringify(response.body.data))
     const bottleTypes = {
       bottleTypes: products.map((product: any) => {
 
