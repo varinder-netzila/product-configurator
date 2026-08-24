@@ -33,22 +33,19 @@ export async function getShopifyClient(shop: string) {
   return new shopify.clients.Rest({ session });
 }
 
-export async function getShopifyClientGraphql(shop: string) {
-  const sessionId = shopify.session.getOfflineId(shop);
+export function getShopifyClientGraphql() {
+  const accessToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
 
-  const session = await loadSession(sessionId);
-
-  //console.log("=== Shopify GraphQL Session ===");
-  //console.log("session:", session);
-  //console.log("accessToken:", session?.accessToken);
-
-  if (!session?.accessToken) {
-    throw new Error(
-      `No offline Shopify session found for shop: ${shop}. Please authenticate the app.`
-    );
+  if (!accessToken) {
+    throw new Error("SHOPIFY_ADMIN_API_TOKEN is missing");
   }
 
-  return new shopify.clients.Graphql({ session });
+  return new shopify.clients.Graphql({
+    session: {
+      shop: process.env.SHOPIFY_STORE_DOMAIN!,
+      accessToken,
+    } as any,
+  });
 }
 /**
  * Get an authenticated GraphQL client for a given shop.
