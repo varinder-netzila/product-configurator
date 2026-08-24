@@ -1,25 +1,34 @@
-let cache: any = null;
+let bottleTypesPromise: Promise<any> | null = null;
 
 export async function getBottleTypes() {
-  if (cache) {
-    return cache;
+  if (bottleTypesPromise) {
+    return bottleTypesPromise;
   }
+
   const shop = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL;
-  const response = await fetch("/api/bottle-types?shop="+shop, {
-    cache: "no-store",
-  });
 
-  if (!response.ok) {
-    throw new Error("Failed to load bottle types");
-  }
+  bottleTypesPromise = fetch(
+    `/api/bottle-types?shop=${encodeURIComponent(shop || "")}`,
+    {
+      cache: "no-store",
+    }
+  )
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error("Failed to load bottle types");
+      }
 
-  const data = await response.json();
+      return response.json();
+    })
+    .catch((error) => {
+      // Allow another attempt if the request failed
+      bottleTypesPromise = null;
+      throw error;
+    });
 
-  cache = data;
-
-  return data;
+  return bottleTypesPromise;
 }
 
 export function clearBottleTypesCache() {
-  cache = null;
+  bottleTypesPromise = null;
 }

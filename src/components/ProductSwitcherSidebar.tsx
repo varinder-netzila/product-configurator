@@ -82,7 +82,7 @@ const otherBottles = selectedBottleType
         map[b.name] = meshColors;
       } else {
         const d = defaultColorFor(b.name);
-        map[b.name] = { Body: d, Bottom: d, Lid: d, Ring: d, Handle: d, Straw: d };
+        map[b.name] = { Body: d, Frame: d, Handle: d };
       }
     }
     return map;

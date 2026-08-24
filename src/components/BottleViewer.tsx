@@ -13,52 +13,55 @@ import * as THREE from "three";
 import DotsSpinner from "./DotsSpinner";
 import { LogoDecal, TextEngraving, BottleType } from "@/types/bottle";
 import ARViewer from "./ARViewer";
-import bottleTypesData from "@/data/bottleTypes.json";
+//import bottleTypesData from "@/data/bottleTypes.json";
+import { getBottleTypes } from "@/data/bottleTypes";
 import { useTranslation } from "@/i18n/useTranslation";
 
+
+
 // Helper function to get material type for a mesh name
-const getMaterialTypeForMesh = (meshName: string, selectedBottleType?: BottleType): string | null => {
+const getMaterialTypeForMesh = (
+  meshName: string,
+  selectedBottleType: BottleType | undefined,
+  bottleTypesData: { bottleTypes: BottleType[] }
+): string | null => {
   if (!selectedBottleType) return null;
-  
-  //const bottleType = bottleTypesData.bottleTypes.find(bt => bt.id === selectedBottleType.id);
+
   const bottleType = bottleTypesData.bottleTypes.find(
-    bt => String(bt.id) === String(selectedBottleType.id)
+    (bt) => String(bt.id) === String(selectedBottleType.id)
   );
+
   if (!bottleType || !bottleType.materials) return null;
 
   const meshNameLower = meshName.toLowerCase();
-  
-  // Map mesh names to component names
+
   let componentName: string | null = null;
-  
-  if (meshNameLower.includes("body") || meshNameLower.includes("bottom")) {
-    // Check if it's a bottle or mug
-    if (bottleType.components.includes("bottle")) {
-      componentName = "bottle";
-    } else if (bottleType.components.includes("mug")) {
-      componentName = "mug";
-    }
-  } else if (meshNameLower.includes("lid")) {
-    componentName = "lid";
-  } else if (meshNameLower.includes("ring")) {
-    componentName = "ring";
+
+  // Check each mesh independently
+  if (meshNameLower.includes("body")) {
+    componentName = "body";
   } else if (meshNameLower.includes("handle")) {
     componentName = "handle";
-  } else if (meshNameLower.includes("straw")) {
-    componentName = "straw";
+  } else if (meshNameLower.includes("frame")) {
+    componentName = "frame";
   }
 
   if (!componentName) return null;
-  
-  return (bottleType.materials as unknown as Record<string, string>)[componentName] || null;
+
+  return (
+    (bottleType.materials as unknown as Record<string, string>)[
+      componentName
+    ] || null
+  );
 };
 
 // Utility functions for material handling
 const applyColorToMaterial = (
-  material: THREE.Material, 
-  color: any, 
+  material: THREE.Material,
+  color: any,
   meshName?: string,
-  selectedBottleType?: BottleType
+  selectedBottleType?: BottleType,
+  bottleTypesData?: { bottleTypes: BottleType[] }
 ) => {
   if (
     material.type === "MeshStandardMaterial" ||
@@ -69,12 +72,18 @@ const applyColorToMaterial = (
       | THREE.MeshPhysicalMaterial;
 
     // Check if color is Silver
-    console.log(color.name);
+ 
     const isSilver = color.name === "Silver" || color.name?.toLowerCase() === "silver";
     
-    if (isSilver && meshName && selectedBottleType) {
-      const materialType = getMaterialTypeForMesh(meshName, selectedBottleType);
-      const isStainlessSteel = materialType?.toLowerCase().includes("stainless steel");
+if (isSilver && meshName && selectedBottleType && bottleTypesData) {
+  const materialType = getMaterialTypeForMesh(
+    meshName,
+    selectedBottleType,
+    bottleTypesData
+  );
+
+  const isStainlessSteel =
+    materialType?.toLowerCase().includes("stainless steel");
 
       if (isStainlessSteel) {
         // Apply stainless steel material properties
@@ -218,7 +227,8 @@ const CameraController = ({
   onCameraRef?: (camera: THREE.Camera) => void;
 }) => {
   const { camera } = useThree();
-
+      const direction = camera.position.clone().normalize();
+      camera.position.copy(direction.multiplyScalar(1));
   useEffect(() => {
     if (onCameraRef) {
       onCameraRef(camera);
@@ -267,27 +277,53 @@ const applyColorsToScene = (
   scene: THREE.Object3D,
   selectedColor: Record<string, any>,
   hasTexture?: boolean,
-  selectedBottleType?: BottleType
+  selectedBottleType?: BottleType,
+  bottleTypesData?: { bottleTypes: BottleType[] }
 ) => {
+ 
   scene.traverse((child: THREE.Object3D) => {
-    if ((child as THREE.Mesh).isMesh) {
-      const mesh = child as THREE.Mesh;
-      const meshName = mesh.name;
-      const meshColor = selectedColor[meshName];
+    if (!(child as THREE.Mesh).isMesh) return;
 
-      // Apply colors to all meshes except body when texture is active
-      if (
-        meshColor &&
-        !(hasTexture && meshName.toLowerCase().includes("body"))
-      ) {
-        if (Array.isArray(mesh.material)) {
-          mesh.material.forEach((mat) => 
-            applyColorToMaterial(mat, meshColor, meshName, selectedBottleType)
-          );
-        } else if (mesh.material) {
-          applyColorToMaterial(mesh.material, meshColor, meshName, selectedBottleType);
-        }
-      }
+    const mesh = child as THREE.Mesh;
+    const meshName = mesh.name;
+    
+  if (mesh.name.toLowerCase() === "body") {
+    //mesh.position.z += 0.01;
+  }
+    // Clone material FIRST so each mesh is independent
+    if (Array.isArray(mesh.material)) {
+      mesh.material = mesh.material.map((mat) => mat.clone());
+    } else if (mesh.material) {
+      mesh.material = mesh.material.clone();
+    }
+
+    const meshColor = selectedColor?.[meshName];
+
+    // if (
+    //   !meshColor ||
+    //   (hasTexture && meshName.toLowerCase().includes("body"))
+    // ) {
+    //   return;
+    // }
+
+    if (Array.isArray(mesh.material)) {
+      mesh.material.forEach((mat) => {
+        applyColorToMaterial(
+          mat,
+          meshColor,
+          meshName,
+          selectedBottleType,
+          bottleTypesData
+        );
+      });
+    } else if (mesh.material) {
+      applyColorToMaterial(
+        mesh.material,
+        meshColor,
+        meshName,
+        selectedBottleType,
+        bottleTypesData
+      );
     }
   });
 };
@@ -298,10 +334,15 @@ const applyTextureToScene = (
   offsetX: number = 0
 ) => {
   scene.traverse((child: THREE.Object3D) => {
+    
     if ((child as THREE.Mesh).isMesh) {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
-
+    if (Array.isArray(mesh.material)) {
+      mesh.material = mesh.material.map((mat) => mat.clone());
+    } else if (mesh.material) {
+      mesh.material = mesh.material.clone();
+    }
       if (meshName.includes("body")) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
@@ -479,7 +520,7 @@ const setBodyMeshesToWhite = (scene: THREE.Object3D) => {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
 
-      if (meshName.includes("body") || meshName.includes("bottom")) {
+      if (meshName.includes("body") ) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach((mat) => setMaterialColor(mat, 0xffffff));
@@ -508,6 +549,7 @@ const BottleModel = ({
   activeTab = "texture",
   aspectRatio = 1,
   selectedBottleType,
+  bottleTypesData,
 }: {
   modelPath: string;
   onLoad: () => void;
@@ -567,39 +609,35 @@ const BottleModel = ({
     const scenesToProcess = [baseBodyScene];
     if (textEngravings.length > 0) scenesToProcess.push(textLayerScene);
     if (logoDecals.length > 0) scenesToProcess.push(logoLayerScene);
+   // console.log(selectedColor);
     if (selectedColor) {
       scenesToProcess.forEach((scene) => {
         applyColorsToScene(
           scene,
           selectedColor,
           !!selectedTexture,
-          selectedBottleType
+          selectedBottleType,
+          bottleTypesData
         );
       });
-      console.log(selectedColor);
-  const newColor =
-    selectedColor?.Body?.hex || "#FFFFFF";
-  scene.traverse((child: any) => {
-    console.log(child.name);
-    if (
-      child.isMesh &&
-      child.name === "Lid"
-    ) {
-      child.material.color.set(newColor);
-      child.material.needsUpdate = true;
-    }
-  });     
+  // const newColor =
+  //    selectedColor?.Body?.hex || "#127236";
+  //  scene.traverse((child: any) => {
+  //    console.log(child.material);
+  
+  //    if (
+  //      child.isMesh &&
+  //      child.name === "Hnadle"
+  //    ) {
+  //      child.material.color.set(newColor);
+  //      child.material.needsUpdate = true;
+  //    }
+  //  });     
     }
 
     // Apply final composed texture ONLY to base body scene
     const textureToApply = allOverPrintTexture || selectedTexture || mapImage;
-    console.log('🎨 Texture decision:', {
-      hasAllOverPrint: !!allOverPrintTexture,
-      hasSelected: !!selectedTexture,
-      hasMap: !!mapImage,
-      textureToApply: textureToApply ? '✓' : '✗',
-      activeTab,
-    });
+ 
     const shouldApplyTexture = !!textureToApply && (
       activeTab === "texture" ||
       activeTab === "map" ||
@@ -946,7 +984,17 @@ export default function BottleViewer({
   const [isARButtonHovered, setIsARButtonHovered] = useState(false);
   const [camera, setCamera] = useState<THREE.Camera | null>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [bottleTypesData, setBottleTypesData] = useState({
+  bottleTypes: [], });
+  useEffect(() => {
+  async function loadProducts() {
+    const data = await getBottleTypes();
 
+    setBottleTypesData(data);
+  }
+
+  loadProducts();
+}, []);
   // Notify parent component when AR state changes
   useEffect(() => {
     if (onARStateChange) {
@@ -1058,7 +1106,7 @@ export default function BottleViewer({
             onCameraRef={handleCameraRef}
           />
 
-          <Environment preset="city" background={false} />
+          {/* <Environment preset="city" background={false} /> */}
           <ambientLight intensity={1.0} />
 
           {!lowQuality && (
@@ -1089,6 +1137,7 @@ export default function BottleViewer({
             activeTab={activeTab}
             aspectRatio={aspectRatio}
             selectedBottleType={selectedBottleType}
+            bottleTypesData={bottleTypesData}
           />
 
           <OrbitControls
@@ -1135,6 +1184,10 @@ export default function BottleViewer({
     cameraPositionOverride,
     minDistanceOverride,
     lowQuality,
+
+    // Add these
+    bottleTypesData,
+    selectedBottleType,
   ]);
 
   return (

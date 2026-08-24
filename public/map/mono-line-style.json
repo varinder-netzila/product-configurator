@@ -1,0 +1,136 @@
+{
+  "version": 8,
+  "name": "Monochrome Lineart",
+  "sources": {
+    "composite": {
+      "url": "mapbox://mapbox.mapbox-streets-v8",
+      "type": "vector"
+    }
+  },
+  "sprite": "mapbox://sprites/mapbox/light-v11",
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#ffffff" }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "composite",
+      "source-layer": "water",
+      "paint": { "fill-color": "#ffffff" }
+    },
+    {
+      "id": "water-outline",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "water",
+      "paint": { "line-color": "#c9c9c9", "line-width": 0.5 }
+    },
+    {
+      "id": "landuse",
+      "type": "fill",
+      "source": "composite",
+      "source-layer": "landuse",
+      "filter": ["match", ["get", "class"], ["park", "wood", "grass", "national_park"], true, false],
+      "paint": { "fill-color": "#ffffff" }
+    },
+    {
+      "id": "landuse-outline",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "landuse",
+      "filter": ["match", ["get", "class"], ["park", "wood", "grass", "national_park"], true, false],
+      "paint": { "line-color": "#d6d6d6", "line-width": 0.4 }
+    },
+    {
+      "id": "building",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "building",
+      "minzoom": 15,
+      "paint": { "line-color": "#c4c4c4", "line-width": 0.4 }
+    },
+    {
+      "id": "admin-boundaries",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "admin",
+      "filter": ["<=", ["get", "admin_level"], 2],
+      "paint": { "line-color": "#b0b0b0", "line-width": 0.6, "line-dasharray": [3, 2] }
+    },
+    {
+      "id": "road-path",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road",
+      "filter": ["match", ["get", "class"], ["path", "pedestrian", "track"], true, false],
+      "paint": {
+        "line-color": "#8a8a8a",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.3, 18, 1]
+      }
+    },
+    {
+      "id": "road-minor",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road",
+      "filter": ["match", ["get", "class"], ["street", "street_limited", "service"], true, false],
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": {
+        "line-color": "#2b2b2b",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.3, 18, 2]
+      }
+    },
+    {
+      "id": "road-secondary-tertiary",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road",
+      "filter": ["match", ["get", "class"], ["secondary", "tertiary"], true, false],
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": {
+        "line-color": "#1a1a1a",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 18, 3]
+      }
+    },
+    {
+      "id": "road-primary",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road",
+      "filter": ["match", ["get", "class"], ["primary", "trunk"], true, false],
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": {
+        "line-color": "#000000",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.6, 18, 4]
+      }
+    },
+    {
+      "id": "road-motorway",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road",
+      "filter": ["match", ["get", "class"], ["motorway", "motorway_link"], true, false],
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": {
+        "line-color": "#000000",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 5, 0.8, 18, 5]
+      }
+    },
+    {
+      "id": "rail",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road",
+      "filter": ["match", ["get", "class"], ["major_rail", "minor_rail"], true, false],
+      "paint": {
+        "line-color": "#4d4d4d",
+        "line-width": 0.6,
+        "line-dasharray": [2, 1]
+      }
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getShopifyClientGraphql } from "@/lib/shopify";
+import { Component } from "react";
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
         query GetProducts {
           products(
             first: 50
-            query: "product_type:configurator"
+            query: "tag:configurator"
           ) {
             nodes {
               id
@@ -119,6 +120,11 @@ export async function GET(request: NextRequest) {
                 ?.price || 0
             ),
             handle: product.handle,
+            components: ["Body", "Handle"],
+            materials: {
+              "Body": "Stainless steel",
+              "Handle": "Plastic"
+            },
             productType:
               product.productType,
             tags: product.tags,

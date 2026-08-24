@@ -46,8 +46,9 @@
   },
   "configurator": {
     "chooseYourColor": "CHOOSE YOUR COLOR",
-    "bottleColor": "Bottle color",
-    "lidColor": "Lid color",
+    "bottleColor": "Body color",
+    "lidColor": "Handle color",
+    "frameColor": "Body color",
     "customColorCta": "Ordering more than 500 pieces? You can pick your own Pantone colour",
     "customColorName": "Custom Pantone",
     "addDesign": "ADD A DESIGN",

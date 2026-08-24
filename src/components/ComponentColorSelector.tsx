@@ -61,15 +61,16 @@ function ComponentColorSelector({
 
   const handleColorClick = useCallback(
     (component: string, color: any) => {
-      if (component === 'bottle' || component === 'mug') {
-        switchToColorMode(component, color);
-      } else if (component === 'lid') {
-        selectedBottleType?.components.forEach((comp: string) => {
-          if (comp !== 'bottle' && comp !== 'mug' && comp !== 'lid') {
-            setMeshColorForComponent(comp, color);
-          }
-        });
-        setMeshColorForComponent('lid', color);
+       if (component === 'Body') {
+          switchToColorMode(component, color);
+
+       } else if (component === 'Handle') {
+      //  selectedBottleType?.components.forEach((comp: string) => {
+        //  if (comp !== 'Body' && comp !== 'Frame' && comp !== 'Handle') {
+            setMeshColorForComponent(component, color);
+        //  }
+      //  });
+       // setMeshColorForComponent('Handle', color);
       }
     },
     [switchToColorMode, setMeshColorForComponent, selectedBottleType]
@@ -89,15 +90,18 @@ function ComponentColorSelector({
 
   const colorList = colors.colors;
   const presetHexes = new Set(colorList.map((c: any) => (c.hex || '').toLowerCase()));
-
-  const mainComponents = selectedBottleType.components.filter(
-    (c: string) => c === 'bottle' || c === 'mug' || c === 'lid'
-  );
+//console.log("selectedBottleType", selectedBottleType);
+const mainComponents = (selectedBottleType?.components || []).filter(
+  (c: string) =>
+    c === "Body" ||
+    c === "Handle"
+);
 
   return (
     <div className="space-y-4">
       {mainComponents.map((component: string) => {
-        const label = component === 'bottle' || component === 'mug' ? t('configurator.bottleColor') : t('configurator.lidColor');
+        let label = component === 'Body' ? t('configurator.bottleColor') : t('configurator.lidColor');
+      //  if(component === 'Frame') label = t('configurator.frameColor');
         const currentColor = getCurrentColorForComponent(component);
         const isCustom = currentColor?.hex && !presetHexes.has(currentColor.hex.toLowerCase());
 

@@ -2,6 +2,7 @@ import type { ProductPricing } from "./b2bPricing";
 
 /** Configurator design features that can be toggled per reseller. */
 export type FeatureKey = "texture" | "map" | "art" | "jersey" | "brand";
+//export type FeatureKey = "texture" | "map" | "brand";
 
 /**
  * A reseller / white-label partner. Resellers embed the configurator on their

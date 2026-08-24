@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect, useMemo, Suspense, lazy } from "react";
-import bottleTypesData from "@/data/bottleTypes.json";
+//import bottleTypesData from "@/data/bottleTypes.json";
+import { getBottleTypes } from "@/data/bottleTypes";
 import bottleSettingsData from "@/data/bottleSettings.json";
 import colorsBottleMug from "@/data/colors-500ml-bottle-350ml-mug.json";
 import colorsTravelTumbler from "@/data/colors-900ml-bottle-500ml-mug.json";
@@ -13,7 +14,7 @@ import { useWhiteLabel } from "@/hooks/useWhiteLabel";
 
 const BottleViewer = lazy(() => import("@/components/BottleViewer"));
 
-const ALL_BOTTLES = bottleTypesData.bottleTypes;
+
 const ALL_SETTINGS = bottleSettingsData.bottleSettings as Record<string, any>;
 
 // Bottle + Mug share one colour palette; Travel Bottle + Tumbler share another.
@@ -74,7 +75,19 @@ export default function ProductOverviewModal({
   const [generating, setGenerating] = useState(false);
 
   const { t } = useTranslation();
+  const [allBottles, setAllBottles] = useState<any[]>([]);
+useEffect(() => {
+  async function loadProducts() {
+    const data = await getBottleTypes();
+    setAllBottles(data.bottleTypes || []);
+      if (data.bottleTypes?.length > 0) {
+       // setSelectedBottleType(data.bottleTypes[0]);
+      }
+  }
 
+  loadProducts();
+}, []);
+const ALL_BOTTLES = allBottles;
   // Regenerate map textures per bottle when modal opens
   useEffect(() => {
     if (!isOpen || activeTab !== "map" || !mapParams?.location) return;
@@ -163,10 +176,10 @@ export default function ProductOverviewModal({
         base = globalColors;
       } else {
         const d = defaultColorFor(b.name);
-        base = { Body: d, Bottom: d, Lid: d, Ring: d, Handle: d, Straw: d };
+        base = { Body: d, Frame: d, Handle: d, };
       }
       map[b.name] = accentColor
-        ? { ...base, Lid: accentColor, Ring: accentColor, Handle: accentColor, Straw: accentColor }
+        ? { ...base, Body: accentColor, Frame: accentColor, Handle: accentColor }
         : base;
     }
     return map;

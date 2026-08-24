@@ -27,8 +27,8 @@ import { getBrandTextureUrl, generateBrandPreviews, rasterizeSvg } from "@/utils
 
 interface OptionTabsProps {
   // Tab state
-  activeOptionalTab: "texture" | "map" | "text" | "art" | "jersey" | "brand" | "ai";
-  onTabChange: (tab: "texture" | "map" | "text" | "art" | "jersey" | "brand" | "ai") => void;
+  activeOptionalTab: "texture" | "map" | "text" | "brand" | "ai";
+  onTabChange: (tab: "texture" | "map" | "text" | "brand" | "ai") => void;
 
   // Texture states
   allOverPrintTexture: string | null;
@@ -481,7 +481,7 @@ export default function OptionTabs({
   // If the active tab is a feature the reseller disabled, fall back to the
   // first enabled feature tab so the user never lands on a hidden/empty panel.
   useEffect(() => {
-    const featureTabs = ["texture", "map", "art", "jersey", "brand"] as const;
+    const featureTabs = ["texture", "map", "brand"] as const;
     if (!(featureTabs as readonly string[]).includes(activeOptionalTab)) return;
     if (wl.isFeature(activeOptionalTab as typeof featureTabs[number])) return;
     const firstEnabled = featureTabs.find((f) => wl.isFeature(f));
@@ -697,7 +697,7 @@ export default function OptionTabs({
         </button>
         )}
         {/* Text & Logo tab hidden for now */}
-        {wl.isFeature("art") && (
+        {/* {wl.isFeature("art") && (
         <button
           onClick={handleArtTab}
           role="tab"
@@ -750,7 +750,7 @@ export default function OptionTabs({
             <span>{t("tabs.jersey")}</span>
           </div>
         </button>
-        )}
+        )} */}
         {wl.isFeature("brand") && (
         <button
           onClick={() => onTabChange("brand")}

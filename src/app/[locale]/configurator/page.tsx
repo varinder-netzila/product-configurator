@@ -79,32 +79,6 @@ useEffect(() => {
   if (!shop || !isAuthenticated) {
     return;
   }
-
-  const loadBottleTypes = async () => {
-    try {
-      setProductsLoading(true);
-
-      const response = await fetch("/api/bottle-types");
-
-      if (!response.ok) {
-        throw new Error("Failed to load bottle types");
-      }
-
-      const data = await response.json();
-
-      setBottleTypes(data.bottleTypes || []);
-    } catch (error) {
-      console.error(
-        "Failed to load bottle types:",
-        error
-      );
-    } finally {
-      setProductsLoading(false);
-    }
-  };
-
-  loadBottleTypes();
-
 }, [shop, isAuthenticated]);
   const {
     _hasHydrated,
@@ -203,6 +177,9 @@ useEffect(() => {
   async function loadProducts() {
     const data = await getBottleTypes();
     setBottleTypes(data.bottleTypes);
+      if (data.bottleTypes?.length > 0) {
+        setSelectedBottleType(data.bottleTypes[0]);
+      }
   }
 
   loadProducts();
@@ -322,18 +299,7 @@ useEffect(() => {
     setShowTextureUploadGuide(false);
     if (textureInputRef.current) textureInputRef.current.click();
   };
-console.log(selectedBottleType.model);
 
-// useEffect(() => {
-//   scene.traverse((child: any) => {
-//     if (child.isMesh) {
-//       console.log("Mesh:", child.name);
-//       console.log("Material:", child.material?.name);
-//       child.material.color.set("#ff0000");
-//       child.material.needsUpdate = true;
-//     }
-//   });
-// }, [scene]);
   const handleTextureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
@@ -618,7 +584,7 @@ console.log(selectedBottleType.model);
           const def = isTravelGroup ? palette[6] : palette[8];
           if (def) {
             setMeshColors({
-              Body: def, Bottom: def, Lid: def, Ring: def, Handle: def, Straw: def,
+              Body: def, Frame: def, Handle: def,
             });
           }
         }
@@ -655,8 +621,7 @@ console.log(selectedBottleType.model);
         defaultColor = colors.colors.find((c: any) => c.name === "White" || c.name === "white") || colors.colors[0];
       }
       setMeshColors({
-        Body: defaultColor, Bottom: defaultColor, Lid: defaultColor,
-        Ring: defaultColor, Handle: defaultColor, Straw: defaultColor,
+        Body: defaultColor, Frame: defaultColor, Handle: defaultColor,
       });
     }
   }, [colors, selectedBottleType, meshColors, setMeshColors]);
@@ -754,7 +719,7 @@ console.log(selectedBottleType.model);
 
         return canvas.toDataURL("image/png", 1.0);
       } catch (error) {
-        console.error("Failed to generate map texture with logo:", error);
+       // console.error("Failed to generate map texture with logo:", error);
         return baseTextureUrl;
       }
     },
@@ -1331,7 +1296,7 @@ console.log(selectedBottleType.model);
               }
             >
               <BottleViewer
-                modelPath={selectedBottleType ? `${selectedBottleType.model}` : "/assets/models/bottle-500.glb"}
+                modelPath={selectedBottleType ? `${selectedBottleType.model}` : "https://cdn.shopify.com/3d/models/o/e034a8ec5084c86c/board-new.glb"}
                 selectedColor={meshColors}
                 currentStepName={currentStep === 2 ? "Configure" : steps[currentStep - 1] || "Select Bottle"}
                 selectedTexture={currentTexture}

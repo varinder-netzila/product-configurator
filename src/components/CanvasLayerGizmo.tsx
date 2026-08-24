@@ -96,8 +96,6 @@ export default function CanvasLayerGizmo({
   const centerY = (layer.position.y + 0.5) * containerDims.h;
   const size = layer.scale * Math.min(containerDims.w, containerDims.h) * 0.25; // 25% of container at scale 1
 
-  console.log('Layer position:', layer.position, 'centerX/Y:', centerX, centerY, 'size:', size);
-
   const handleSize = 12;
   const positions = {
     nw: { x: centerX - size / 2, y: centerY - size / 2 },

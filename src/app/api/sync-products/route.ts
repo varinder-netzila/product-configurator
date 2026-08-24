@@ -92,7 +92,7 @@ const products =
       product.featuredMedia?.mediaContentType === "IMAGE"
         ? product.featuredMedia?.image?.url || ""
         : "";
-    console.log('img_url', image);    
+    //console.log('img_url', image);    
     const glbSource =
       modelMedia?.sources?.find(
         (source: any) =>

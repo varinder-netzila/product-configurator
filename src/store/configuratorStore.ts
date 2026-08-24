@@ -365,7 +365,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       setMeshColorForComponent: (component, color) => {
         if (component === 'bottle' || component === 'mug') {
           set((state) => ({
-            meshColors: { ...state.meshColors, Body: color, Bottom: color },
+            meshColors: { ...state.meshColors, Body: color, Handle: color },
           }));
         } else if (component === 'lid' || component === 'straw') {
           // Lid and straw are visually one accent — keep them locked
@@ -679,11 +679,8 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
             ? {
                 meshColors: {
                   Body: defaultColor,
-                  Bottom: defaultColor,
-                  Lid: defaultColor,
-                  Ring: defaultColor,
+                  Frame: defaultColor,
                   Handle: defaultColor,
-                  Straw: defaultColor,
                 },
               }
             : {}),

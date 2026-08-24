@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback, useRef, Suspense, lazy } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import bottleTypesData from "@/data/bottleTypes.json";
+//import bottleTypesData from "@/data/bottleTypes.json";
+import { getBottleTypes } from "@/data/bottleTypes";
 import bottleSettingsData from "@/data/bottleSettings.json";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -19,19 +20,43 @@ const TYPE_MAP: Record<string, string> = {
 export default function EmbedPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+
   const typeSlug = params.type as string;
 
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [showRotateHint, setShowRotateHint] = useState(true);
   const [ready, setReady] = useState(false);
+  const [bottleType, setBottleType] = useState<any>(null);
+
   const { t } = useTranslation();
 
   const bottleName = TYPE_MAP[typeSlug];
-  const bottleType = bottleTypesData.bottleTypes.find((b) => b.name === bottleName) || null;
+
   const bottleSettings = bottleName
-    ? (bottleSettingsData.bottleSettings as Record<string, any>)[bottleName]
+    ? (bottleSettingsData.bottleSettings as Record<string, any>)[
+        bottleName
+      ]
     : null;
 
+  useEffect(() => {
+    async function loadBottleTypes() {
+      try {
+        const data = await getBottleTypes();
+
+        const foundBottle =
+          data.bottleTypes.find(
+            (b: any) => b.name === bottleName
+          ) || null;
+
+        setBottleType(foundBottle);
+      } catch (error) {
+        console.error("Failed to load bottle types:", error);
+      }
+    }
+
+    loadBottleTypes();
+  }, [bottleName]);
+  
   // Build mesh colors from URL params: ?bottle=#C4A4A0&lid=#000000&ring=#C0C0C0
   const meshColors: Record<string, any> = {};
   if (bottleType) {

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import bottleTypesData from "@/data/bottleTypes.json";
+//import bottleTypesData from "@/data/bottleTypes.json";
+import { getBottleTypes } from "@/data/bottleTypes";
 import { exportBakedGLB } from "@/utils/glbExporter";
 
 const PRODUCT_TYPES = [
@@ -88,18 +89,18 @@ function defaultConfigs(): ProductConfig[] {
 }
 
 export default function EmbedAdminPage() {
-  const [configs, setConfigs] = useState<ProductConfig[]>(defaultConfigs);
+ // const [configs, setConfigs] = useState<ProductConfig[]>(defaultConfigs);
   const [hydrated, setHydrated] = useState(false);
   const [activeProduct, setActiveProduct] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
   const [previewKey, setPreviewKey] = useState(0);
 
   // Load from localStorage after hydration
-  useEffect(() => {
-    const saved = loadConfigs();
-    if (saved.length) setConfigs(saved);
-    setHydrated(true);
-  }, []);
+  // useEffect(() => {
+  //   const saved = loadConfigs();
+  //   if (saved.length) setConfigs(saved);
+  //   setHydrated(true);
+  // }, []);
 
   const baseUrl = typeof window !== "undefined"
     ? window.location.origin
@@ -177,9 +178,11 @@ export default function EmbedAdminPage() {
     if (!product || !variant) return;
     setExporting(true);
     try {
-      const modelUrl = `${
-        bottleTypesData.bottleTypes.find((b) => b.name === product.name)?.model || "bottle-500.glb"
-      }`;
+      const bottleTypesData = await getBottleTypes();
+      const modelUrl =
+        bottleTypesData.bottleTypes.find(
+          (b) => b.name === product.name
+        )?.model || "/assets/models/bottle-500.glb";
       // Capitalize component keys to match mesh names
       const capitalizedColors: Record<string, string> = {};
       for (const [key, val] of Object.entries(variant.colors)) {

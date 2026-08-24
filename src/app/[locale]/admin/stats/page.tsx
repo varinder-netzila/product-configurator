@@ -25,7 +25,9 @@ const EVENT_LABELS: Record<string, string> = {
 };
 
 const KNOWN_ORDER = [
-  "view", "tool:texture", "tool:map", "tool:art", "tool:jersey", "tool:brand",
+  "view", "tool:texture", "tool:map",
+    "tool:art", "tool:jersey",
+    "tool:brand",
   "step:2", "step:3", "quote",
 ];
 

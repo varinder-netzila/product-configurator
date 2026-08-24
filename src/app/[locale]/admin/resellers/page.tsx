@@ -22,7 +22,7 @@ const emptyReseller = (): ResellerConfig => ({
   logoUrl: null,
   accentColor: "#1a1a1a",
   pricing: {},
-  features: { art: false, jersey: false },
+  features: { art: false, jersey: false, },
 });
 
 function CopyButton({ text }: { text: string }) {

@@ -18,7 +18,8 @@ import {
 import * as THREE from "three";
 import DotsSpinner from "./DotsSpinner";
 import { LogoDecal, TextEngraving, BottleType } from "@/types/bottle";
-import bottleTypesData from "@/data/bottleTypes.json";
+//import bottleTypesData from "@/data/bottleTypes.json";
+import { getBottleTypes } from "@/data/bottleTypes";
 import { useTranslation } from "@/i18n/useTranslation";
 
 // Helper function to get material type for a mesh name
@@ -27,6 +28,7 @@ const getMaterialTypeForMesh = (meshName: string, selectedBottleType?: BottleTyp
   
   //const bottleType = bottleTypesData.bottleTypes.find(bt => bt.id === selectedBottleType.id);
   //if (!bottleType || !bottleType.materials) return null;
+  
 const bottleType = bottleTypesData.bottleTypes.find(
   bt => String(bt.id) === String(selectedBottleType.id)
 );
@@ -39,21 +41,10 @@ if (!bottleType) {
   // Map mesh names to component names
   let componentName: string | null = null;
   
-  if (meshNameLower.includes("body") || meshNameLower.includes("bottom")) {
-    // Check if it's a bottle or mug
-    if (bottleType.components.includes("bottle")) {
-      componentName = "bottle";
-    } else if (bottleType.components.includes("mug")) {
-      componentName = "mug";
-    }
-  } else if (meshNameLower.includes("lid")) {
-    componentName = "lid";
-  } else if (meshNameLower.includes("ring")) {
-    componentName = "ring";
+  if (meshNameLower.includes("body")) {
+    componentName = "body";
   } else if (meshNameLower.includes("handle")) {
     componentName = "handle";
-  } else if (meshNameLower.includes("straw")) {
-    componentName = "straw";
   }
 
   if (!componentName) return null;
@@ -616,7 +607,18 @@ export default function ARViewer({
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+   const [bottleTypesData, setbottleTypesData] = useState(true);
+useEffect(() => {
+  async function loadProducts() {
+    const data = await getBottleTypes();
+    setbottleTypesData(data.bottleTypes);
+      if (data.bottleTypes?.length > 0) {
+       // setSelectedBottleType(data.bottleTypes[0]);
+      }
+  }
 
+  loadProducts();
+}, []);
   // Initialize camera
   useEffect(() => {
     const initCamera = async () => {
@@ -693,7 +695,7 @@ export default function ARViewer({
       <div className="absolute inset-0">
         <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
           <Suspense fallback={null}>
-            <Environment preset="city" background={false} />
+            {/* <Environment preset="city" background={false} /> */}
             <ambientLight intensity={0.5} />
 
             <ARBottleModel

@@ -57,7 +57,7 @@ export default function BottleSelector({
               }`}
             >
               <img
-                src={`/assets/images/${bottleType.image}`}
+                src={`${bottleType.image}`}
                 alt={bottleType.name}
                 className="w-12 h-12 object-contain transition-all"
                 style={{

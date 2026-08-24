@@ -96,7 +96,7 @@ export async function exportBakedGLB(
       }
     }
 
-    const isBody = name.includes("bottle") || name.includes("mug") || name.includes("body");
+    const isBody = name.includes("handle") || name.includes("body");
     if (isBody && texture) {
       if (child.material) {
         const mat = child.material.clone();
