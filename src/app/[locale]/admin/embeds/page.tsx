@@ -89,7 +89,7 @@ function defaultConfigs(): ProductConfig[] {
 }
 
 export default function EmbedAdminPage() {
- // const [configs, setConfigs] = useState<ProductConfig[]>(defaultConfigs);
+  const [configs, setConfigs] = useState<ProductConfig[]>(defaultConfigs);
   const [hydrated, setHydrated] = useState(false);
   const [activeProduct, setActiveProduct] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
