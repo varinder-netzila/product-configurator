@@ -1,31 +1,46 @@
-import shopify from "@/lib/shopify";
-import { loadSession } from "@/lib/sessionStorage";
+// src/app/api/shopify-test/route.ts
 
-export async function GET() {
-  const shop = "marvins-houtbewerkerij.myshopify.com";
+import { NextRequest, NextResponse } from "next/server";
+import { getShopifyClientGraphql } from "@/lib/shopify";
 
+export async function GET(request: NextRequest) {
   try {
-    const sessionId = shopify.session.getOfflineId(shop);
-    const session = await loadSession(sessionId);
+    const shop = request.nextUrl.searchParams.get("shop");
 
-    console.log("Shop:", shop);
-    console.log("Session ID:", sessionId);
-    console.log("Session found:", !!session);
-    console.log("Has access token:", !!session?.accessToken);
+    if (!shop) {
+      return NextResponse.json(
+        { error: "Shop parameter is required" },
+        { status: 400 }
+      );
+    }
 
-    return Response.json({
+    const client = await getShopifyClientGraphql(shop);
+
+    const response = await client.query({
+      data: {
+        query: `
+          {
+            shop {
+              name
+              myshopifyDomain
+            }
+          }
+        `,
+      },
+    });
+
+    return NextResponse.json({
       success: true,
       shop,
-      sessionFound: !!session,
-      hasAccessToken: !!session?.accessToken,
+      response: response.body,
     });
   } catch (error: any) {
     console.error("Shopify test error:", error);
 
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Unknown error",
+        error: error?.message || "Shopify request failed",
       },
       { status: 500 }
     );
