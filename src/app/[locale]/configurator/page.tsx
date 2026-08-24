@@ -22,7 +22,7 @@ import OptionTabs from "@/components/OptionTabs";
 import TextureDesignManager from "@/components/TextureDesignManager";
 import MobileAccordion from "@/components/MobileAccordion";
 import BottleSelector from "@/components/BottleSelector";
-import ComponentColorSelector from "@/components/ComponentColorSelector";
+//import ComponentColorSelector from "@/components/ComponentColorSelector";
 import ShareDesignPopup from "@/components/ShareDesignPopup";
 import ProductOverviewModal from "@/components/ProductOverviewModal";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -1430,7 +1430,7 @@ useEffect(() => {
                 : `Design your ${wl.companyName}`}
             </h1>
 
-            {wl.reseller?.id !== "killerkoozys" && (
+            {/* {wl.reseller?.id !== "killerkoozys" && (
               <div className="flex items-center gap-2 mb-10">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
@@ -1441,7 +1441,7 @@ useEffect(() => {
                 </div>
                 <span className="text-sm text-gray-500">30 recensies</span>
               </div>
-            )}
+            )} */}
 
             {/* Progress */}
             <div className="flex items-center mt-4 mb-2 w-full">
@@ -1493,24 +1493,24 @@ useEffect(() => {
 
             {currentStep === 2 && (
               <div className="mb-2">
-                <div className="overflow-y-auto scrollbar-none">
-                  <div className="bg-white rounded-3xl p-6 border border-gray-200 mb-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4">
+               <div className="overflow-y-auto scrollbar-none">
+              {/* <div className="bg-white rounded-3xl p-6 border border-gray-200 mb-4 shadow-sm">
+                     <div className="flex items-center gap-2 mb-4">
                       <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">{t("configurator.chooseYourColor")}</h3>
-                    </div>
-                    <ComponentColorSelector
+                    </div> 
+                     <ComponentColorSelector
                       selectedBottleType={selectedBottleType}
                       colors={colors}
                       getCurrentColorForComponent={getCurrentColorForComponent}
                       switchToColorMode={switchToColorModeWithRef}
                       setMeshColorForComponent={setMeshColorForComponent}
-                    />
-                  </div>
+                    /> 
+                  </div> */}
 
                   <div className="mb-1">
                     <div className="flex items-center gap-2 mb-3 px-1">
-                      <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+                      <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">{t("configurator.addDesign")} <span className="text-gray-400 font-normal normal-case tracking-normal">({t("configurator.optional")})</span></h3>
                     </div>
                   </div>

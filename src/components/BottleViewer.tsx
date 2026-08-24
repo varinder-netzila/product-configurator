@@ -307,23 +307,23 @@ const applyColorsToScene = (
     // }
 
     if (Array.isArray(mesh.material)) {
-      mesh.material.forEach((mat) => {
-        applyColorToMaterial(
-          mat,
-          meshColor,
-          meshName,
-          selectedBottleType,
-          bottleTypesData
-        );
-      });
+      // mesh.material.forEach((mat) => {
+      //   applyColorToMaterial(
+      //     mat,
+      //     meshColor,
+      //     meshName,
+      //     selectedBottleType,
+      //     bottleTypesData
+      //   );
+      // });
     } else if (mesh.material) {
-      applyColorToMaterial(
-        mesh.material,
-        meshColor,
-        meshName,
-        selectedBottleType,
-        bottleTypesData
-      );
+      // applyColorToMaterial(
+      //   mesh.material,
+      //   meshColor,
+      //   meshName,
+      //   selectedBottleType,
+      //   bottleTypesData
+      // );
     }
   });
 };

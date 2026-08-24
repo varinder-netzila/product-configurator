@@ -750,7 +750,7 @@ export default function OptionTabs({
             <span>{t("tabs.jersey")}</span>
           </div>
         </button>
-        )} */}
+        )} 
         {wl.isFeature("brand") && (
         <button
           onClick={() => onTabChange("brand")}
@@ -772,7 +772,8 @@ export default function OptionTabs({
             <span>{t("tabs.brand")}</span>
           </div>
         </button>
-        )}
+        
+        )} */}
         {/* AI tab removed */}
       </div>
 
@@ -834,7 +835,7 @@ export default function OptionTabs({
             />
 
             {/* Templates */}
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <p className="block text-sm font-bold text-gray-900 mb-3">
                 {t("texture.orPickTemplate")}
               </p>
@@ -867,7 +868,7 @@ export default function OptionTabs({
                 })}
               </div>
 
-              {/* Color customization for the selected template */}
+              {/* Color customization for the selected template *
               {selectedPrintTemplate && (
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div>
@@ -926,7 +927,7 @@ export default function OptionTabs({
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* Horizontal Position for All Over Print */}
             <div className="mt-4">
