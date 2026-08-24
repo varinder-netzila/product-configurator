@@ -21,6 +21,11 @@ export { storeSession, loadSession, deleteSession };
  * Get an authenticated REST client for a given shop.
  * Loads the offline session from storage and creates a client.
  */
+export async function getTKN(shop: string) {
+    const sessionId = shopify.session.getOfflineId(shop);
+    const session = await loadSession(sessionId);
+    return session?.accessToken;
+}  
 export async function getShopifyClient(shop: string) {
   const sessionId = shopify.session.getOfflineId(shop);
   const session = await loadSession(sessionId);
@@ -33,26 +38,25 @@ export async function getShopifyClient(shop: string) {
   return new shopify.clients.Rest({ session });
 }
 
-export function getShopifyClientGraphql() {
-  const accessToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
+export async function getShopifyClientGraphql(shop: string) {
+  const sessionId = shopify.session.getOfflineId(shop);
+  const session = await loadSession(sessionId);
+  //console.log("=== session Graphql ===: ", session)
 
-  if (!accessToken) {
-    throw new Error("SHOPIFY_ADMIN_API_TOKEN is missing");
+  if (!session?.accessToken) {
+    throw new Error(`No active session found for shop: ${shop}. Please re-authenticate.`);
   }
 
-  return new shopify.clients.Graphql({
-    session: {
-      shop: process.env.SHOPIFY_STORE_DOMAIN!,
-      accessToken,
-    } as any,
-  });
+  return new shopify.clients.Graphql({ session });
 }
+
 /**
  * Get an authenticated GraphQL client for a given shop.
  */
 export async function getShopifyGraphqlClient(shop: string) {
   const sessionId = shopify.session.getOfflineId(shop);
   const session = await loadSession(sessionId);
+
   if (!session?.accessToken) {
     throw new Error(`No active session found for shop: ${shop}. Please re-authenticate.`);
   }
