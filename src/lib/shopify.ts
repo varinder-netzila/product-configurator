@@ -35,23 +35,27 @@ export async function getShopifyClient(shop: string) {
 
 export async function getShopifyClientGraphql(shop: string) {
   const sessionId = shopify.session.getOfflineId(shop);
+
   const session = await loadSession(sessionId);
-  //console.log("=== session Graphql ===: ", session)
+
+  //console.log("=== Shopify GraphQL Session ===");
+  //console.log("session:", session);
+  //console.log("accessToken:", session?.accessToken);
 
   if (!session?.accessToken) {
-    throw new Error(`No active session found for shop: ${shop}. Please re-authenticate.`);
+    throw new Error(
+      `No offline Shopify session found for shop: ${shop}. Please authenticate the app.`
+    );
   }
 
   return new shopify.clients.Graphql({ session });
 }
-
 /**
  * Get an authenticated GraphQL client for a given shop.
  */
 export async function getShopifyGraphqlClient(shop: string) {
   const sessionId = shopify.session.getOfflineId(shop);
   const session = await loadSession(sessionId);
-
   if (!session?.accessToken) {
     throw new Error(`No active session found for shop: ${shop}. Please re-authenticate.`);
   }
