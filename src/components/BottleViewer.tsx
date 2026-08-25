@@ -138,12 +138,16 @@ const applyTextureToMaterial = (
     textureLoader.crossOrigin = "anonymous";
 
     textureLoader.load(textureUrl, (texture) => {
+      const scale = 0.25; // 50% size
       texture.center.set(0.5, 0.5);
       texture.flipY = false;
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.repeat.set(1, 1);
-      texture.offset.x = ((offsetX % 1) + 1) % 1; // normalize to [0,1)
+     // texture.repeat.set(1, 1);
+      texture.repeat.set(scale, scale);
+      texture.offset.x = 0.5 - scale * 0.5;
+      texture.offset.y = 0.5 - scale * 0.5;
+    //  texture.offset.x = ((offsetX % 1) + 1) % 1; // normalize to [0,1)
       mat.map = texture;
 
       // Apply texture adjustments with fixed gamma
