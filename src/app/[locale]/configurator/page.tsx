@@ -22,7 +22,7 @@ import OptionTabs from "@/components/OptionTabs";
 import TextureDesignManager from "@/components/TextureDesignManager";
 import MobileAccordion from "@/components/MobileAccordion";
 import BottleSelector from "@/components/BottleSelector";
-//import ComponentColorSelector from "@/components/ComponentColorSelector";
+import ComponentColorSelector from "@/components/ComponentColorSelector";
 import ShareDesignPopup from "@/components/ShareDesignPopup";
 import ProductOverviewModal from "@/components/ProductOverviewModal";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -1494,7 +1494,7 @@ useEffect(() => {
             {currentStep === 2 && (
               <div className="mb-2">
                <div className="overflow-y-auto scrollbar-none">
-              {/* <div className="bg-white rounded-3xl p-6 border border-gray-200 mb-4 shadow-sm">
+               <div className="bg-white rounded-3xl p-6 border border-gray-200 mb-4 shadow-sm">
                      <div className="flex items-center gap-2 mb-4">
                       <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">{t("configurator.chooseYourColor")}</h3>
@@ -1506,7 +1506,7 @@ useEffect(() => {
                       switchToColorMode={switchToColorModeWithRef}
                       setMeshColorForComponent={setMeshColorForComponent}
                     /> 
-                  </div> */}
+                  </div> 
 
                   <div className="mb-1">
                     <div className="flex items-center gap-2 mb-3 px-1">

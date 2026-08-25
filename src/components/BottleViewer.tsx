@@ -281,51 +281,51 @@ const applyColorsToScene = (
   bottleTypesData?: { bottleTypes: BottleType[] }
 ) => {
  
-  // scene.traverse((child: THREE.Object3D) => {
-  //   if (!(child as THREE.Mesh).isMesh) return;
+  scene.traverse((child: THREE.Object3D) => {
+    if (!(child as THREE.Mesh).isMesh) return;
 
-  //   const mesh = child as THREE.Mesh;
-  //   const meshName = mesh.name;
+    const mesh = child as THREE.Mesh;
+    const meshName = mesh.name;
     
-  // if (mesh.name.toLowerCase() === "body001") {
-  //   //mesh.position.z += 0.01;
-  // }
-  //   // Clone material FIRST so each mesh is independent
-  //   if (Array.isArray(mesh.material)) {
-  //     mesh.material = mesh.material.map((mat) => mat.clone());
-  //   } else if (mesh.material) {
-  //     mesh.material = mesh.material.clone();
-  //   }
+  if (mesh.name.toLowerCase() === "body001") {
+    //mesh.position.z += 0.01;
+  }
+    // Clone material FIRST so each mesh is independent
+    if (Array.isArray(mesh.material)) {
+      mesh.material = mesh.material.map((mat) => mat.clone());
+    } else if (mesh.material) {
+      mesh.material = mesh.material.clone();
+    }
 
-  //   const meshColor = selectedColor?.[meshName];
+    const meshColor = selectedColor?.[meshName];
 
-  //   // if (
-  //   //   !meshColor ||
-  //   //   (hasTexture && meshName.toLowerCase().includes("body"))
-  //   // ) {
-  //   //   return;
-  //   // }
+    // if (
+    //   !meshColor ||
+    //   (hasTexture && meshName.toLowerCase().includes("body"))
+    // ) {
+    //   return;
+    // }
 
-  //   if (Array.isArray(mesh.material)) {
-  //     mesh.material.forEach((mat) => {
-  //       applyColorToMaterial(
-  //         mat,
-  //         meshColor,
-  //         meshName,
-  //         selectedBottleType,
-  //         bottleTypesData
-  //       );
-  //     });
-  //   } else if (mesh.material) {
-  //     applyColorToMaterial(
-  //       mesh.material,
-  //       meshColor,
-  //       meshName,
-  //       selectedBottleType,
-  //       bottleTypesData
-  //     );
-  //   }
-  // });
+    if (Array.isArray(mesh.material)) {
+      mesh.material.forEach((mat) => {
+        applyColorToMaterial(
+          mat,
+          meshColor,
+          meshName,
+          selectedBottleType,
+          bottleTypesData
+        );
+      });
+    } else if (mesh.material) {
+      applyColorToMaterial(
+        mesh.material,
+        meshColor,
+        meshName,
+        selectedBottleType,
+        bottleTypesData
+      );
+    }
+  });
 };
 
 const applyTextureToScene = (

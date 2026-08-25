@@ -229,6 +229,27 @@ export const RESELLERS: Record<string, ResellerConfig> = {
   // Lead email omitted for now — leads go to IZY only until BF Promotions
   // confirm the right address (their site lists info@bfpromotions.cz). Pricing
   // is a copy of the IZY/Tailwind staffel.
+    marvins: {
+    id: "marvins",
+    companyName: "Marvins",
+    logoUrl: "https://www.marvins.eu/cdn/shop/files/Logo_Marvins_dfb88401-5ac2-4e8c-b800-3caed94e4181_167x150.jpg",
+    accentColor: "#000C2C",
+    email: "info@marvins.cz",
+    stripPrefix: "IZY ",
+    // Art + Jersey disabled for BF Promotions.
+    features: { art: false, jersey: false },
+    pricing: {
+      "IZY Bottle": {
+        retail: 29.99,
+        tiers: [
+          { label: "50-99", min: 50, max: 99, price: 20.99 },
+          { label: "100-249", min: 100, max: 249, price: 19.99 },
+          { label: "250-499", min: 250, max: 499, price: 18.99 },
+          { label: "500-999", min: 500, max: 999, price: 17.99 },
+        ]
+      },
+    }
+  },
   bfpromotions: {
     id: "bfpromotions",
     companyName: "BF Promotions",
