@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       shop,
-      hasToken: token,
+      hasToken: true,
       tokenPrefix: token.substring(0, 8),
     });
   } catch (error: any) {

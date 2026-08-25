@@ -307,23 +307,23 @@ const applyColorsToScene = (
     // }
 
     if (Array.isArray(mesh.material)) {
-      // mesh.material.forEach((mat) => {
-      //   applyColorToMaterial(
-      //     mat,
-      //     meshColor,
-      //     meshName,
-      //     selectedBottleType,
-      //     bottleTypesData
-      //   );
-      // });
+      mesh.material.forEach((mat) => {
+        applyColorToMaterial(
+          mat,
+          meshColor,
+          meshName,
+          selectedBottleType,
+          bottleTypesData
+        );
+      });
     } else if (mesh.material) {
-      // applyColorToMaterial(
-      //   mesh.material,
-      //   meshColor,
-      //   meshName,
-      //   selectedBottleType,
-      //   bottleTypesData
-      // );
+      applyColorToMaterial(
+        mesh.material,
+        meshColor,
+        meshName,
+        selectedBottleType,
+        bottleTypesData
+      );
     }
   });
 };
@@ -338,6 +338,7 @@ const applyTextureToScene = (
     if ((child as THREE.Mesh).isMesh) {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
+      console.log('meshName: ', meshName);
     if (Array.isArray(mesh.material)) {
       mesh.material = mesh.material.map((mat) => mat.clone());
     } else if (mesh.material) {
