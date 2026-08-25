@@ -99,17 +99,17 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
       }
     } else {
       // Regular color application
-      if (color.hex) {
+      if (color?.hex) {
         if (
-          typeof color.hex === "string" &&
-          color.hex.startsWith("linear-gradient")
+          typeof color?.hex === "string" &&
+          color?.hex.startsWith("linear-gradient")
         ) {
-          const hexColor = color.hex.match(/#([0-9a-f]{6})/i)?.[1];
+          const hexColor = color?.hex.match(/#([0-9a-f]{6})/i)?.[1];
           if (hexColor) {
             mat.color.setHex(parseInt(hexColor, 16));
           }
         } else {
-          mat.color.setHex(parseInt(color.hex.replace("#", ""), 16));
+          mat.color.setHex(parseInt(color?.hex.replace("#", ""), 16));
         }
       }
       // Reset material properties to defaults for non-silver colors

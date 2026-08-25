@@ -232,7 +232,7 @@ export const RESELLERS: Record<string, ResellerConfig> = {
     marvins: {
     id: "marvins",
     companyName: "Marvins",
-    logoUrl: "https://www.marvins.eu/cdn/shop/files/Logo_Marvins_dfb88401-5ac2-4e8c-b800-3caed94e4181_167x150.jpg",
+    logoUrl: "/assets/images/marvin-logo.png",
     accentColor: "#000C2C",
     email: "info@marvins.cz",
     stripPrefix: "IZY ",
