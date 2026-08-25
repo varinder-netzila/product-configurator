@@ -73,7 +73,7 @@ const applyColorToMaterial = (
 
     // Check if color is Silver
  
-    const isSilver = color.name === "Silver" || color.name?.toLowerCase() === "silver";
+    const isSilver = color?.name === "Silver" || color?.name?.toLowerCase() === "silver";
     
 if (isSilver && meshName && selectedBottleType && bottleTypesData) {
   const materialType = getMaterialTypeForMesh(

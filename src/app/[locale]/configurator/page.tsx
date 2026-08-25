@@ -1494,7 +1494,7 @@ useEffect(() => {
             {currentStep === 2 && (
               <div className="mb-2">
                <div className="overflow-y-auto scrollbar-none">
-               <div className="bg-white rounded-3xl p-6 border border-gray-200 mb-4 shadow-sm">
+               <div className="bg-white rounded-3xl p-6 border border-gray-200 mb-4 shadow-sm hidden">
                      <div className="flex items-center gap-2 mb-4">
                       <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">{t("configurator.chooseYourColor")}</h3>
