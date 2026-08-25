@@ -138,7 +138,7 @@ const applyTextureToMaterial = (
     textureLoader.crossOrigin = "anonymous";
 
     textureLoader.load(textureUrl, (texture) => {
-      const scale = 0.25; // 50% size
+      const scale = 4; // 50% size
       texture.center.set(0.5, 0.5);
       texture.flipY = false;
       texture.wrapS = THREE.RepeatWrapping;
