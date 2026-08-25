@@ -1,8 +1,5 @@
-// src/app/api/shopify-test/route.ts
-
+import { getTKN } from "@/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
-import { getShopifyClientGraphql } from "@/lib/shopify";
-
 export async function GET(request: NextRequest) {
   try {
     const shop = request.nextUrl.searchParams.get("shop");
@@ -14,33 +11,31 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const client = await getShopifyClientGraphql(shop);
+    const token = await getTKN(shop);
 
-    const response = await client.query({
-      data: {
-        query: `
-          {
-            shop {
-              name
-              myshopifyDomain
-            }
-          }
-        `,
-      },
-    });
+    if (!token) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "No Shopify session/token found",
+        },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
       shop,
-      response: response.body,
+      hasToken: token,
+      tokenPrefix: token.substring(0, 8),
     });
   } catch (error: any) {
-    console.error("Shopify test error:", error);
+    console.error("Shopify token error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Shopify request failed",
+        error: error?.message || "Failed to get token",
       },
       { status: 500 }
     );

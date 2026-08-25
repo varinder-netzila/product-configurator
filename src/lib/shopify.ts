@@ -21,6 +21,7 @@ export { storeSession, loadSession, deleteSession };
  * Get an authenticated REST client for a given shop.
  * Loads the offline session from storage and creates a client.
  */
+
 export async function getTKN(shop: string) {
     const sessionId = shopify.session.getOfflineId(shop);
     const session = await loadSession(sessionId);
