@@ -40,13 +40,25 @@ export async function getShopifyClient(shop: string) {
 }
 
 export async function getShopifyClientGraphql(shop: string) {
-  const sessionId = shopify.session.getOfflineId(shop);
-  const session = await loadSession(sessionId);
-  //console.log("=== session Graphql ===: ", session)
+  const accessToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
 
-  if (!session?.accessToken) {
-    throw new Error(`No active session found for shop: ${shop}. Please re-authenticate.`);
+  if (!accessToken) {
+    throw new Error(
+      "SHOPIFY_ADMIN_API_TOKEN is not configured."
+    );
   }
+
+  const shopDomain = shop
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+
+  const session = new Session({
+    id: `env-${shopDomain}`,
+    shop: shopDomain,
+    state: "active",
+    isOnline: false,
+    accessToken,
+  });
 
   return new shopify.clients.Graphql({ session });
 }
