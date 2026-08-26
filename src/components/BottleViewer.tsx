@@ -287,9 +287,9 @@ const applyColorsToScene = (
     const mesh = child as THREE.Mesh;
     const meshName = mesh.name;
     
-  if (mesh.name.toLowerCase() === "body") {
-    mesh.position.z -= 0.05;
-  }
+  // if (mesh.name.toLowerCase() === "body") {
+  //   mesh.position.z -= 0.05;
+  // }
     // Clone material FIRST so each mesh is independent
     if (Array.isArray(mesh.material)) {
       mesh.material = mesh.material.map((mat) => mat.clone());
