@@ -738,7 +738,7 @@ export default function MapTextureControl({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-2 sm:p-4">
-      <div className="bg-white rounded-2xl w-full sm:w-auto sm:h-auto sm:max-w-12xl sm:max-h-[98vh] overflow-hidden relative sm:max-w-[515px]">
+      <div className="bg-white rounded-2xl w-full sm:w-auto sm:h-auto sm:max-w-12xl sm:max-h-[95vh] overflow-hidden relative">
         <div className="flex justify-between items-center p-3 sm:p-2 md:p-4 border-b border-gray-200">
           <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">{t("map.mapControl")}</h3>
           <button 
@@ -763,13 +763,13 @@ export default function MapTextureControl({
               <div 
                 ref={mapControlContainer} 
                 className="transition-all duration-300 touch-manipulation"
-                style={{ 
-                  aspectRatio: `${aspectRatio / (1 - spacing.top - spacing.bottom) * 3 / 3}`,
+                style={{
+                  aspectRatio: `${aspectRatio / 0.76 * 2 / 3}`,
                   width: '100%',
-                 // maxHeight: `${(1 - spacing.top - spacing.bottom) * 100}%`,
-                  maxHeight: 400,
+                  maxHeight: '100%',
                   minWidth: 0,
                   minHeight: 0
+
                 }}
               />
               <ProportionalOverlay

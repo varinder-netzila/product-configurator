@@ -19,67 +19,132 @@ export async function GET(request: NextRequest) {
     const client =
       await getShopifyClientGraphql(shop);
 
-    const response = await client.query({
-      data: `#graphql
-        query GetProducts {
-          products(
-            first: 50
-            query: "tag:configurator"
-          ) {
+const response = await client.query({
+  data: `#graphql
+    query GetProducts {
+      products(
+        first: 50
+        query: "tag:configurator"
+      ) {
+        nodes {
+          id
+          title
+          handle
+          descriptionHtml
+          productType
+          tags
+
+          featuredMedia {
+            mediaContentType
+
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+          }
+
+          variants(first: 1) {
             nodes {
               id
-              title
-              handle
-              descriptionHtml
-              productType
-              tags
+              price
+              compareAtPrice
+            }
+          }
 
-              featuredMedia {
-                mediaContentType
+          quantityDiscount: metafield(
+            namespace: "custom"
+            key: "quantiy_discount"
+          ) {
+            type
+            value
+          }
 
-                ... on MediaImage {
-                  image {
-                    url
-                  }
+          media(first: 20) {
+            nodes {
+              mediaContentType
+
+              ... on MediaImage {
+                image {
+                  url
                 }
               }
 
-              variants(first: 1) {
-                nodes {
-                  id
-                  price
-                }
-              }
-
-              media(first: 20) {
-                nodes {
-                  mediaContentType
-
-                  ... on MediaImage {
-                    image {
-                      url
-                    }
-                  }
-
-                  ... on Model3d {
-                    sources {
-                      url
-                      mimeType
-                      format
-                    }
-                  }
+              ... on Model3d {
+                sources {
+                  url
+                  mimeType
+                  format
                 }
               }
             }
           }
         }
-      `,
-    });
-
+      }
+    }
+  `,
+});
     const data = response.body as any;
 
     const products =
       data?.data?.products?.nodes ?? [];
+
+// 2. Get all quantity discount IDs from products
+const metaobjectIds = [
+  ...new Set(
+    products.flatMap((product: any) => {
+      try {
+        return JSON.parse(
+          product.quantityDiscount?.value || "[]"
+        );
+      } catch {
+        return [];
+      }
+    })
+  ),
+];
+
+// 3. Get all metaobjects in ONE GraphQL request
+const metaobjectResponse = await client.query({
+  data: {
+    query: `#graphql
+      query GetQuantityDiscounts($ids: [ID!]!) {
+        nodes(ids: $ids) {
+          ... on Metaobject {
+            id
+            type
+            fields {
+              key
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      ids: metaobjectIds,
+    },
+  },
+});
+
+// 4. Create lookup map
+const discountMap = new Map();
+
+for (const item of metaobjectResponse.body.data.nodes || []) {
+  if (!item) continue;
+
+  const fields = Object.fromEntries(
+    (item.fields || []).map((field: any) => [
+      field.key,
+      field.value,
+    ])
+  );
+
+  discountMap.set(item.id, {
+    quantity: fields.quantity || "",
+    discount: fields.discount || "",
+  });
+}
 
     const bottleTypes = {
       bottleTypes: products.map(
@@ -106,7 +171,16 @@ export async function GET(request: NextRequest) {
               ? product.featuredMedia
                   ?.image?.url || ""
               : "";
+      // Get this product's discount IDs
+      const discountIds = JSON.parse(
+        product.quantityDiscount?.value || "[]"
+      );
 
+      // Convert IDs to the actual discount objects
+      const discounts = discountIds
+        .map((id: string) => discountMap.get(id))
+        .filter(Boolean);
+        
           return {
             id: product.id,
             name: product.title,
@@ -115,9 +189,13 @@ export async function GET(request: NextRequest) {
               product.descriptionHtml || "",
             model: glbSource?.url || "",
             image,
+            discounts,
             price: Number(
               product.variants?.nodes?.[0]
                 ?.price || 0
+            ),
+            compareAtPrice: Number(
+              product.variants?.nodes?.[0]?.compareAtPrice || 0
             ),
             handle: product.handle,
             components: ["Body", "Handle"],

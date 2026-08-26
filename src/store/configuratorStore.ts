@@ -225,7 +225,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       currentLocation: null,
       mapTextureTitle: '',
       mapTextureSubtitle: '',
-      currentMapZoom: 10,
+      currentMapZoom: 1,
       selectedMapLineColor: { hex: '#000000', name: 'black' },
       mapDirection: 'horizontal',
       mapLogo: '',
@@ -365,7 +365,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       setMeshColorForComponent: (component, color) => {
         if (component === 'bottle' || component === 'mug') {
           set((state) => ({
-            meshColors: { ...state.meshColors, Body: color, Handle: color },
+            meshColors: { ...state.meshColors, Body: color, Bottom: color },
           }));
         } else if (component === 'lid' || component === 'straw') {
           // Lid and straw are visually one accent — keep them locked
@@ -679,8 +679,11 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
             ? {
                 meshColors: {
                   Body: defaultColor,
-                  Frame: defaultColor,
+                  Bottom: defaultColor,
+                  Lid: defaultColor,
+                  Ring: defaultColor,
                   Handle: defaultColor,
+                  Straw: defaultColor,
                 },
               }
             : {}),

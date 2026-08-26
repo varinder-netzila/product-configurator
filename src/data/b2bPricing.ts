@@ -18,6 +18,10 @@ export interface ProductPricing {
  * in the configurator UI.
  */
 export const B2B_PRICING: Record<string, ProductPricing> = {
+    "Cutting board": {
+    b2bPrice: 13.25,
+    retail: 20
+    },
   "IZY Bottle": {
     retail: 29.99,
     tiers: [

@@ -1391,6 +1391,7 @@ useEffect(() => {
             {wl.reseller && (
               wl.reseller.logoUrl ? (
                 <div style={{ height: wl.reseller.logoHeight || "3.5rem", position: "relative", width: "100%", maxWidth: "300px", marginBottom: "1rem" }}>
+                 <a href="#">
                   <Image
                     src={wl.reseller.logoUrl}
                     alt={wl.companyName}
@@ -1400,7 +1401,8 @@ useEffect(() => {
                       filter: wl.reseller.logoInvert ? "invert(1)" : undefined,
                     }}
                     priority
-                  />
+                  /> 
+                  </a>
                 </div>
               ) : (
                 <span
@@ -1426,7 +1428,7 @@ useEffect(() => {
 
             <h1 className="text-4xl font-semibold text-gray-900 mb-3">
               {selectedBottleType
-                ? wl.productName(selectedBottleType.name) + " - " + selectedBottleType.capacity
+                ? wl.productName(selectedBottleType.name)
                 : `Design your ${wl.companyName}`}
             </h1>
 

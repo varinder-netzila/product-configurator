@@ -41,7 +41,7 @@ export interface WhiteLabel {
  */
 export function useWhiteLabel(): WhiteLabel {
   const params = useSearchParams();
-  const resellerId = params.get("reseller");
+  const resellerId = "marvins"; //params.get("reseller");
   const genericWhiteLabel = params.get("whiteLabel") === "true";
 
   // Live overlay from KV (admin-UI edits). We always start with the static

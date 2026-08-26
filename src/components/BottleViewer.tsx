@@ -38,8 +38,8 @@ const getMaterialTypeForMesh = (
   let componentName: string | null = null;
 
   // Check each mesh independently
-  if (meshNameLower.includes("body001")) {
-    componentName = "body001";
+  if (meshNameLower.includes("body")) {
+    componentName = "body";
   } else if (meshNameLower.includes("handle")) {
     componentName = "handle";
   } else if (meshNameLower.includes("frame")) {
@@ -287,8 +287,8 @@ const applyColorsToScene = (
     const mesh = child as THREE.Mesh;
     const meshName = mesh.name;
     
-  if (mesh.name.toLowerCase() === "body001") {
-    //mesh.position.z += 0.01;
+  if (mesh.name.toLowerCase() === "body") {
+    mesh.position.z -= 0.05;
   }
     // Clone material FIRST so each mesh is independent
     if (Array.isArray(mesh.material)) {
@@ -344,7 +344,7 @@ const applyTextureToScene = (
     } else if (mesh.material) {
       mesh.material = mesh.material.clone();
     }
-      if (meshName.includes("body001")) {
+      if (meshName.includes("body")) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach((mat) =>
@@ -365,7 +365,7 @@ const removeTextureFromScene = (scene: THREE.Object3D) => {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
 
-      if (meshName.includes("body001")) {
+      if (meshName.includes("body")) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach(removeTextureFromMaterial);
@@ -521,7 +521,7 @@ const setBodyMeshesToWhite = (scene: THREE.Object3D) => {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
 
-      if (meshName.includes("body001") ) {
+      if (meshName.includes("body") ) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach((mat) => setMaterialColor(mat, 0xffffff));
@@ -681,7 +681,7 @@ const BottleModel = ({
           const meshName = mesh.name.toLowerCase();
 
           // Apply overlays only to body-related meshes
-          if (meshName.includes("body001") && mesh.material) {
+          if (meshName.includes("body") && mesh.material) {
             // Import engraving utilities dynamically to avoid SSR issues
             import("@/utils/engravingUtils")
               .then(
@@ -764,7 +764,7 @@ const BottleModel = ({
           const meshName = mesh.name.toLowerCase();
 
           // Apply overlays only to body-related meshes
-          if (meshName.includes("body001") && mesh.material) {
+          if (meshName.includes("body") && mesh.material) {
             console.log('✅ Found body mesh:', meshName);
             (async () => {
               try {

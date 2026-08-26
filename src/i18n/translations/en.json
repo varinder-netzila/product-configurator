@@ -40,7 +40,7 @@
     "nextStep": "NEXT STEP"
   },
   "bottleSelector": {
-    "b2bFrom": "Wholesale from",
+    "b2bFrom": "Price (per piece)",
     "suggestedRetail": "RRP",
     "agentNotice": "Are you an agent? Contact us for special wholesale prices."
   },
@@ -247,10 +247,10 @@
   },
   "b2b": {
     "productInfo": "Product Information",
-    "bottleName": "Bottle Name",
-    "amountOfBottles": "Amount of bottles",
+    "bottleName": "Board Name",
+    "amountOfBottles": "Amount of boards",
     "minOrder": "min. order: {min} pieces",
-    "b2bPrice": "Wholesale Price (per piece)",
+    "b2bPrice": "Price (per piece)",
     "retailPrice": "RRP (per piece)",
     "estimatedTotal": "Estimated total (ex. VAT)",
     "volumePricing": "Wholesale pricing per volume",

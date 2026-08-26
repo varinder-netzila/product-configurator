@@ -85,7 +85,7 @@ export default function BottleSelector({
                     : "text-gray-600"
                 }`}
               >
-                {bottleType.capacity}
+                {/* {bottleType.capacity} */}
               </p>
               <p
                 className={`text-sm font-semibold md:font-normal block md:hidden text-nowrap ${
@@ -94,7 +94,7 @@ export default function BottleSelector({
                     : "text-gray-600"
                 }`}
               >
-                {t("common.b2c")} €{bottleType.price.toFixed(2)}
+                {t("common.b2c")} €{bottleType.price.toFixed(2)} 
               </p>
               <p
                 className={`text-sm font-semibold md:font-normal block md:hidden text-nowrap ${
@@ -122,10 +122,11 @@ export default function BottleSelector({
           </div>
           <div className="items-center hidden md:flex md:flex-col gap-1">
             <div className="bg-gray-100 rounded-lg px-3 py-1 text-sm text-gray-900">
-              {t("common.b2c")} €{bottleType.price.toFixed(2)}
+              {t("common.b2c")} €{bottleType.compareAtPrice.toFixed(2)}
             </div>
             <div className="bg-green-50 rounded-lg px-3 py-1 text-sm text-green-700">
-              {t("bottleSelector.b2bFrom")} {fromPrice(bottleType.name)}
+              {/* {t("bottleSelector.b2bFrom")} {fromPrice(bottleType.name)} */}
+              {t("bottleSelector.b2bFrom")} €{bottleType.price.toFixed(2)}
             </div>
           </div>
         </div>

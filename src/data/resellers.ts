@@ -239,13 +239,10 @@ export const RESELLERS: Record<string, ResellerConfig> = {
     // Art + Jersey disabled for BF Promotions.
     features: { art: false, jersey: false },
     pricing: {
-      "IZY Bottle": {
+      "Cutting board": {
         retail: 29.99,
         tiers: [
           { label: "50-99", min: 50, max: 99, price: 20.99 },
-          { label: "100-249", min: 100, max: 249, price: 19.99 },
-          { label: "250-499", min: 250, max: 499, price: 18.99 },
-          { label: "500-999", min: 500, max: 999, price: 17.99 },
         ]
       },
     }

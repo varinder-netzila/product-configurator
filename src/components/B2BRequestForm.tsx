@@ -80,6 +80,7 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
   const [formData, setFormData] = useState<B2BFormData>({
     bottleName: wl.productName(selectedBottleType.name),
     bottlePrice: selectedBottleType.price,
+    bottleCompareAtPrice: selectedBottleType.compareAtPrice,
     numberOfBottles: quantity,
     totalPrice: selectedBottleType.price * quantity,
     name: "",
@@ -176,12 +177,46 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
   useImperativeHandle(ref, () => ({
     submitForm: handleSubmit
   }));
-
-
-  const b2bPrice = wl.price(selectedBottleType.name, formData.numberOfBottles);
-  const b2bTotal = b2bPrice ? b2bPrice * formData.numberOfBottles : null;
-  const pricing = wl.pricing(selectedBottleType.name);
   const { t, locale } = useTranslation();
+  const pricing = wl.pricing(selectedBottleType.name);
+
+  const b2bPrice = selectedBottleType.price;
+
+ // const b2bPrice = wl.price(selectedBottleType.name, formData.numberOfBottles);
+ 
+  //const discounts = selectedBottleType.discounts;
+// const discounts = [
+//   { quantity: "250 - 499 pcs", discount: "2.5% discount" },
+//   { quantity: "500 - 999 pcs", discount: "5% discount" },
+//   { quantity: "1,000 - 2,499 pcs", discount: "7.5% discount" },
+//   { quantity: "2,500 - 4,999 pcs", discount: "10% discount" },
+// ];
+const discounts = selectedBottleType.discounts || [];
+
+const quantity2 = Number(formData.numberOfBottles);
+
+const applicableDiscount = discounts.find((item: any) => {
+  const match = item.quantity.match(/([\d,]+)\s*-\s*([\d,]+)/);
+
+  if (!match) return false;
+
+  const min = Number(match[1].replace(/,/g, ""));
+  const max = Number(match[2].replace(/,/g, ""));
+
+  return quantity2 >= min && quantity2 <= max;
+});
+
+const discountPercent = applicableDiscount
+  ? parseFloat(applicableDiscount.discount.replace("% discount", ""))
+  : 0;
+
+const b2bTotal_org = b2bPrice
+  ? b2bPrice * quantity2
+  : null;
+
+const b2bTotal = b2bTotal_org
+  ? b2bTotal_org * (1 - discountPercent / 100)
+  : null;
 
   return (
     <div className="w-full max-w-4xl mx-auto mb-10">
@@ -201,11 +236,11 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                {t("b2b.amountOfBottles")} ({t("b2b.minOrder", { min: process.env.NEXT_PUBLIC_B2B_MIN_QUANTITY || '50' })})
+                {t("b2b.amountOfBottles")} ({t("b2b.minOrder", { min: process.env.NEXT_PUBLIC_B2B_MIN_QUANTITY || '1' })})
               </label>
               <input
                 type="number"
-                min={process.env.NEXT_PUBLIC_B2B_MIN_QUANTITY || 50}
+                min={process.env.NEXT_PUBLIC_B2B_MIN_QUANTITY || 1}
                 max={process.env.NEXT_PUBLIC_B2B_MAX_QUANTITY || 1000}
                 maxLength={4}
                 className="w-full text-gray-900 font-bold flex items-center min-h-[40px] bg-white rounded-full border border-gray-300 px-3 max-w-[80px]"
@@ -233,7 +268,8 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
                 {t("b2b.b2bPrice")}
               </label>
               <label className="w-full text-green-600 font-bold flex items-center min-h-[40px]">
-                {b2bPrice ? `€${b2bPrice.toFixed(2)}` : t("common.onRequest")}
+                {/* {b2bPrice ? `€${b2bPrice.toFixed(2)}` : t("common.onRequest")} */}
+                €{selectedBottleType.price.toFixed(2)} 
               </label>
             </div>
             <div>
@@ -241,7 +277,8 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
                 {t("b2b.retailPrice")}
               </label>
               <label className="w-full text-gray-900 font-bold flex items-center min-h-[40px]">
-                €{selectedBottleType.price.toFixed(2)}
+               €{selectedBottleType.compareAtPrice.toFixed(2)}
+
               </label>
             </div>
           </div>
@@ -256,7 +293,30 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
               </label>
             </div>
           )}
+          {/* discounts tiers */}
+          {discounts && (
+  <div className="mb-4 p-3 bg-gray-50 rounded-xl">
+  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
+    Adviesprijs per staffel
+  </label>
 
+  <div className="flex gap-2 flex-wrap">
+    {discounts.map((item, index) => (
+      <div
+        key={item.quantity}
+        className={
+          index === 0
+            ? "px-5 py-5 rounded-lg text-xs bg-green-100 text-green-700 font-bold"
+            : "px-5 py-5 rounded-lg text-xs bg-white text-gray-500 border border-gray-200"
+        }
+      >
+        <span className="block text-[13px] mb-2">{item.quantity}</span>
+        <span className="font-semibold text-[13px]">{item.discount}</span>
+      </div>
+    ))}
+  </div>
+</div>
+     )}
           {/* Pricing tiers */}
           {pricing && (
             <div className="mb-4 p-3 bg-gray-50 rounded-xl">

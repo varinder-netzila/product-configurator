@@ -6,7 +6,7 @@ import { STD_STAFFEL } from "@/data/resellers";
 import type { PricingTier, ProductPricing } from "@/data/b2bPricing";
 import AdminNav from "@/components/AdminNav";
 
-const IZY_PRODUCTS = ["IZY Bottle", "IZY Travel Bottle", "IZY Mug", "IZY Tumbler"] as const;
+const IZY_PRODUCTS = ["Cutting board", "IZY Bottle", "IZY Travel Bottle", "IZY Mug", "IZY Tumbler"] as const;
 
 const FEATURES: { key: FeatureKey; label: string }[] = [
   { key: "texture", label: "All Over Print" },
