@@ -185,6 +185,11 @@ useEffect(() => {
   const burntOrange = colors.colors.find(
     (c: any) => c.hex?.toLowerCase() === "#b86126"
   );
+useEffect(() => {
+  if (products?.length > 0) {
+    handleProductClick(setSelectedBottleType);
+  }
+}, [products]);
 
   if (!burntOrange) return;
 
