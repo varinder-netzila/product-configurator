@@ -311,13 +311,8 @@ const applyColorsToScene = (
       mesh.material = mesh.material.clone();
     }
 
-   // const meshColor = selectedColor?.[meshName];
-    //if (meshName.toLowerCase() === "body") {
- const meshColor = {
-    name: "Burnt Orange",
-    hex: "#b86126",
-  };
-//}  
+    const meshColor = selectedColor?.[meshName];
+      
     // if (
     //   !meshColor ||
     //   (hasTexture && meshName.toLowerCase().includes("body"))

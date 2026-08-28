@@ -180,20 +180,6 @@ useEffect(() => {
       if (data.bottleTypes?.length > 0) {
         setSelectedBottleType(data.bottleTypes[0]);
       }
-        if (!colors?.colors?.length) return;
-
-  const burntOrange = colors.colors.find(
-    (c: any) => c.hex?.toLowerCase() === "#b86126"
-  );
-
-
-  if (!burntOrange) return;
-
-  setMeshColors({
-    Body: burntOrange,
-    Frame: burntOrange,
-    Handle: burntOrange,
-  });
   }
 
   loadProducts();
