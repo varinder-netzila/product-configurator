@@ -185,11 +185,7 @@ useEffect(() => {
   const burntOrange = colors.colors.find(
     (c: any) => c.hex?.toLowerCase() === "#b86126"
   );
-useEffect(() => {
-  if (products?.length > 0) {
-    handleProductClick(setSelectedBottleType);
-  }
-}, [products]);
+
 
   if (!burntOrange) return;
 
@@ -203,6 +199,11 @@ useEffect(() => {
   loadProducts();
 
 }, []);
+useEffect(() => {
+  if (setSelectedBottleType?.length > 0) {
+    handleProductClick(setSelectedBottleType);
+  }
+}, [setSelectedBottleType]);
   const [showOverview, setShowOverview] = useState(false);
   const [selectedPrintTemplate, setSelectedPrintTemplate] = useState<string | null>(null);
   const [printTemplatePrimary, setPrintTemplatePrimary] = useState("#1e3a8a");
