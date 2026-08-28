@@ -643,8 +643,8 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
         let defaultColor = null;
         if (colors && colors.colors) {
           defaultColor =
-            colors.colors.find((c: any) => c.name === 'White' || c.name === 'white') ||
-            colors.colors[0];
+            colors.colors.find((c: any) => c.name === 'Burnt Orange' || c.name === 'burnt orange') ||
+            colors.colors[5];
         }
 
         set({
@@ -679,7 +679,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
             ? {
                 meshColors: {
                   Body: defaultColor,
-                  Bottom: defaultColor,
+                  Frame: defaultColor,
                   Lid: defaultColor,
                   Ring: defaultColor,
                   Handle: defaultColor,

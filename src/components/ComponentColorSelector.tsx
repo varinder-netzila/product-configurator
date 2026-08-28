@@ -64,7 +64,7 @@ function ComponentColorSelector({
        if (component === 'Body') {
           switchToColorMode(component, color);
 
-       } else if (component === 'Handle') {
+       } else if (component === 'Frame') {
       //  selectedBottleType?.components.forEach((comp: string) => {
         //  if (comp !== 'Body' && comp !== 'Frame' && comp !== 'Handle') {
             setMeshColorForComponent(component, color);
@@ -94,7 +94,7 @@ function ComponentColorSelector({
 const mainComponents = (selectedBottleType?.components || []).filter(
   (c: string) =>
     c === "Body" ||
-    c === "Handle"
+    c === "Frame"
 );
 
   return (

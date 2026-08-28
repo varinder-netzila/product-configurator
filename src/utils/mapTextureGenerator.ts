@@ -4,7 +4,11 @@ let lastKnownCanvasWidth: number;
 let lastKnownCanvasHeight: number;
 let lastPreviewDataUrl: string | undefined;
 let lastPreviewKey: string | undefined;
-
+	const mapFontsimg = {
+			title: { family: 'Arial, sans-serif', size: 120, weight: 'bold', style: 'normal' },
+			subtitle: { family: 'Georgia, serif', size: 80, weight: 'bold', style: 'italic' },
+			coordinates: { family: '"Courier New", monospace', size: 80, weight: 'bold', style: 'normal' }
+		};
 /** Reset cached state so the next call generates fresh from Mapbox API */
 export function resetMapTextureCache() {
 	lastKnownCanvasWidth = undefined as any;
@@ -46,6 +50,7 @@ export interface MapTextureGenerationParams {
 /**
  * Generates a TRANSPARENT map layer with colored lines, gradient fade, text, and optional logo
  */
+
 export const generateMapTextureWithText = async (params: MapTextureGenerationParams): Promise<string> => {
 	const {
 		location,
@@ -180,7 +185,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	ctx.imageSmoothingQuality = 'high';
 
 	const drawProcessedMap = () => {
-		const targetMapWidth = (baseCanvasWidth * 2) / 3; // 2/3 of canvas width 
+		const targetMapWidth = (baseCanvasWidth * 2) / 2; // 2/3 of canvas width 
 		const targetMapHeight = baseCanvasHeight * (1 - spacing.top - spacing.bottom);
 		const imageAspectRatio = processedImg.width / processedImg.height;
 		const targetAspectRatio = targetMapWidth / targetMapHeight;
@@ -198,7 +203,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			// For download/flat texture: fade map lines out at the bottom
 			// Use destination-out compositing to erase the map gradually
 			const mapContentBottom = mapY + mapDimensions.mapH;
-			const fadeStartY = mapY + mapDimensions.mapH * 0.55;
+			const fadeStartY = mapY + mapDimensions.mapH * 0.4;
 			const fadeEndY = mapContentBottom;
 			ctx.save();
 			ctx.globalCompositeOperation = 'destination-out';
@@ -219,7 +224,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			const g = parseInt(hex.substr(2, 2), 16);
 			const b = parseInt(hex.substr(4, 2), 16);
 			const mapContentBottom = mapY + mapDimensions.mapH;
-			const fadeStartY = mapY + mapDimensions.mapH * 0.66;
+			const fadeStartY = mapY + mapDimensions.mapH * 0.6;
 			const fadeEndY = mapContentBottom;
 			const gradient = ctx.createLinearGradient(0, fadeStartY, 0, fadeEndY);
 			gradient.addColorStop(0, `rgba(${r},${g},${b},0)`);
@@ -305,11 +310,11 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	}
 
 	// Map text overlays using map line color (or black)
-	if (mapTitle || mapSubtitle || mapFonts.coordinates) {
+	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
 		const textColor = selectedMapLineColor?.hex || '#000000';
 		ctx.fillStyle = textColor;
 		ctx.textAlign = 'center';
-		const textCenterX = baseCanvasWidth / 3; // center of map area
+		const textCenterX = baseCanvasWidth / 2; // center of map area
 		const textBaseY = topSpacingPx + contentHeightPx * mapTextPosition;
 
 		// Helper: draw text with optional letter-spacing (manually placed, since
@@ -336,20 +341,24 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			ctx.textAlign = 'center';
 		};
 
-		if (mapFonts.coordinates) {
-			const { family, size, weight, style, letterSpacing = 0 } = mapFonts.coordinates;
+		if (mapFontsimg.coordinates) {
+			const { family, size , weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
+			//const { family, size, weight, style, letterSpacing = 0 } = mapFonts.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 150, letterSpacing);
+			//drawText(mapTitle, textCenterX, textBaseY - 65, letterSpacing);
+			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 65, letterSpacing);
 		}
 		if (mapFonts.title && mapTitle) {
-			const { family, size, weight, style, letterSpacing = 0 } = mapFonts.title;
+			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY - 60, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY+80, letterSpacing);
+			//drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 6, letterSpacing);
 		}
+		
 		if (mapFonts.subtitle && mapSubtitle) {
-			const { family, size, weight, style, letterSpacing = 0 } = mapFonts.subtitle;
+			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY +170, letterSpacing);
 		}
 	}
 

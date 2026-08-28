@@ -198,10 +198,10 @@ for (const item of metaobjectResponse.body.data.nodes || []) {
               product.variants?.nodes?.[0]?.compareAtPrice || 0
             ),
             handle: product.handle,
-            components: ["Body", "Handle"],
+            components: ["Body", "Frame"],
             materials: {
-              "Body": "Stainless steel",
-              "Handle": "Plastic"
+              "Body": "Board",
+              "Frame": "Plastic"
             },
             productType:
               product.productType,

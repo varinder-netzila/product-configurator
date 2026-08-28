@@ -614,9 +614,9 @@ useEffect(() => {
     if (colors && colors.colors && colors.colors.length > 0 && Object.keys(meshColors).length === 0) {
       let defaultColor;
       if (selectedBottleType.name.includes("IZY Bottle") || selectedBottleType.name.includes("IZY Mug")) {
-        defaultColor = colors.colors[8];
+        defaultColor = colors.colors[5];
       } else if (selectedBottleType.name.includes("IZY Travel Bottle") || selectedBottleType.name.includes("IZY Tumbler")) {
-        defaultColor = colors.colors[6];
+        defaultColor = colors.colors[5];
       } else {
         defaultColor = colors.colors.find((c: any) => c.name === "White" || c.name === "white") || colors.colors[0];
       }

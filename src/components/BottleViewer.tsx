@@ -92,10 +92,10 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
         mat.roughness = 0.2; // Low roughness for shiny appearance
         mat.envMapIntensity = 1.0; // Enhanced environment reflection
       } else {
-        // Apply gray color for non-stainless steel materials
-        mat.color.setHex(0x808080); // Gray color
-        mat.metalness = 0; // Non-metallic
-        mat.roughness = 0.35; // Medium roughness
+        mat.color.setHex(0xD8D8D8); // light silver-grey, not mid grey
+        mat.metalness = 0.15;       // faint sheen, still non-metallic overall
+        mat.roughness = 1;
+        mat.envMapIntensity = 0.1;
       }
     } else {
       // Regular color application
@@ -114,8 +114,8 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
       }
       // Reset material properties to defaults for non-silver colors
       mat.metalness = 0;
-      mat.roughness = 0.35;
-      mat.envMapIntensity = 1.0;
+      mat.roughness = 1;
+      mat.envMapIntensity = 0.1;
     }
     
     mat.needsUpdate = true;
@@ -246,7 +246,6 @@ const CameraController = ({
   return null;
 };
 
-// Scene processing functions
 const processScene = (scene: THREE.Object3D, bottleSettings?: any) => {
   scene.traverse((child: THREE.Object3D) => {
     if ((child as THREE.Mesh).isMesh) {
@@ -265,6 +264,17 @@ const processScene = (scene: THREE.Object3D, bottleSettings?: any) => {
           mesh.material.needsUpdate = true;
         }
       }
+
+      // Frame's underside gets backface-culled when viewed from below
+      if (mesh.name.toLowerCase() === "frame") {
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach((mat) => {
+            (mat as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
+          });
+        } else {
+          (mesh.material as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
+        }
+      }
     }
   });
 
@@ -280,16 +290,20 @@ const applyColorsToScene = (
   selectedBottleType?: BottleType,
   bottleTypesData?: { bottleTypes: BottleType[] }
 ) => {
- 
+ scene.rotation.y -= THREE.MathUtils.degToRad(5);
+ scene.rotation.z += THREE.MathUtils.degToRad(8);
   scene.traverse((child: THREE.Object3D) => {
     if (!(child as THREE.Mesh).isMesh) return;
 
     const mesh = child as THREE.Mesh;
     const meshName = mesh.name;
     
-  // if (mesh.name.toLowerCase() === "body") {
-  //   mesh.position.z -= 0.05;
-  // }
+  if (mesh.name.toLowerCase() === "body") {
+      mesh.position.x -= 0.021;
+      mesh.position.y += 0.06;
+      mesh.scale.y -= 0.05;
+       mesh.rotation.y -= THREE.MathUtils.degToRad(0.6);
+  }
     // Clone material FIRST so each mesh is independent
     if (Array.isArray(mesh.material)) {
       mesh.material = mesh.material.map((mat) => mat.clone());
@@ -485,7 +499,7 @@ function AngleCapture({ onAnglesReady, cameraPosition }: { onAnglesReady: (angle
       // Rotate the entire scene to tilt the bottle diagonally
       const sceneRotation = scene.rotation.clone();
       scene.rotation.z = 0.4; // tilt top to the left
-      scene.rotation.x = -0.15; // lean slightly back
+      scene.rotation.x = -1.15; // lean slightly back
 
       cam.position.set(0, 1.0, heroDist * 1.5); // straight from front, further back to center it
       cam.lookAt(new THREE.Vector3(0, 0.9, 0));
@@ -1091,7 +1105,8 @@ export default function BottleViewer({
       <Canvas
         camera={{ position: cameraPosition, fov: 45 }}
         shadows={!lowQuality}
-        gl={{ preserveDrawingBuffer: true, antialias: true }}
+        gl={{ preserveDrawingBuffer: true, antialias: true, toneMapping: THREE.ACESFilmicToneMapping,
+  toneMappingExposure: 1.1 }}
         dpr={lowQuality ? [1, 1.5] : [1, 2]}
         frameloop={lowQuality ? "demand" : "always"}
         onCreated={() => {
@@ -1107,8 +1122,13 @@ export default function BottleViewer({
             onCameraRef={handleCameraRef}
           />
 
-          {/* <Environment preset="city" background={false} /> */}
-          <ambientLight intensity={1.0} />
+<Environment preset="apartment" background={false} environmentIntensity={0.6} />
+
+<ambientLight intensity={0.8} />
+
+<directionalLight position={[5, 5, 5]} intensity={0.9} castShadow={!lowQuality} />
+<directionalLight position={[-5, 3, 5]} intensity={0.35} />
+<directionalLight position={[0, 5, -5]} intensity={0.3} />
 
           {!lowQuality && (
             <ContactShadows

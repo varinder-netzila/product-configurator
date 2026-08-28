@@ -162,7 +162,7 @@ function ProportionalOverlay({
           className="absolute font-semibold text-center"
           style={{
             left: '50%',
-            top: `calc(${baseYPercent}% - ${coordsOffsetPx}px - ${coordsPx / 2}px)`,
+            top: `calc(${baseYPercent-6}% - ${coordsOffsetPx}px - ${coordsPx / 2}px)`,
             transform: 'translateX(-50%)',
             color: '#000000',
             fontSize: `${coordsPx}px`,
@@ -183,7 +183,7 @@ function ProportionalOverlay({
             className="absolute font-bold text-center"
             style={{
               left: '50%',
-              top: `calc(${baseYPercent}% - ${titleOffsetPx}px - ${titlePx / 2}px)`,
+              top: `calc(${baseYPercent-4}% - ${titleOffsetPx}px - ${titlePx / 2}px)`,
               transform: 'translateX(-50%)',
               color: '#000000',
               fontSize: `${titlePx}px`,
@@ -261,6 +261,7 @@ export default function MapTextureControl({
   currentZoom = 10,
   spacing = { top: 0, bottom: 0 },
   mapTextPosition = 0.9,
+  mapTextHorizontalPosition = 0.7, // center
   mapFonts = {
     title: { family: 'Arial, sans-serif', size: 72, weight: 'bold', style: 'normal' },
     subtitle: { family: 'Georgia, serif', size: 48, weight: 'normal', style: 'italic' },
