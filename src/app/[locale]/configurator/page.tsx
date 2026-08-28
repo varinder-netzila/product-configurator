@@ -176,10 +176,12 @@ useEffect(() => {
 useEffect(() => {
   async function loadProducts() {
     const data = await getBottleTypes();
+
     setBottleTypes(data.bottleTypes);
-      if (data.bottleTypes?.length > 0) {
-        setSelectedBottleType(data.bottleTypes[0]);
-      }
+
+    if (data.bottleTypes?.length > 0) {
+      handleBottleTypeSwitch(data.bottleTypes[0]);
+    }
   }
 
   loadProducts();
