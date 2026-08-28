@@ -183,9 +183,7 @@ useEffect(() => {
   }
 
   loadProducts();
-
 }, []);
-
   const [showOverview, setShowOverview] = useState(false);
   const [selectedPrintTemplate, setSelectedPrintTemplate] = useState<string | null>(null);
   const [printTemplatePrimary, setPrintTemplatePrimary] = useState("#1e3a8a");
