@@ -160,18 +160,52 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		return loadImage(src);
 	};
 
-	if (shouldUsePreviewImage) {
-		processedImg = await getProcessedImage(effectivePreviewSource!);
-	} else {
+	// A snapshot from a small on-screen preview canvas can be far lower
+	// resolution than what we need to fill the full print/export canvas.
+	// Stretching a low-res source across a large canvas is what causes the
+	// blocky/compressed look. Only trust the preview if it's actually big
+	// enough; otherwise fetch a fresh, full-resolution image from Mapbox.
+	const MIN_ACCEPTABLE_SOURCE_DIM = 1024;
+
+	const fetchFreshMapboxImage = async (): Promise<HTMLImageElement> => {
 		const mapStyleId = customMapStyle.startsWith('mapbox://styles/')
 			? customMapStyle.replace('mapbox://styles/', '')
 			: customMapStyle;
-		const mapImageUrl = `https://api.mapbox.com/styles/v1/${mapStyleId}/static/${location.lng},${location.lat},${zoom}/${width}x${height}@2x?access_token=${accessToken}&logo=false&attribution=false`;
+		// Request the map at the highest resolution Mapbox's static API allows
+		// for this aspect ratio, rather than tying it to a small UI canvas size.
+		const aspect = width / height;
+		const fetchWidth = aspect >= 1 ? maxMapboxDim : Math.round(maxMapboxDim * aspect);
+		const fetchHeight = aspect >= 1 ? Math.round(maxMapboxDim / aspect) : maxMapboxDim;
+		const mapImageUrl = `https://api.mapbox.com/styles/v1/${mapStyleId}/static/${location.lng},${location.lat},${zoom}/${fetchWidth}x${fetchHeight}@2x?access_token=${accessToken}&logo=false&attribution=false`;
 
 		// Preload original to trigger error quickly if needed
 		await loadImage(mapImageUrl);
+		return getProcessedImage(mapImageUrl);
+	};
 
-		processedImg = await getProcessedImage(mapImageUrl);
+	if (shouldUsePreviewImage) {
+		try {
+			const rawPreview = await loadImage(effectivePreviewSource!);
+			const previewIsHighRes =
+				rawPreview.naturalWidth >= MIN_ACCEPTABLE_SOURCE_DIM ||
+				rawPreview.naturalHeight >= MIN_ACCEPTABLE_SOURCE_DIM;
+
+			if (previewIsHighRes) {
+				processedImg = await getProcessedImage(effectivePreviewSource!);
+			} else {
+				processedImg = await fetchFreshMapboxImage();
+			}
+		} catch {
+			// Cached preview URL may be stale (e.g. a revoked blob URL) or
+			// otherwise failed to load. Don't let that crash the whole
+			// generation call — fall back to a fresh Mapbox fetch, and clear
+			// the bad cache entry so we don't keep retrying it.
+			lastPreviewDataUrl = undefined;
+			lastPreviewKey = undefined;
+			processedImg = await fetchFreshMapboxImage();
+		}
+	} else {
+		processedImg = await fetchFreshMapboxImage();
 	}
 
 	// Prepare output transparent canvas (2x for quality)
@@ -309,6 +343,21 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		try { await (document as any).fonts.ready; } catch { /* non-fatal */ }
 	}
 
+	// Very subtle darkening directly behind the text baseline only (not the
+	// whole bottom third), so the copper/orange map print look stays intact.
+	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
+		const scrimTop = topSpacingPx + contentHeightPx * (mapTextPosition - 0.13);
+		const scrimBottom = topSpacingPx + contentHeightPx;
+		ctx.save();
+		const scrim = ctx.createLinearGradient(0, scrimTop, 0, scrimBottom);
+		scrim.addColorStop(0, 'rgba(0,0,0,0)');
+		scrim.addColorStop(0.5, 'rgba(0,0,0,0.18)');
+		scrim.addColorStop(1, 'rgba(0,0,0,0.28)');
+		ctx.fillStyle = scrim;
+		ctx.fillRect(0, scrimTop, baseCanvasWidth, scrimBottom - scrimTop);
+		ctx.restore();
+	}
+
 	// Map text overlays using map line color (or black)
 	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
 		const textColor = selectedMapLineColor?.hex || '#000000';
@@ -343,16 +392,13 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		if (mapFontsimg.coordinates) {
 			const { family, size , weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
-			//const { family, size, weight, style, letterSpacing = 0 } = mapFonts.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			//drawText(mapTitle, textCenterX, textBaseY - 65, letterSpacing);
 			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 65, letterSpacing);
 		}
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
 			drawText(mapTitle, textCenterX, textBaseY+80, letterSpacing);
-			//drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 6, letterSpacing);
 		}
 		
 		if (mapFonts.subtitle && mapSubtitle) {

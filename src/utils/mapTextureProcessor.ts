@@ -73,14 +73,20 @@ export async function processMapTextureColors(
         data[i + 1] = g;
         data[i + 2] = b;
 
-        // Anti-aliased line edges are often near-white with low alpha, which
-        // preserved as-is makes lines look faint/light. Boost alpha based on
-        // how far the original pixel was from white ("ink" amount), using a
-        // curve that strengthens mid-tones, so lines read as bold and dark
-        // rather than washed out. Never reduce an already-opaque pixel.
-        const whiteDistance = 255 - Math.min(pixelR, pixelG, pixelB); // 0 = white, 255 = black
-        const boostedAlpha = Math.min(255, Math.round(Math.pow(whiteDistance / 255, 0.5) * 255 * 1.3));
-        data[i + 3] = Math.max(pixelA, boostedAlpha);
+        // Only boost alpha for pixels that were already meaningfully visible
+        // (real roads/features). Boosting every non-white pixel uniformly
+        // also amplifies faint background-level detail the map style
+        // intentionally renders subtly (tiny streets, building outlines,
+        // texture), turning the whole map into a dense over-inked hatch.
+        // Leaving low-alpha/near-white pixels alone keeps that detail subtle
+        // while still making genuine lines bolder instead of washed out.
+        const MIN_ALPHA_TO_BOOST = 60;
+        if (pixelA >= MIN_ALPHA_TO_BOOST) {
+          const whiteDistance = 255 - Math.min(pixelR, pixelG, pixelB); // 0 = white, 255 = black
+          const boostedAlpha = Math.min(255, Math.round(Math.pow(whiteDistance / 255, 0.5) * 255 * 1.15));
+          data[i + 3] = Math.max(pixelA, boostedAlpha);
+        }
+        // else: keep original (low) alpha untouched
       }
     }
     
