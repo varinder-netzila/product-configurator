@@ -608,7 +608,21 @@ useEffect(() => {
       if (settings) setBottleSettings(settings);
     }
   }, [selectedBottleType, setBottleSettings]);
+useEffect(() => {
+  if (!colors?.colors?.length) return;
 
+  const burntOrange = colors.colors.find(
+    (c: any) => c.hex?.toLowerCase() === "#b86126"
+  );
+
+  if (!burntOrange) return;
+
+  setMeshColors({
+    Body: burntOrange,
+    Frame: burntOrange,
+    Handle: burntOrange,
+  });
+}, [selectedBottleType?.id, colors]);
   // Initialize mesh colors when colors are loaded
   useEffect(() => {
     if (colors && colors.colors && colors.colors.length > 0 && Object.keys(meshColors).length === 0) {
