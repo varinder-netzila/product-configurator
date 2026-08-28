@@ -106,10 +106,10 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
         ) {
           const hexColor = color?.hex.match(/#([0-9a-f]{6})/i)?.[1];
           if (hexColor) {
-            mat.color.setHex(parseInt(hexColor, 16));
+          //  mat.color.setHex(parseInt(hexColor, 16));
           }
         } else {
-          mat.color.setHex(parseInt(color?.hex.replace("#", ""), 16));
+       //  mat.color.setHex(parseInt(color?.hex.replace("#", ""), 16));
         }
       }
       // Reset material properties to defaults for non-silver colors
@@ -311,8 +311,13 @@ const applyColorsToScene = (
       mesh.material = mesh.material.clone();
     }
 
-    const meshColor = selectedColor?.[meshName];
-
+   // const meshColor = selectedColor?.[meshName];
+    //if (meshName.toLowerCase() === "body") {
+ const meshColor = {
+    name: "Burnt Orange",
+    hex: "#b86126",
+  };
+//}  
     // if (
     //   !meshColor ||
     //   (hasTexture && meshName.toLowerCase().includes("body"))
