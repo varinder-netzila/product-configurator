@@ -44,37 +44,37 @@ export async function GET(request: NextRequest) {
 
     // Exchange the authorization code for an access token
 
-    const tokenResponse = await fetch(`https://${shop}/admin/oauth/access_token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        client_id: process.env.SHOPIFY_API_KEY,
-        client_secret: process.env.SHOPIFY_API_SECRET,
-        code,
-      }),
-    });
+    // const tokenResponse = await fetch(`https://${shop}/admin/oauth/access_token`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     client_id: process.env.SHOPIFY_API_KEY,
+    //     client_secret: process.env.SHOPIFY_API_SECRET,
+    //     code,
+    //   }),
+    // });
 
-    if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text();
-      console.error('Token exchange failed:', errorText);
-      return NextResponse.json({ error: 'Failed to exchange authorization code' }, { status: 500 });
-    }
+    // if (!tokenResponse.ok) {
+    //   const errorText = await tokenResponse.text();
+    //   console.error('Token exchange failed:', errorText);
+    //   return NextResponse.json({ error: 'Failed to exchange authorization code' }, { status: 500 });
+    // }
 
-    const tokenData = await tokenResponse.json();
-    const { access_token, scope } = tokenData;
+    // const tokenData = await tokenResponse.json();
+    // const { access_token, scope } = tokenData;
 
-    // Create and store an offline session
-    const sessionId = shopify.session.getOfflineId(shop);
-    const session = new Session({
-      id: sessionId,
-      shop,
-      state: state,
-      isOnline: false,
-      accessToken: access_token,
-      scope: scope,
-    });
+    // // Create and store an offline session
+    // const sessionId = shopify.session.getOfflineId(shop);
+    // const session = new Session({
+    //   id: sessionId,
+    //   shop,
+    //   state: state,
+    //   isOnline: false,
+    //   accessToken: access_token,
+    //   scope: scope,
+    // });
 
-    await storeSession(session);
+    // await storeSession(session);
 
     // Clear the nonce cookie and redirect to the configurator
     const response = NextResponse.redirect(

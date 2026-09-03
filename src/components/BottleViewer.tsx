@@ -319,7 +319,7 @@ const applyColorsToScene = (
 
     const mesh = child as THREE.Mesh;
     const meshName = mesh.name;
-    console.log('Mesh name: ', meshName);
+  //  console.log('Mesh name: ', meshName);
   if (mesh.name.toLowerCase() === "imagepanel") {
     //  mesh.position.z -= 0.05;
      mesh.position.y -= 0.075;
@@ -382,7 +382,7 @@ const applyTextureToScene = (
     if ((child as THREE.Mesh).isMesh) {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
-      console.log('meshName: ', meshName);
+     // console.log('meshName: ', meshName);
     if (Array.isArray(mesh.material)) {
       mesh.material = mesh.material.map((mat) => mat.clone());
     } else if (mesh.material) {

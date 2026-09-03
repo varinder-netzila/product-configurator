@@ -427,7 +427,7 @@ export default function MapTextureControl({
     }
     if (!mapControlLocation || !mapControlContainer.current || mapControlMap.current || mapInitializedForSession.current) return;
     mapInitializedForSession.current = true;
-    console.log(mapZoom);
+   // console.log(mapZoom);
     mapControlMap.current = new mapboxgl.Map({
       container: mapControlContainer.current,
       style: mapStyle,
@@ -607,7 +607,7 @@ mapControlMap.current.on("load", () => {
             // most common intent of "Find my location" is marking it.
             setPinLocation(newLocation);
             if (mapControlMap.current) {
-              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 5, duration: 1500 });
+              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 12.3, duration: 1500 });
             }
             fetchLocationInfo(newLocation);
             resolve();
