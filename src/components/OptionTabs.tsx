@@ -486,7 +486,8 @@ export default function OptionTabs({
     if (!(featureTabs as readonly string[]).includes(activeOptionalTab)) return;
     if (wl.isFeature(activeOptionalTab as typeof featureTabs[number])) return;
     const firstEnabled = featureTabs.find((f) => wl.isFeature(f));
-    if (firstEnabled && firstEnabled !== activeOptionalTab) onTabChange(firstEnabled);
+    console.log('firstEnabled', firstEnabled);
+    if (firstEnabled && firstEnabled !== activeOptionalTab) onTabChange('map');
   }, [activeOptionalTab, wl, onTabChange]);
 
   // Preload all Google Font stylesheets when the jersey tab is opened,
@@ -617,7 +618,10 @@ export default function OptionTabs({
   const handleJerseyTab = useCallback(() => {
     onTabChange("jersey");
   }, [onTabChange]);
-
+  
+useEffect(() => {
+  handleMapTab();
+}, []);
   return (
     <div className="bg-white md:rounded-3xl rounded-xl border border-gray-200 md:mb-10 shadow-sm">
       {/* Tab Navigation */}
@@ -626,6 +630,45 @@ export default function OptionTabs({
         role="tablist"
         aria-label={t("texture.bodyOptions")}
       >
+          {wl.isFeature("map") && (
+        <button
+          onClick={handleMapTab}
+          disabled={!hasMapboxToken}
+          role="tab"
+          aria-selected="true"
+          aria-controls="map-panel"
+          id="map-tab"
+          style={1 == 1 ? accentBg : undefined}
+          className={`flex-1 px-3 py-2.5 text-xs font-semibold rounded-t-xl transition-all duration-200 ${
+            1 == 1
+              ? "bg-gray-900 text-white shadow-sm"
+              : "bg-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+          } ${!hasMapboxToken ? "opacity-40 cursor-not-allowed" : ""}`}
+        >
+          <div className="flex items-center justify-center gap-1.5">
+            <svg
+              className="w-3.5 h-3.5 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span>{t("tabs.cityMap")}</span>
+          </div>
+        </button>
+        )}      
         {/* {wl.isFeature("texture") && (
         <button
           onClick={handleTextureTab}
@@ -658,45 +701,7 @@ export default function OptionTabs({
           </div>
         </button>
         )} */}
-        {wl.isFeature("map") && (
-        <button
-          onClick={handleMapTab}
-          disabled={!hasMapboxToken}
-          role="tab"
-          aria-selected={activeOptionalTab === "map"}
-          aria-controls="map-panel"
-          id="map-tab"
-          style={activeOptionalTab === "map" ? accentBg : undefined}
-          className={`flex-1 px-3 py-2.5 text-xs font-semibold rounded-t-xl transition-all duration-200 ${
-            activeOptionalTab === "map"
-              ? "bg-gray-900 text-white shadow-sm"
-              : "bg-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-          } ${!hasMapboxToken ? "opacity-40 cursor-not-allowed" : ""}`}
-        >
-          <div className="flex items-center justify-center gap-1.5">
-            <svg
-              className="w-3.5 h-3.5 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            <span>{t("tabs.cityMap")}</span>
-          </div>
-        </button>
-        )}
+
         {/* Text & Logo tab hidden for now */}
         {/* {wl.isFeature("art") && (
         <button
@@ -781,7 +786,7 @@ export default function OptionTabs({
       {/* Content Area */}
       <div className="p-4 md:p-6">
         {activeOptionalTab === "texture" ? (
-          <div role="tabpanel" id="texture-panel" aria-labelledby="texture-tab">
+          <div role="tabpanel" id="texture-panel22" aria-labelledby="texture-tab hidden">
             <div className="flex items-center gap-2 mb-4">
               <label className="block text-sm font-bold text-gray-900">
                 {t("texture.uploadImage")}
