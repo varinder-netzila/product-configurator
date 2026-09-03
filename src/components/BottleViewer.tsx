@@ -40,8 +40,8 @@ const getMaterialTypeForMesh = (
   // Check each mesh independently
   if (meshNameLower.includes("body")) {
     componentName = "body";
-  } else if (meshNameLower.includes("handle")) {
-    componentName = "handle";
+  } else if (meshNameLower.includes("imagepanel")) {
+    componentName = "imagepanel";
   } else if (meshNameLower.includes("frame")) {
     componentName = "frame";
   }
@@ -87,15 +87,15 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
 
       if (isStainlessSteel) {
         // Apply stainless steel material properties
-        mat.color.setHex(0xCED2D2); // Silver color
+     //   mat.color.setHex(0xCED2D2); // Silver color
         mat.metalness = 0.8; // High metalness for metallic look
         mat.roughness = 0.2; // Low roughness for shiny appearance
         mat.envMapIntensity = 1.0; // Enhanced environment reflection
       } else {
-        mat.color.setHex(0xD8D8D8); // light silver-grey, not mid grey
-        mat.metalness = 0.15;       // faint sheen, still non-metallic overall
-        mat.roughness = 1;
-        mat.envMapIntensity = 0.1;
+        //mat.color.setHex(0xD8D8D8); // light silver-grey, not mid grey
+  mat.metalness = 0.0;
+  mat.roughness = 0.85;
+  mat.envMapIntensity = 0.15;
       }
     } else {
       // Regular color application
@@ -106,10 +106,10 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
         ) {
           const hexColor = color?.hex.match(/#([0-9a-f]{6})/i)?.[1];
           if (hexColor) {
-            mat.color.setHex(parseInt(hexColor, 16));
+          //  mat.color.setHex(parseInt(hexColor, 16));
           }
         } else {
-          mat.color.setHex(parseInt(color?.hex.replace("#", ""), 16));
+        //  mat.color.setHex(parseInt(color?.hex.replace("#", ""), 16));
         }
       }
       // Reset material properties to defaults for non-silver colors
@@ -125,7 +125,8 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
 const applyTextureToMaterial = (
   material: THREE.Material,
   textureUrl: string,
-  offsetX: number = 0
+  offsetX: number = 0,
+  isMap: boolean
 ) => {
   if (
     material.type === "MeshStandardMaterial" ||
@@ -160,12 +161,28 @@ const applyTextureToMaterial = (
             const data = imageData.data;
 
             // Apply gamma correction with fixed value of 0.55
-            const gamma = 0.5;
+            
+            // Near-white pixels (typically the map's background) become
+            // fully transparent so the board's own wood color shows
+            // through in the print area instead of a flat white block.
+          
+    
+const gamma = isMap ? 0.1 : 0.55;             
+const whiteThreshold = isMap ? 10 : 400;
+
             for (let i = 0; i < data.length; i += 4) {
               data[i] = Math.pow(data[i] / 255, 1 / gamma) * 255; // R
               data[i + 1] = Math.pow(data[i + 1] / 255, 1 / gamma) * 255; // G
-              data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B
-              // Alpha unchanged
+              data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B  
+
+                if ( 
+                  data[i] > whiteThreshold &&
+                  data[i + 1] > whiteThreshold &&
+                  data[i + 2] > whiteThreshold
+                ) {
+                  data[i + 3] = 0; // punch alpha so wood shows through
+                }
+
             }
 
             ctx.putImageData(imageData, 0, 0);
@@ -181,6 +198,7 @@ const applyTextureToMaterial = (
 
       // Improve mapping: set anisotropy for better quality
       texture.anisotropy = Math.min(16, (texture.anisotropy || 1) * 2);
+      mat.transparent = true; // required for the punched-alpha background to blend
       mat.needsUpdate = true;
     });
   }
@@ -207,7 +225,7 @@ const setMaterialColor = (material: THREE.Material, color: number) => {
     const mat = material as
       | THREE.MeshStandardMaterial
       | THREE.MeshPhysicalMaterial;
-    mat.color.setHex(color);
+    //mat.color.setHex(color);
     mat.needsUpdate = true;
   }
 };
@@ -228,7 +246,7 @@ const CameraController = ({
 }) => {
   const { camera } = useThree();
       const direction = camera.position.clone().normalize();
-      camera.position.copy(direction.multiplyScalar(1));
+      camera.position.copy(direction.multiplyScalar(7));
   useEffect(() => {
     if (onCameraRef) {
       onCameraRef(camera);
@@ -251,7 +269,7 @@ const processScene = (scene: THREE.Object3D, bottleSettings?: any) => {
     if ((child as THREE.Mesh).isMesh) {
       child.castShadow = true;
       child.receiveShadow = true;
-
+      
       const mesh = child as THREE.Mesh;
       if (mesh.material) {
         if (Array.isArray(mesh.material)) {
@@ -266,7 +284,8 @@ const processScene = (scene: THREE.Object3D, bottleSettings?: any) => {
       }
 
       // Frame's underside gets backface-culled when viewed from below
-      if (mesh.name.toLowerCase() === "frame") {
+      if (mesh.name.toLowerCase() === "imagepanel") {
+
         if (Array.isArray(mesh.material)) {
           mesh.material.forEach((mat) => {
             (mat as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
@@ -279,7 +298,7 @@ const processScene = (scene: THREE.Object3D, bottleSettings?: any) => {
   });
 
   if (bottleSettings?.scale) {
-    scene.scale.setScalar(bottleSettings.scale);
+  //  scene.scale.setScalar(bottleSettings.scale);
   }
 };
 
@@ -290,19 +309,29 @@ const applyColorsToScene = (
   selectedBottleType?: BottleType,
   bottleTypesData?: { bottleTypes: BottleType[] }
 ) => {
- scene.rotation.y -= THREE.MathUtils.degToRad(5);
- scene.rotation.z += THREE.MathUtils.degToRad(8);
+ //scene.rotation.y -= THREE.MathUtils.degToRad(50);
+ // scene.rotation.x -= THREE.MathUtils.degToRad(60);
+ //scene.rotation.z -= THREE.MathUtils.degToRad(60);
+  
   scene.traverse((child: THREE.Object3D) => {
+
     if (!(child as THREE.Mesh).isMesh) return;
 
     const mesh = child as THREE.Mesh;
     const meshName = mesh.name;
-    
-  if (mesh.name.toLowerCase() === "body") {
-      mesh.position.x -= 0.021;
-      mesh.position.y += 0.06;
-      mesh.scale.y -= 0.05;
-       mesh.rotation.y -= THREE.MathUtils.degToRad(0.6);
+    console.log('Mesh name: ', meshName);
+  if (mesh.name.toLowerCase() === "imagepanel") {
+    //  mesh.position.z -= 0.05;
+     mesh.position.y -= 0.075;
+     mesh.position.x += 0.029;
+   //   mesh.scale.z -= 0.35;
+   //   mesh.scale.x -= 0.4;
+      mesh.material.transparent = true;
+     // mesh.material.depthWrite = false;
+      mesh.material.opacity = 0;
+      mesh.material.needsUpdate = true; 
+      mesh.rotation.z += THREE.MathUtils.degToRad(140);
+     mesh.rotation.y += THREE.MathUtils.degToRad(180);  
   }
     // Clone material FIRST so each mesh is independent
     if (Array.isArray(mesh.material)) {
@@ -321,23 +350,23 @@ const applyColorsToScene = (
     // }
 
     if (Array.isArray(mesh.material)) {
-      mesh.material.forEach((mat) => {
-        applyColorToMaterial(
-          mat,
-          meshColor,
-          meshName,
-          selectedBottleType,
-          bottleTypesData
-        );
-      });
+      // mesh.material.forEach((mat) => {
+      //   applyColorToMaterial(
+      //     mat,
+      //     meshColor,
+      //     meshName,
+      //     selectedBottleType,
+      //     bottleTypesData
+      //   );
+      // });
     } else if (mesh.material) {
-      applyColorToMaterial(
-        mesh.material,
-        meshColor,
-        meshName,
-        selectedBottleType,
-        bottleTypesData
-      );
+      // applyColorToMaterial(
+      //   mesh.material,
+      //   meshColor,
+      //   meshName,
+      //   selectedBottleType,
+      //   bottleTypesData
+      // );
     }
   });
 };
@@ -345,7 +374,8 @@ const applyColorsToScene = (
 const applyTextureToScene = (
   scene: THREE.Object3D,
   selectedTexture: string,
-  offsetX: number = 0
+  offsetX: number = 0,
+  isMap: boolean
 ) => {
   scene.traverse((child: THREE.Object3D) => {
     
@@ -358,15 +388,20 @@ const applyTextureToScene = (
     } else if (mesh.material) {
       mesh.material = mesh.material.clone();
     }
-      if (meshName.includes("body")) {
+      if (meshName.includes("imagepanel")) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach((mat) =>
-              applyTextureToMaterial(mat, selectedTexture, offsetX)
+              applyTextureToMaterial(mat, selectedTexture, offsetX, isMap)
             );
           } else {
-            applyTextureToMaterial(mesh.material, selectedTexture, offsetX);
+            applyTextureToMaterial(mesh.material, selectedTexture, offsetX, isMap);
           }
+          mesh.material.opacity = 1;
+          // Was `true` — kept the punched-alpha map from blending with the
+          // wood surface underneath. Must be false so the transparent
+          // (near-white) pixels let the Body's texture show through.
+          mesh.material.depthWrite = true;
         }
       }
     }
@@ -379,13 +414,15 @@ const removeTextureFromScene = (scene: THREE.Object3D) => {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
 
-      if (meshName.includes("body")) {
+      if (meshName.includes("imagepanel")) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach(removeTextureFromMaterial);
           } else {
             removeTextureFromMaterial(mesh.material);
           }
+          mesh.material.opacity = 0;
+       //  mesh.material.depthWrite = false;
         }
       }
     }
@@ -413,7 +450,7 @@ function CanvasCapture({ onCaptureReady }: { onCaptureReady?: (captureFn: () => 
             const exportSize = 2048;
             gl.setPixelRatio(1);
             gl.setSize(exportSize, exportSize, false);
-            cam.aspect = 1;
+            cam.aspect = 0.5;
             cam.updateProjectionMatrix();
             gl.render(scene, camera);
 
@@ -497,9 +534,9 @@ function AngleCapture({ onAnglesReady, cameraPosition }: { onAnglesReady: (angle
       cam.fov = 40;
 
       // Rotate the entire scene to tilt the bottle diagonally
-      const sceneRotation = scene.rotation.clone();
-      scene.rotation.z = 0.4; // tilt top to the left
-      scene.rotation.x = -1.15; // lean slightly back
+     // const sceneRotation = scene.rotation.clone();
+     // scene.rotation.z = 0.4; // tilt top to the left
+      //scene.rotation.x = -1.15; // lean slightly back
 
       cam.position.set(0, 1.0, heroDist * 1.5); // straight from front, further back to center it
       cam.lookAt(new THREE.Vector3(0, 0.9, 0));
@@ -535,7 +572,7 @@ const setBodyMeshesToWhite = (scene: THREE.Object3D) => {
       const mesh = child as THREE.Mesh;
       const meshName = mesh.name.toLowerCase();
 
-      if (meshName.includes("body") ) {
+      if (meshName.includes("imagepanel") ) {
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach((mat) => setMaterialColor(mat, 0xffffff));
@@ -562,7 +599,7 @@ const BottleModel = ({
   textEngravings = [],
   bottleSettings,
   activeTab = "texture",
-  aspectRatio = 1,
+  aspectRatio = 0.6172,
   selectedBottleType,
   bottleTypesData,
 }: {
@@ -582,6 +619,8 @@ const BottleModel = ({
   aspectRatio?: number;
   selectedBottleType?: BottleType;
 }) => {
+
+  const isMap = mapImage !== null;
   // Try to get preloaded model first, fall back to useGLTF if not available
   const modelName =
     modelPath.split("/").pop()?.replace(".glb", "") || "unknown";
@@ -678,8 +717,9 @@ const BottleModel = ({
         activeTab === "jersey" ? textureOffsetX - 0.08
         : activeTab === "map" ? (bottleSettings?.mapOffsetX ?? 0)
         : textureOffsetX;
-      applyTextureToScene(baseBodyScene, textureToApply, effectiveOffsetX);
-      setBodyMeshesToWhite(baseBodyScene); // Set body/bottle meshes to white when texture is applied
+        
+      applyTextureToScene(baseBodyScene, textureToApply, effectiveOffsetX, isMap);
+      //setBodyMeshesToWhite(baseBodyScene); // Set body/bottle meshes to white when texture is applied
     }
 
     // Remove texture when cleared
@@ -695,7 +735,7 @@ const BottleModel = ({
           const meshName = mesh.name.toLowerCase();
 
           // Apply overlays only to body-related meshes
-          if (meshName.includes("body") && mesh.material) {
+          if (meshName.includes("imagepanel") && mesh.material) {
             // Import engraving utilities dynamically to avoid SSR issues
             import("@/utils/engravingUtils")
               .then(
@@ -707,10 +747,10 @@ const BottleModel = ({
 
                     // Build textures for text only
                     const colorOverlay = colorTexts.length
-                      ? await buildColorOverlayTexture([], colorTexts, 1024, 1024, aspectRatio)
+                      ? await buildColorOverlayTexture([], colorTexts, 2048, 2048, aspectRatio)
                       : null;
                     const engravingMask = engraveTexts.length
-                      ? await buildEngravingMaskTexture([], engraveTexts, 1024, 1024, aspectRatio)
+                      ? await buildEngravingMaskTexture([], engraveTexts, 2048, 2048, aspectRatio)
                       : null;
 
                     // Create a material and assign maps
@@ -778,7 +818,7 @@ const BottleModel = ({
           const meshName = mesh.name.toLowerCase();
 
           // Apply overlays only to body-related meshes
-          if (meshName.includes("body") && mesh.material) {
+          if (meshName.includes("imagepanel") && mesh.material) {
             console.log('✅ Found body mesh:', meshName);
             (async () => {
               try {
@@ -789,10 +829,10 @@ const BottleModel = ({
 
                 // Build logo texture
                 const colorOverlay = colorLogos.length
-                  ? await buildColorOverlayTexture(colorLogos, [], 1024, 1024, aspectRatio)
+                  ? await buildColorOverlayTexture(colorLogos, [], 2048, 2048, aspectRatio)
                   : null;
                 const engravingMask = engraveLogos.length
-                  ? await buildEngravingMaskTexture(engraveLogos, [], 1024, 1024, aspectRatio)
+                  ? await buildEngravingMaskTexture(engraveLogos, [], 2048, 2048, aspectRatio)
                   : null;
 
                     // Create a material and assign maps
@@ -935,11 +975,11 @@ const BottleModel = ({
   }, [clonedScene]);
 
   return (
-    <>
-      {clonedScene && <primitive object={clonedScene.baseBodyScene} />}
-      {clonedScene?.hasLogoLayer && <primitive object={clonedScene.logoLayerScene} />}
-      {clonedScene?.hasTextLayer && <primitive object={clonedScene.textLayerScene} />}
-    </>
+  <group scale={[1.5, 1.5, 1.5]} position={[1, 1.7, 0.1]}>
+    {clonedScene && <primitive object={clonedScene.baseBodyScene} />}
+    {clonedScene?.hasLogoLayer && <primitive object={clonedScene.logoLayerScene} />}
+    {clonedScene?.hasTextLayer && <primitive object={clonedScene.textLayerScene} />}
+  </group>
   );
 };
 
@@ -979,7 +1019,7 @@ export default function BottleViewer({
   textEngravings = [],
   bottleSettings,
   activeTab = "texture",
-  aspectRatio = 1,
+  aspectRatio = 0.6172,
   selectedBottleType,
   onARStateChange,
   onCaptureReady,
@@ -1167,8 +1207,10 @@ export default function BottleViewer({
             enableRotate={true}
             minDistance={minDistanceOverride ?? 4}
             maxDistance={15}
-            minPolarAngle={Math.PI * 0.15}
-            maxPolarAngle={Math.PI * 0.45}
+            minPolarAngle={Math.PI * 0.4}
+            maxPolarAngle={Math.PI * 0.55}
+            minAzimuthAngle={Math.PI * 0.2}  // -45°
+            maxAzimuthAngle={Math.PI * 0.8}   // +45°
             dampingFactor={0.1}
             enableDamping={true}
             target={[0, 1, 0]}

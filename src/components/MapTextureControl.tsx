@@ -252,13 +252,13 @@ export default function MapTextureControl({
   onClose, 
   currentLocation, 
   onApplyChanges,
-  aspectRatio = 1,
+  aspectRatio = 0.6172,
   mapTitle = "",
   mapSubtitle = "",
   selectedMapLineColor = { hex: "#000000", name: "black" },
-  bottleColor = "#ffffff",
+  bottleColor = "rgba(255, 255, 255, 0)",
   onZoomChange,
-  currentZoom = 10,
+  currentZoom = 12.3,
   spacing = { top: 0, bottom: 0 },
   mapTextPosition = 0.9,
   mapTextHorizontalPosition = 0.7, // center
@@ -427,21 +427,26 @@ export default function MapTextureControl({
     }
     if (!mapControlLocation || !mapControlContainer.current || mapControlMap.current || mapInitializedForSession.current) return;
     mapInitializedForSession.current = true;
-
+    console.log(mapZoom);
     mapControlMap.current = new mapboxgl.Map({
       container: mapControlContainer.current,
       style: mapStyle,
       center: [mapControlLocation.lng, mapControlLocation.lat],
       zoom: mapZoom,
       minZoom: 5,
-      maxZoom: 20,
+      maxZoom: 60,
       interactive: true,
       preserveDrawingBuffer: true,
       attributionControl: false,
     });
+mapControlMap.current.on("load", () => {
+  console.log("Bearing:", mapControlMap.current.getBearing());
 
+ // mapControlMap.current.setBearing(45);
+});
     mapControlMap.current.on('zoom', () => {
       if (mapControlMap.current) {
+        console.log('Current Zoom', mapControlMap.current.getZoom());
         const newZoom = Math.round(mapControlMap.current.getZoom() * 100) / 100;
         setMapZoom(newZoom);
         if (onZoomChange) {
@@ -576,7 +581,7 @@ export default function MapTextureControl({
     if (mapControlMap.current) {
       mapControlMap.current.flyTo({
         center: [lng, lat],
-        zoom: 12,
+        zoom: 12.3,
         duration: 2000
       });
     }
@@ -602,7 +607,7 @@ export default function MapTextureControl({
             // most common intent of "Find my location" is marking it.
             setPinLocation(newLocation);
             if (mapControlMap.current) {
-              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 12, duration: 1500 });
+              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 5, duration: 1500 });
             }
             fetchLocationInfo(newLocation);
             resolve();
@@ -627,7 +632,7 @@ export default function MapTextureControl({
       if (canvas) {
         mapCanvasWidth = canvas.width;
         mapCanvasHeight = canvas.height;
-        if ((mapCanvasWidth ?? 0) > 1024 || (mapCanvasHeight ?? 0) > 1024) {
+        if ((mapCanvasWidth ?? 0) > 2048 || (mapCanvasHeight ?? 0) > 2048) {
           try {
             mapPreviewDataUrl = canvas.toDataURL('image/png', 1.0);
             mapPreviewCacheRef.current = mapPreviewDataUrl;
@@ -765,7 +770,7 @@ export default function MapTextureControl({
                 ref={mapControlContainer} 
                 className="transition-all duration-300 touch-manipulation"
                 style={{
-                  aspectRatio: `${aspectRatio / 0.76 * 2 / 3}`,
+                  aspectRatio: `${aspectRatio}`,
                   width: '100%',
                   maxHeight: '100%',
                   minWidth: 0,

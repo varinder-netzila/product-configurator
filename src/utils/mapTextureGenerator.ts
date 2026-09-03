@@ -221,7 +221,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	const drawProcessedMap = () => {
 		const targetMapWidth = (baseCanvasWidth * 2) / 2; // 2/3 of canvas width 
 		const targetMapHeight = baseCanvasHeight * (1 - spacing.top - spacing.bottom);
-		const imageAspectRatio = processedImg.width / processedImg.height;
+		const imageAspectRatio = (processedImg.width / processedImg.height) * 1.6;
 		const targetAspectRatio = targetMapWidth / targetMapHeight;
 		const mapDimensions =
 			imageAspectRatio > targetAspectRatio
@@ -232,12 +232,31 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		const topSpacingPx = baseCanvasHeight * spacing.top;
 		const mapY = topSpacingPx;
 		ctx.drawImage(processedImg, mapX, mapY, mapDimensions.mapW, mapDimensions.mapH);
+const imageData = ctx.getImageData(
+  mapX,
+  mapY,
+  mapDimensions.mapW,
+  mapDimensions.mapH
+);
 
+const data = imageData.data;
+
+for (let i = 0; i < data.length; i += 4) {
+  const r = data[i];
+  const g = data[i + 1];
+  const b = data[i + 2];
+
+  if (r > 240 && g > 240 && b > 240) {
+    data[i + 3] = 0;
+  }
+}
+
+ctx.putImageData(imageData, mapX, mapY);
 		if (!includeGradient) {
 			// For download/flat texture: fade map lines out at the bottom
 			// Use destination-out compositing to erase the map gradually
 			const mapContentBottom = mapY + mapDimensions.mapH;
-			const fadeStartY = mapY + mapDimensions.mapH * 0.4;
+			const fadeStartY = mapY + mapDimensions.mapH * 1;
 			const fadeEndY = mapContentBottom;
 			ctx.save();
 			ctx.globalCompositeOperation = 'destination-out';
@@ -258,7 +277,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			const g = parseInt(hex.substr(2, 2), 16);
 			const b = parseInt(hex.substr(4, 2), 16);
 			const mapContentBottom = mapY + mapDimensions.mapH;
-			const fadeStartY = mapY + mapDimensions.mapH * 0.6;
+			const fadeStartY = mapY + mapDimensions.mapH * 1;
 			const fadeEndY = mapContentBottom;
 			const gradient = ctx.createLinearGradient(0, fadeStartY, 0, fadeEndY);
 			gradient.addColorStop(0, `rgba(${r},${g},${b},0)`);
@@ -345,18 +364,26 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 	// Very subtle darkening directly behind the text baseline only (not the
 	// whole bottom third), so the copper/orange map print look stays intact.
-	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
-		const scrimTop = topSpacingPx + contentHeightPx * (mapTextPosition - 0.13);
-		const scrimBottom = topSpacingPx + contentHeightPx;
-		ctx.save();
-		const scrim = ctx.createLinearGradient(0, scrimTop, 0, scrimBottom);
-		scrim.addColorStop(0, 'rgba(0,0,0,0)');
-		scrim.addColorStop(0.5, 'rgba(0,0,0,0.18)');
-		scrim.addColorStop(1, 'rgba(0,0,0,0.28)');
-		ctx.fillStyle = scrim;
-		ctx.fillRect(0, scrimTop, baseCanvasWidth, scrimBottom - scrimTop);
-		ctx.restore();
-	}
+if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
+  const scrimTop =
+    topSpacingPx + contentHeightPx * (mapTextPosition - 0.13);
+
+  const scrimBottom =
+    topSpacingPx + contentHeightPx;
+
+  ctx.save();
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+
+  ctx.fillRect(
+    580,
+    scrimTop+220,
+    baseCanvasWidth-1150,
+    scrimBottom - scrimTop-300
+  );
+
+  ctx.restore();
+}
 
 	// Map text overlays using map line color (or black)
 	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
@@ -390,22 +417,22 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			ctx.textAlign = 'center';
 		};
 
-		if (mapFontsimg.coordinates) {
-			const { family, size , weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
-			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 65, letterSpacing);
-		}
+		// if (mapFontsimg.coordinates) {
+		// 	const { family, size , weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
+		// 	ctx.font = `${style} ${weight} ${size}px ${family}`;
+		// 	drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 65, letterSpacing);
+		// }
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
 			drawText(mapTitle, textCenterX, textBaseY+80, letterSpacing);
 		}
 		
-		if (mapFonts.subtitle && mapSubtitle) {
-			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
-			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY +170, letterSpacing);
-		}
+		// if (mapFonts.subtitle && mapSubtitle) {
+		// 	const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
+		// 	ctx.font = `${style} ${weight} ${size}px ${family}`;
+		// 	drawText(mapSubtitle, textCenterX, textBaseY +170, letterSpacing);
+		// }
 	}
 
 	// Optional: map logo on the transparent layer

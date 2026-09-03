@@ -28,8 +28,8 @@ export async function GET(request: NextRequest) {
       `client_id=${process.env.SHOPIFY_API_KEY}` +
       `&scope=${scopes}` +
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-      `&state=${nonce}` +
-      `&grant_options[]=per-user`;
+      `&state=${nonce}`;
+    //  `&grant_options[]=per-user`;
 
     // Store nonce in a cookie for validation in the callback
     const response = NextResponse.redirect(authUrl);

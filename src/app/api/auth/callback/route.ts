@@ -7,7 +7,7 @@ import shopify, { storeSession } from '@/lib/shopify';
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
-    const shop = url.searchParams.get('shop');
+    const shop = process.env.SHOPIFY_STORE_DOMAIN;
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');
     const hmac = url.searchParams.get('hmac');
@@ -60,21 +60,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to exchange authorization code' }, { status: 500 });
     }
 
-    // const tokenData = await tokenResponse.json();
-    // const { access_token, scope } = tokenData;
+    const tokenData = await tokenResponse.json();
+    const { access_token, scope } = tokenData;
 
-    // // Create and store an offline session
-    // const sessionId = shopify.session.getOfflineId(shop);
-    // const session = new Session({
-    //   id: sessionId,
-    //   shop,
-    //   state: state,
-    //   isOnline: false,
-    //   accessToken: access_token,
-    //   scope: scope,
-    // });
+    // Create and store an offline session
+    const sessionId = shopify.session.getOfflineId(shop);
+    const session = new Session({
+      id: sessionId,
+      shop,
+      state: state,
+      isOnline: false,
+      accessToken: access_token,
+      scope: scope,
+    });
 
-    // await storeSession(session);
+    await storeSession(session);
 
     // Clear the nonce cookie and redirect to the configurator
     const response = NextResponse.redirect(

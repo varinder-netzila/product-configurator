@@ -481,7 +481,8 @@ export default function OptionTabs({
   // If the active tab is a feature the reseller disabled, fall back to the
   // first enabled feature tab so the user never lands on a hidden/empty panel.
   useEffect(() => {
-    const featureTabs = ["texture", "map", "brand"] as const;
+    activeOptionalTab = "map";
+    const featureTabs = ["map", "texture", "brand"] as const;
     if (!(featureTabs as readonly string[]).includes(activeOptionalTab)) return;
     if (wl.isFeature(activeOptionalTab as typeof featureTabs[number])) return;
     const firstEnabled = featureTabs.find((f) => wl.isFeature(f));
@@ -625,7 +626,7 @@ export default function OptionTabs({
         role="tablist"
         aria-label={t("texture.bodyOptions")}
       >
-        {wl.isFeature("texture") && (
+        {/* {wl.isFeature("texture") && (
         <button
           onClick={handleTextureTab}
           role="tab"
@@ -656,7 +657,7 @@ export default function OptionTabs({
             <span>{t("tabs.allOverPrint")}</span>
           </div>
         </button>
-        )}
+        )} */}
         {wl.isFeature("map") && (
         <button
           onClick={handleMapTab}
@@ -1163,7 +1164,7 @@ export default function OptionTabs({
               </div>
 
               {/* Map Logo Controls */}
-              <div>
+              <div class="hidden">
                 <div className="flex flex-col gap-4">
                   {/* Logo Upload Button */}
                   <div className="mt-4">

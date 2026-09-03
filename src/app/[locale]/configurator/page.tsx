@@ -182,6 +182,10 @@ useEffect(() => {
     if (data.bottleTypes?.length > 0) {
       handleBottleTypeSwitch(data.bottleTypes[0]);
     }
+    if (data.bottleTypes?.length < 2) {
+      setCurrentStep(2);
+    }
+    
   }
 
   loadProducts();
