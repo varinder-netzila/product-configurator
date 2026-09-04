@@ -27,8 +27,8 @@ import { getBrandTextureUrl, generateBrandPreviews, rasterizeSvg } from "@/utils
 
 interface OptionTabsProps {
   // Tab state
-  activeOptionalTab: "texture" | "map" | "text" | "brand" | "ai";
-  onTabChange: (tab: "texture" | "map" | "text" | "brand" | "ai") => void;
+  activeOptionalTab:  "map" |"texture" | "text" | "brand" | "ai";
+  onTabChange: (tab:  "map" |"texture" | "text" | "brand" | "ai") => void;
 
   // Texture states
   allOverPrintTexture: string | null;
@@ -785,7 +785,7 @@ useEffect(() => {
 
       {/* Content Area */}
       <div className="p-4 md:p-6">
-        {activeOptionalTab === "texture" ? (
+        {activeOptionalTab === "texture2" ? (
           <div role="tabpanel" id="texture-panel22" aria-labelledby="texture-tab hidden">
             <div className="flex items-center gap-2 mb-4">
               <label className="block text-sm font-bold text-gray-900">
@@ -1078,7 +1078,7 @@ useEffect(() => {
               </div>
             )}
           </div>
-        ) : activeOptionalTab === "map" ? (
+        ) : activeOptionalTab === "map" || activeOptionalTab === "texture" ? (
           <div role="tabpanel" id="map-panel" aria-labelledby="map-tab">
             <div>
               {/* Select Location — FIRST */}
