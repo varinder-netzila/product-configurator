@@ -109,7 +109,7 @@ const ALL_BOTTLES = allBottles;
         // Compute explicit canvas dimensions per bottle (don't rely on cache)
         const baseCanvasW = 2048;
         const baseCanvasH = baseCanvasW / ar;
-        const mapCanvasWidth = Math.round((baseCanvasW * 2) / 3);
+        const mapCanvasWidth = Math.round((baseCanvasW * 2) / 2);
         const mapCanvasHeight = Math.round(baseCanvasH * (1 - spacing.top - spacing.bottom));
 
         try {
@@ -281,10 +281,10 @@ const ALL_BOTTLES = allBottles;
                           selectedBottleType={bottle as any}
                           aspectRatio={ar}
                           activeTab="texture"
-                          autoRotate
+                      //    autoRotate
                           hideOverlays
                           lowQuality
-                          cameraPositionOverride={[0, 0.8, 4]}
+                     //     cameraPositionOverride={[0, 0.8, 4]}
                           minDistanceOverride={3}
                         />
                       </Suspense>
@@ -297,7 +297,7 @@ const ALL_BOTTLES = allBottles;
                   <h3 className="text-sm font-bold text-gray-900">
                     {wl.productName(bottle.name)}
                   </h3>
-                  <p className="text-[10px] text-gray-400 mb-2">{bottle.capacity}</p>
+                  {/* <p className="text-[10px] text-gray-400 mb-2">{bottle.capacity}</p> */}
                   {!whiteLabel && (
                     <div className="flex items-baseline gap-3">
                       {!pricing || Object.keys(pricing).length === 0 ? (
@@ -349,9 +349,9 @@ const ALL_BOTTLES = allBottles;
                     selectedBottleType={enlargedData as any}
                     aspectRatio={(enlargedData.size?.width && enlargedData.size?.height) ? enlargedData.size.width / enlargedData.size.height : 1}
                     activeTab="texture"
-                    autoRotate
+                 //   autoRotate
                     hideOverlays
-                    cameraPositionOverride={[0, 0.8, 4]}
+                  //  cameraPositionOverride={[0, 0.8, 4]}
                     minDistanceOverride={3}
                   />
                 </Suspense>
