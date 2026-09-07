@@ -205,7 +205,16 @@ const applicableDiscount = discounts.find((item: any) => {
 
   return quantity2 >= min && quantity2 <= max;
 });
+const matchedIndex = discounts.findIndex((item: any) => {
+  const match = item.quantity.match(/([\d,]+)\s*-\s*([\d,]+)/);
 
+  if (!match) return false;
+
+  const min = Number(match[1].replace(/,/g, ""));
+  const max = Number(match[2].replace(/,/g, ""));
+
+  return quantity2 >= min && quantity2 <= max;
+});
 const discountPercent = applicableDiscount
   ? parseFloat(applicableDiscount.discount.replace("% discount", ""))
   : 0;
@@ -305,7 +314,7 @@ const b2bTotal = b2bTotal_org
       <div
         key={item.quantity}
         className={
-          index === 0
+          index === matchedIndex
             ? "px-5 py-5 rounded-lg text-xs bg-green-100 text-green-700 font-bold"
             : "px-5 py-5 rounded-lg text-xs bg-white text-gray-500 border border-gray-200"
         }

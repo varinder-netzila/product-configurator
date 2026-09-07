@@ -282,7 +282,7 @@ npm run dev
 
 Access as reseller:
 ```
-http://localhost:3000/en/configurator?reseller=your-company
+http://localhost:3000/nl/configurator?reseller=your-company
 ```
 
 ### 8. Deploy to Vercel

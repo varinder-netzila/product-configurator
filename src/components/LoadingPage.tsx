@@ -20,7 +20,7 @@ export default function LoadingPage({ onLoadingComplete }: LoadingPageProps) {
       const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
       
       const assets = [
-        '/assets/models/bottle-500.glb',
+        '/assets/models/cutting-board.glb',
         '/assets/models/bottle-900.glb',
         '/assets/models/mug-350.glb',
         '/assets/models/mug-500.glb',

@@ -1059,7 +1059,7 @@ export default function BottleViewer({
 
   // Memoize model path to avoid unnecessary recalculations
   const memoizedModelPath = useMemo(() => {
-    return modelPath || "/assets/models/bottle-500.glb";
+    return modelPath || "/assets/models/cutting-board.glb";
   }, [modelPath]);
 
   // Optimized model switching - only reset loading for new models

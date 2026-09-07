@@ -7,9 +7,9 @@ import nl from "./translations/nl.json";
 import fr from "./translations/fr.json";
 import de from "./translations/de.json";
 import cs from "./translations/cs.json";
-import es from "./translations/es.json";
+import es from "./translations/es.json"; 
 
-const translations: Record<Locale, typeof en> = { en, nl, fr, de, cs, es };
+const translations: Record<Locale, typeof nl> = { nl, en, fr, de, cs, es };
 
 /**
  * Get a nested value from an object by dot-separated key.

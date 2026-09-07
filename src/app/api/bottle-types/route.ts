@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       .replace(/^https?:\/\//, "")
       .replace(/\/$/, "");
 
-    const graphqlUrl = `https://${shopDomain}/admin/api/2026-07/graphql.json`;
+    const graphqlUrl = `https://${shopDomain}/admin/api/2026-07/graphql.json?locale=en`;
 
     // ---------------------------------------------------------
     // 1. Get products

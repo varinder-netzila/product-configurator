@@ -182,7 +182,7 @@ export default function EmbedAdminPage() {
       const modelUrl =
         bottleTypesData.bottleTypes.find(
           (b) => b.name === product.name
-        )?.model || "/assets/models/bottle-500.glb";
+        )?.model || "/assets/models/cutting-board.glb";
       // Capitalize component keys to match mesh names
       const capitalizedColors: Record<string, string> = {};
       for (const [key, val] of Object.entries(variant.colors)) {

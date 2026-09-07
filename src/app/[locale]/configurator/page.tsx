@@ -590,7 +590,7 @@ useEffect(() => {
           const def = isTravelGroup ? palette[6] : palette[8];
           if (def) {
             setMeshColors({
-              Body: def, Frame: def, Handle: def,
+              Body: '', Frame: '', Handle: '',
             });
           }
         }
@@ -627,7 +627,7 @@ useEffect(() => {
         defaultColor = colors.colors.find((c: any) => c.name === "White" || c.name === "white") || colors.colors[0];
       }
       setMeshColors({
-        Body: defaultColor, Frame: defaultColor, Handle: defaultColor,
+        Body: '', Frame: '', Handle: '',
       });
     }
   }, [colors, selectedBottleType, meshColors, setMeshColors]);
@@ -1302,7 +1302,7 @@ useEffect(() => {
               }
             >
               <BottleViewer
-                modelPath={selectedBottleType ? `${selectedBottleType.model}` : "https://cdn.shopify.com/3d/models/o/e034a8ec5084c86c/board-new.glb"}
+                modelPath={selectedBottleType ? `${selectedBottleType.model}` : "/assets/models/cutting-board.glb"}
                 selectedColor={meshColors}
                 currentStepName={currentStep === 2 ? "Configure" : steps[currentStep - 1] || "Select Bottle"}
                 selectedTexture={currentTexture}

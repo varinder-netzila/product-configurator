@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const locales = ["en", "nl", "fr", "de", "cs", "es"];
-const defaultLocale = "en";
+const locales = ["nl", "en", "fr", "de", "cs", "es"];
+const defaultLocale = "nl";
 
 // Paths that should NOT be locale-prefixed
 const publicPaths = ["/api/", "/assets/", "/_next/", "/favicon", "/Favicon"];

@@ -319,7 +319,7 @@ export default function ViewerPage() {
               }
             >
               <BottleViewer
-                modelPath={`${design.selectedBottleType?.model || 'bottle-500.glb'}`}
+                modelPath={`${design.selectedBottleType?.model || 'cutting-board.glb'}`}
                 selectedColor={meshColors}
                 selectedTexture={design.selectedTexture}
                 textureOffsetX={((design.textureOffsetX || 0) % 1 + 1) % 1}

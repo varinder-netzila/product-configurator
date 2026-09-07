@@ -199,6 +199,7 @@ const ALL_BOTTLES = allBottles;
     ? ALL_BOTTLES.find((b) => b.name === enlargedBottle)
     : null;
 
+const discounts = enlargedData?.discounts || [];
   return (
     <div className="fixed inset-0 z-[9999] bg-gray-50 overflow-y-auto">
       {/* Header */}
@@ -254,7 +255,7 @@ const ALL_BOTTLES = allBottles;
               : 1;
             const pricing = wl.pricing(bottle.name);
             const startingB2B = pricing?.tiers.filter(tier => tier.price > 0).at(-1);
-
+           
             return (
               <div
                 key={bottle.id}
@@ -373,16 +374,40 @@ const ALL_BOTTLES = allBottles;
                 <h2 className="text-lg font-bold text-gray-900">
                   {wl.productName(enlargedData.name)}
                 </h2>
-                <div className="text-xs text-gray-400">{enlargedData.capacity} &middot; <div dangerouslySetInnerHTML={{  __html: enlargedData.description || "",
+                {/* <div className="text-xs text-gray-400">{enlargedData.capacity} &middot; <div dangerouslySetInnerHTML={{  __html: enlargedData.description || "",
   }}
-/></div>
+/></div> */}
+          {/* discounts tiers */}
+          {discounts && (
+  <div className="mb-4 p-3 bg-gray-50 rounded-xl">
+  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
+    Adviesprijs per staffel
+  </label>
+
+  <div className="flex gap-2 flex-wrap">
+    {discounts.map((item, index) => (
+      <div
+        key={item.quantity}
+        className={
+          index === 0
+            ? "px-5 py-5 rounded-lg text-xs bg-green-100 text-green-700 font-bold"
+            : "px-5 py-5 rounded-lg text-xs bg-white text-gray-500 border border-gray-200"
+        }
+      >
+        <span className="block text-[13px] mb-2">{item.quantity}</span>
+        <span className="font-semibold text-[13px]">{item.discount}</span>
+      </div>
+    ))}
+  </div>
+</div>
+     )}
               </div>
               {(() => {
                 const p = wl.pricing(enlargedData.name);
                 if (!p || Object.keys(p).length === 0) {
                   return (
                     <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-semibold text-gray-600">op aanvraag</span>
+                      {/* <span className="text-sm font-semibold text-gray-600">op aanvraag</span> */}
                     </div>
                   );
                 }

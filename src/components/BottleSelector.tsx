@@ -60,11 +60,11 @@ export default function BottleSelector({
                 src={`${bottleType.image}`}
                 alt={bottleType.name}
                 className="w-12 h-12 object-contain transition-all"
-                style={{
-                  filter: selectedBottleType?.id === bottleType.id
-                    ? 'brightness(0) saturate(100%)'
-                    : 'brightness(0) saturate(100%) invert(0.85) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.85)'
-                }}
+                // style={{
+                //   filter: selectedBottleType?.id === bottleType.id
+                //     ? 'brightness(0) saturate(100%)'
+                //     : 'brightness(0) saturate(100%) invert(0.85) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.85)'
+                // }}
               />
             </div>
 

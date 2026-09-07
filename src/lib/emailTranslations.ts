@@ -155,9 +155,9 @@ const de: EmailStrings = {
   team: 'Das {brand}-Team',
 };
 
-const TABLE: Record<string, EmailStrings> = { en, nl, fr, de };
+const TABLE: Record<string, EmailStrings> = { nl, en, fr, de };
 
 /** Email strings for a locale, falling back to English. */
 export function emailStrings(locale?: string): EmailStrings {
-  return TABLE[(locale || '').toLowerCase()] ?? en;
+  return TABLE[(locale || '').toLowerCase()] ?? nl;
 }
