@@ -1206,7 +1206,7 @@ export default function BottleViewer({
             enableZoom={true}
             enableRotate={true}
             minDistance={minDistanceOverride ?? 4}
-            maxDistance={15}
+            maxDistance={7}
             minPolarAngle={Math.PI * 0.4}
             maxPolarAngle={Math.PI * 0.55}
             minAzimuthAngle={Math.PI * 0.2}  // -45°
@@ -1256,7 +1256,7 @@ export default function BottleViewer({
   return (
     <div
       ref={canvasContainerRef}
-      className="relative h-full bg-white border border-gray-200 rounded-2xl mb-4 md:mb-0"
+      className="viewer-canvas relative h-full bg-white border border-gray-200 rounded-2xl mb-4 md:mb-0"
     >
       {canvasContent}
 

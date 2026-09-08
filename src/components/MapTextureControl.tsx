@@ -758,7 +758,7 @@ mapControlMap.current.on("load", () => {
         <div className="flex flex-col">
           <div className="flex-1 relative min-h-0 flex items-center justify-center">
             <div
-              className="relative border border-gray-200 overflow-hidden touch-manipulation w-full h-full flex items-center justify-center"
+              className="relative border border-gray-200 overflow-hidden touch-manipulation w-full h-full flex items-center justify-center mov-height"
               style={{
                 backgroundImage: 'url("/assets/images/checker.webp")',
                 backgroundSize: '120px 120px',

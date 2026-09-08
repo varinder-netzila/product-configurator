@@ -5,7 +5,7 @@ import BottleSelector from "./BottleSelector";
 import ComponentColorSelector from "./ComponentColorSelector";
 import OptionTabs from "./OptionTabs";
 import { BottleType } from "@/types/bottle";
-
+import { getBottleTypes } from "@/data/bottleTypes";
 interface MobileAccordionProps {
   currentStep: number;
   onStepChange: (step: number) => void;
@@ -231,7 +231,16 @@ export default function MobileAccordion({
       setExpandedStep(stepId);
     }
   };
-
+useEffect(() => {
+  async function loadProducts() {
+    const data = await getBottleTypes();
+    if (data.bottleTypes?.length < 2) {
+      setExpandedStep(2);
+    }
+    
+  }
+  loadProducts();
+}, []);
   const getStepIcon = (stepId: number) => {
     if (stepId < currentStep) {
       // Completed step - show checkmark
@@ -347,7 +356,7 @@ export default function MobileAccordion({
 
                       {step.id === 2 && (
                         <div className="space-y-4">
-                          <ComponentColorSelector
+                          {/* <ComponentColorSelector
                             selectedBottleType={selectedBottleType}
                             colors={colors}
                             getCurrentColorForComponent={
@@ -355,7 +364,7 @@ export default function MobileAccordion({
                             }
                             switchToColorMode={switchToColorMode}
                             setMeshColorForComponent={setMeshColorForComponent}
-                          />
+                          /> */}
 
                           <OptionTabs
                             activeOptionalTab={activeOptionalTab}

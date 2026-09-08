@@ -61,3 +61,25 @@ body {
 .scrollbar-thin::-webkit-scrollbar-corner {
   background: #f3f4f6;
 }
+
+/* custom css */
+@media screen and (max-width: 991px) {
+.viewer-canvas canvas {
+	height: 500px !important;
+}
+body{
+  overflow: auto !important;
+  height:auto!important;
+}
+.overflow-mobile{
+  overflow: auto !important;
+}
+.height-auto-mob{ height:auto!important; }
+}
+.mob-cus-h{
+  height:auto!important;
+  max-height:none!important;
+}
+@media screen and (max-height: 780px) {
+ .mov-height{ height: 420px !important; }
+}

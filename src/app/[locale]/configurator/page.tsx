@@ -1271,9 +1271,9 @@ useEffect(() => {
   }, [setIsUploadingShare, setShowSharePopup, setShareUrl, setViewerUrl, setEmbedCode, selectedBottleType, meshColors, currentTexture, textureOffsetX, logoDecals, textEngravings, bottleSettings, activeOptionalTab, wl.reseller?.id]);
 
   return (
-    <div className="bg-white flex flex-col h-full w-full overflow-hidden p-4 lg:pt-10 lg:pb-4 lg:px-24">
+    <div className="bg-white flex flex-col h-full w-full overflow-auto overflow-mobile p-4 lg:pt-10 lg:pb-4 lg:px-24">
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row relative z-0 h-[calc(100vh-2rem)] lg:h-[calc(100vh-3.5rem)]">
+      <div className="flex flex-col lg:flex-row relative z-0 h-[calc(100vh-2rem)] lg:h-[calc(100vh-3.5rem)] height-auto-mob ">
         {/* Left Panel - 3D Scene */}
         <div className={`w-full lg:w-1/2 h-full flex-col relative ${currentStep === 3 ? "hidden md:flex" : "flex"}`}>
           <div className="lg:hidden px-4 py-2 bg-white">
@@ -1683,7 +1683,7 @@ useEffect(() => {
         </div>
 
         {/* Mobile Accordion */}
-        <div className={`w-full h-full max-h-[50vh] overflow-y-auto scrollbar-none ${currentStep === 3 ? "lg:hidden hidden" : "lg:hidden"}`}>
+        <div className={`w-full h-full max-h-[50vh] mob-cus-h overflow-y-auto scrollbar-none ${currentStep === 3 ? "lg:hidden hidden" : "lg:hidden"}`}>
           <MobileAccordion
             colors={colors}
             getCurrentColorForComponent={getCurrentColorForComponent}
