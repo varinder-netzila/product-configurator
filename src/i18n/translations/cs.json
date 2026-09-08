@@ -21,7 +21,8 @@
     "b2b": "B2B",
     "b2c": "B2C",
     "pcs": "ks",
-    "perPiece": "za kus"
+    "perPiece": "za kus",
+    "discount": "sleva"
   },
   "nav": {
     "home": "Domů",

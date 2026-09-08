@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const shop = process.env.SHOPIFY_STORE_DOMAIN;
+    const lang = request.nextUrl.searchParams.get("lang") || "NL";
 
     if (!shop) {
       return NextResponse.json(
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
     // ---------------------------------------------------------
 
     const productsQuery = `#graphql
-      query GetProducts {
+      query GetProducts($locale: String!) {
         products(
           first: 50
           query: "tag:configurator"
@@ -46,6 +47,11 @@ export async function GET(request: NextRequest) {
             handle
             descriptionHtml
             productType
+            translations(locale: $locale) {
+              key
+              value
+              locale
+            }            
             tags
 
             featuredMedia {
@@ -106,6 +112,9 @@ export async function GET(request: NextRequest) {
       },
       body: JSON.stringify({
         query: productsQuery,
+        variables: {
+          locale: lang,
+        },
       }),
     });
 
@@ -306,11 +315,14 @@ export async function GET(request: NextRequest) {
               discountMap.get(id)
             )
             .filter(Boolean);
-
+const translatedTitle =
+  product.translations?.find(
+    (t: any) => t.key === "title"
+  )?.value || product.title;
           return {
             id: product.id,
 
-            name: product.title,
+            name: translatedTitle,
 
             capacity: "500ml",
 

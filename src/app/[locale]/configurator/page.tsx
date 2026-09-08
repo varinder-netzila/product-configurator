@@ -10,6 +10,7 @@ import {
   lazy,
   Fragment,
 } from "react";
+
 import { useShopify } from "@/components/ShopifyProvider";
 import { showToast } from "@/components/Toast";
 import { CustomProduct } from "@/types/shopify";
@@ -174,7 +175,9 @@ useEffect(() => {
     handleAddToCart,
   } = store;
 useEffect(() => {
+
   async function loadProducts() {
+ 
     const data = await getBottleTypes();
 
     setBottleTypes(data.bottleTypes);

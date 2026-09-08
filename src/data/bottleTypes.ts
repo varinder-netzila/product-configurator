@@ -6,9 +6,10 @@ export async function getBottleTypes() {
   }
 
   const shop = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL;
-
+const locale =
+  window.location.pathname.split("/")[1] || "nl";
   bottleTypesPromise = fetch(
-    `/api/bottle-types?shop=${encodeURIComponent(shop || "")}`,
+    `/api/bottle-types?shop=${encodeURIComponent(shop || "")}&lang=${locale}`,
     {
       cache: "no-store",
     }

@@ -21,7 +21,8 @@
     "b2b": "B2B",
     "b2c": "B2C",
     "pcs": "pcs",
-    "perPiece": "por pieza"
+    "perPiece": "por pieza",
+    "discount": "descuento"
   },
   "nav": {
     "home": "Inicio",

@@ -1084,7 +1084,7 @@ useEffect(() => {
               {/* Select Location — FIRST */}
               <div className="relative mb-4">
                 <label className="block text-sm font-bold text-gray-900 mb-2 md:mb-4">
-                  Select location
+                 {t("map.selectLocation")} 
                 </label>
                 <div
                   className="bg-white border-2 border-gray-300 rounded-2xl p-2 flex items-center justify-center h-[200px] cursor-pointer hover:border-gray-400 transition-colors"
@@ -1112,7 +1112,7 @@ useEffect(() => {
                         <HiMiniMap className="w-8 h-8 text-gray-900" />
                       </div>
                       <p className="text-sm font-semibold text-gray-400">
-                        CLICK TO SELECT MAP AREA
+                      {t("map.clickToSelectMapArea")}  
                       </p>
                     </div>
                   )}

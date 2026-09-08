@@ -319,8 +319,8 @@ const b2bTotal = b2bTotal_org
             : "px-5 py-5 rounded-lg text-xs bg-white text-gray-500 border border-gray-200"
         }
       >
-        <span className="block text-[13px] mb-2">{item.quantity}</span>
-        <span className="font-semibold text-[13px]">{item.discount}</span>
+        <span className="block text-[13px] mb-2">{item.quantity}  {t("common.pcs")}</span>
+        <span className="font-semibold text-[13px]">{item.discount} {t("common.discount")}</span>
       </div>
     ))}
   </div>

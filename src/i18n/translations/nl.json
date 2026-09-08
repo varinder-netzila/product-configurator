@@ -21,7 +21,8 @@
     "b2b": "B2B",
     "b2c": "B2C",
     "pcs": "stuks",
-    "perPiece": "per stuk"
+    "perPiece": "per stuk",
+    "discount": "korting"
   },
   "nav": {
     "home": "Home",

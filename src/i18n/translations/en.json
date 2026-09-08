@@ -21,7 +21,8 @@
     "b2b": "Wholesale Price",
     "b2c": "RRP",
     "pcs": "pcs",
-    "perPiece": "per piece"
+    "perPiece": "per piece",
+    "discount": "Discount"
   },
   "nav": {
     "home": "Home",

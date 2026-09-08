@@ -39,6 +39,10 @@ export default function LanguageSwitcher() {
     const search = typeof window !== "undefined" ? window.location.search : "";
     document.cookie = `locale=${newLocale};path=/;max-age=31536000`;
     router.push(newPath + search);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+    
     setOpen(false);
   };
 
