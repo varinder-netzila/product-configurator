@@ -63,7 +63,7 @@ body {
 }
 
 /* custom css */
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 767px) {
 .viewer-canvas canvas {
 	height: 500px !important;
 }
@@ -80,6 +80,6 @@ body{
   height:auto!important;
   max-height:none!important;
 }
-@media screen and (max-height: 780px) {
+@media screen and (max-height: 780px) and (min-width: 768px) {
  .mov-height{ height: 420px !important; }
 }

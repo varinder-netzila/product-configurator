@@ -31,10 +31,10 @@
     "needSupport": "Potřebujete pomoc? Klikněte zde."
   },
   "steps": {
-    "selectBottle": "Vyberte láhev",
+    "selectBottle": "Vyberte Plank",
     "configure": "Konfigurace",
     "requestQuote": "Vyžádat nabídku",
-    "chooseYourBottle": "Vyberte si láhev",
+    "chooseYourBottle": "Vyberte si Plank",
     "customizeYourDesign": "Přizpůsobte si design",
     "requestYourQuote": "Vyžádejte si nabídku",
     "goBack": "ZPĚT",
@@ -157,7 +157,7 @@
   "share": {
     "shareYourDesign": "Sdílejte svůj design",
     "interactiveViewer": "Interaktivní 3D prohlížeč",
-    "clientCanRotate": "Váš klient může láhev otáčet a přibližovat ve 3D",
+    "clientCanRotate": "Váš klient může Plank otáčet a přibližovat ve 3D",
     "scanToView": "Naskenujte pro zobrazení",
     "shareQrInMeetings": "Sdílejte tento QR kód na schůzkách nebo prezentacích",
     "embedCode": "Kód pro vložení",
@@ -179,8 +179,8 @@
     "leaveFeedback": "Zanechat zpětnou vazbu",
     "yourName": "Vaše jméno *",
     "yourEmail": "Váš e-mail (volitelné)",
-    "pinComment": "Připnout komentář na láhev",
-    "clickToPlace": "Klikněte na láhev pro umístění komentáře",
+    "pinComment": "Připnout komentář na Plank",
+    "clickToPlace": "Klikněte na Plank pro umístění komentáře",
     "whatShouldChange": "Co by se zde mělo změnit?",
     "add": "Přidat",
     "pinnedComments": "Připnuté komentáře",

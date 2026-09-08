@@ -31,10 +31,10 @@
     "needSupport": "Hilfe benötigt? Hier klicken."
   },
   "steps": {
-    "selectBottle": "Flasche wählen",
+    "selectBottle": "Brett wählen",
     "configure": "Gestalten",
     "requestQuote": "Angebot anfordern",
-    "chooseYourBottle": "Wähle deine Flasche",
+    "chooseYourBottle": "Wähle deine Brett",
     "customizeYourDesign": "Gestalte dein Design",
     "requestYourQuote": "Fordere dein Angebot an",
     "goBack": "ZURÜCK",
@@ -47,7 +47,7 @@
   },
   "configurator": {
     "chooseYourColor": "WÄHLE DEINE FARBE",
-    "bottleColor": "Flaschenfarbe",
+    "bottleColor": "Brettnfarbe",
     "lidColor": "Deckelfarbe",
     "customColorCta": "Bestellen Sie mehr als 500 Stück? Dann können Sie Ihre eigene Pantone-Farbe wählen",
     "customColorName": "Eigene Pantone-Farbe",
@@ -93,8 +93,8 @@
     "guideIntro": "Um deine {bottle} mit einem vollständigen 360-Grad-Design zu bedrucken, nutze unsere Upload-Anleitung. Lade unsere Vorlage unten herunter, fülle sie mit deinem Artwork und lade sie wieder hoch.",
     "guideSize": "Größe: {height} mm x {width} mm",
     "guideKeyInMind": "Beim Erstellen deines Artworks solltest du auf einige wichtige Dinge achten:",
-    "guideCylindrical": "Die Flasche ist zylindrisch. Das heißt, die linke Seite deines Artworks wird direkt neben der rechten Seite gedruckt — stelle sicher, dass sie nahtlos ineinander übergehen.",
-    "guideNeck": "Der Flaschenhals ist schräg, was zu leichten Verzerrungen führen kann. Vermeide es, wichtige Logos oder Designelemente im Halsbereich zu platzieren.",
+    "guideCylindrical": "Die Brett ist zylindrisch. Das heißt, die linke Seite deines Artworks wird direkt neben der rechten Seite gedruckt — stelle sicher, dass sie nahtlos ineinander übergehen.",
+    "guideNeck": "Der Brettnhals ist schräg, was zu leichten Verzerrungen führen kann. Vermeide es, wichtige Logos oder Designelemente im Halsbereich zu platzieren.",
     "guideHelp": "Brauchst du Hilfe? Unsere Designer helfen dir gerne!"
   },
   "text": {
@@ -157,11 +157,11 @@
   "share": {
     "shareYourDesign": "Teile dein Design",
     "interactiveViewer": "Interaktiver 3D-Betrachter",
-    "clientCanRotate": "Dein Kunde kann die Flasche in 3D drehen und zoomen",
+    "clientCanRotate": "Dein Kunde kann die Brett in 3D drehen und zoomen",
     "scanToView": "Scannen zum Ansehen",
     "shareQrInMeetings": "Teile diesen QR-Code in Meetings oder Präsentationen",
     "embedCode": "Einbettungscode",
-    "pasteIntoWebsite": "Füge dies in eine Website ein, um die 3D-Flasche anzuzeigen",
+    "pasteIntoWebsite": "Füge dies in eine Website ein, um die 3D-Brett anzuzeigen",
     "directImageLink": "Direkter Bildlink",
     "creatingViewer": "Teilbarer 3D-Betrachter wird erstellt...",
     "mayTakeSeconds": "Dies kann einige Sekunden dauern"
@@ -179,8 +179,8 @@
     "leaveFeedback": "Feedback hinterlassen",
     "yourName": "Dein Name *",
     "yourEmail": "Deine E-Mail (optional)",
-    "pinComment": "Kommentar an der Flasche anheften",
-    "clickToPlace": "Klicke auf die Flasche um einen Kommentar zu platzieren",
+    "pinComment": "Kommentar an der Brett anheften",
+    "clickToPlace": "Klicke auf die Brett um einen Kommentar zu platzieren",
     "whatShouldChange": "Was soll hier geändert werden?",
     "add": "Hinzufügen",
     "pinnedComments": "Angeheftete Kommentare",
@@ -192,10 +192,10 @@
     "changesRequested": "Änderungen angefordert",
     "designNotFound": "Design nicht gefunden",
     "designLinkExpired": "Dieser Link ist möglicherweise abgelaufen oder ungültig.",
-    "loading3dBottle": "3D-Flasche wird geladen...",
+    "loading3dBottle": "3D-Brett wird geladen...",
     "unableToLoad": "3D-Betrachter kann nicht geladen werden",
     "viewerError": "3D-Betrachter Fehler",
-    "viewerErrorBody": "3D-Flaschenbetrachter kann nicht geladen werden. Bitte versuche, die Seite zu aktualisieren.",
+    "viewerErrorBody": "3D-Brettnbetrachter kann nicht geladen werden. Bitte versuche, die Seite zu aktualisieren.",
     "refreshPage": "Seite aktualisieren",
     "designYourIzy": "Gestalte deine IZY",
     "zoomIn": "Vergrößern",
@@ -211,7 +211,7 @@
     "cameraError": "Kamerafehler",
     "close": "Schließen",
     "initializing": "AR-Kamera wird initialisiert...",
-    "pointCamera": "🎯 Richte deine Kamera auf eine ebene Fläche, um die Flasche in der echten Welt zu platzieren",
+    "pointCamera": "🎯 Richte deine Kamera auf eine ebene Fläche, um die Brett in der echten Welt zu platzieren",
     "closeAr": "AR-Ansicht schließen"
   },
   "dashboard": {
@@ -247,8 +247,8 @@
   },
   "b2b": {
     "productInfo": "Produktinformationen",
-    "bottleName": "Flaschenname",
-    "amountOfBottles": "Anzahl der Flaschen",
+    "bottleName": "Brettnname",
+    "amountOfBottles": "Anzahl der Brettn",
     "minOrder": "Mindestbestellung: {min} Stück",
     "b2bPrice": "UVP (pro Stück)",
     "retailPrice": "Einzelhandelspreis (pro Stück)",
@@ -295,7 +295,7 @@
     "uploadingDesign": "Design wird hochgeladen...",
     "noShareableLink": "Kein teilbarer Link verfügbar.",
     "refreshPage": "Seite aktualisieren",
-    "unableToLoadViewer": "Der 3D-Flaschenbetrachter kann nicht geladen werden. Bitte aktualisiere die Seite.",
+    "unableToLoadViewer": "Der 3D-Brettnbetrachter kann nicht geladen werden. Bitte aktualisiere die Seite.",
     "loadingColors": "Farben laden...",
     "removeTexture": "Textur entfernen",
     "clearText": "Text löschen",
@@ -306,7 +306,7 @@
   },
   "embed": {
     "unknownType": "Unbekannter Produkttyp. Verwende:",
-    "izyBottles": "IZY Bottles"
+    "izyBottles": "IZY Boards"
   },
   "admin": {
     "title": "3D Embed-Manager",
@@ -315,10 +315,10 @@
     "variants": "Varianten",
     "addVariant": "+ Variante hinzufügen",
     "variantName": "Variantenname",
-    "printFile": "Druckdatei (Flaschen-Wrap-Textur)",
+    "printFile": "Druckdatei (Brettn-Wrap-Textur)",
     "uploadPrintFile": "Druckdatei hochladen (PNG, JPG)",
     "uploading": "Wird hochgeladen...",
-    "printFileHint": "Das Bild wird um den Flaschenkörper gewickelt. Empfohlen: 1024x1024px PNG.",
+    "printFileHint": "Das Bild wird um den Brettnkörper gewickelt. Empfohlen: 1024x1024px PNG.",
     "color": "Farbe",
     "livePreview": "Live-Vorschau",
     "embedUrl": "Einbettungs-URL",

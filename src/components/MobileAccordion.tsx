@@ -6,6 +6,7 @@ import ComponentColorSelector from "./ComponentColorSelector";
 import OptionTabs from "./OptionTabs";
 import { BottleType } from "@/types/bottle";
 import { getBottleTypes } from "@/data/bottleTypes";
+import { useTranslation } from "@/i18n/useTranslation";
 interface MobileAccordionProps {
   currentStep: number;
   onStepChange: (step: number) => void;
@@ -211,16 +212,18 @@ export default function MobileAccordion({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+
+const { t } = useTranslation();
   const steps = [
     {
       id: 1,
-      title: "Choose your item",
-      description: "Select your bottle type and colors",
+      title: t("steps.chooseYourBottle"),
+      description: "Select your Board",
     },
     {
       id: 2,
-      title: "Design your item",
-      description: "Customize your bottle design",
+      title: t("steps.customizeYourDesign"),
+      description: "",
     },
   ];
 
