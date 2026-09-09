@@ -236,6 +236,7 @@ useEffect(() => {
 
   // Memoized map params object — prevents downstream effects (sidebar, overview) from
   // re-running every parent re-render due to a new object reference.
+
   const sharedMapParams = useMemo(() => {
     if (!currentLocation) return null;
     return {
@@ -250,16 +251,30 @@ useEffect(() => {
     };
   }, [currentLocation, currentMapZoom, mapTextureTitle, mapTextureSubtitle, selectedMapLineColor, meshColors.Body?.hex, mapPinLocation, mapPinColor]);
 
+
   // Explicit canvas dimensions for the current bottle (bypass module-level cache)
-  const mapCanvasDims = useMemo(() => {
-    const sp = bottleSettings?.spacing || { top: 0, bottom: 0 };
-    const baseCanvasW = 2048;
-    const baseCanvasH = baseCanvasW / aspectRatio;
-    return {
-      mapCanvasWidth: Math.round((baseCanvasW * 2) / 3),
-      mapCanvasHeight: Math.round(baseCanvasH * (1 - sp.top - sp.bottom)),
-    };
-  }, [aspectRatio, bottleSettings]);
+const mapCanvasDims = useMemo(() => {
+  const sp = bottleSettings?.spacing || { top: 0, bottom: 0 };
+
+  let baseCanvasW = 594;
+  let baseCanvasH = 418; //baseCanvasW / aspectRatio;
+
+  if (map.current) {
+    const canvas = map.current.getCanvas();
+
+    if (canvas) {
+      baseCanvasW = canvas.width;
+      baseCanvasH = canvas.height;
+    }
+  }
+
+  return {
+    mapCanvasWidth: Math.round((baseCanvasW * 2) / 2),
+     mapCanvasHeight: baseCanvasH, // Math.round(
+    //   baseCanvasH * (1 - sp.top - sp.bottom)
+    // ), 
+  };
+}, [aspectRatio, bottleSettings]);
 
   const currentTexture = useMemo(() => {
     if (!mapImage && !allOverPrintTexture && !selectedTexture) return null;
@@ -958,6 +973,7 @@ useEffect(() => {
     (color: any) => {
       setSelectedMapLineColor(color);
       if (mapImage && currentLocation) {
+           console.log('Line color:', color);
         const regenerate = async () => {
           try {
             const [gradientUrl, flatUrl] = await Promise.all([

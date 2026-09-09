@@ -1,9 +1,25 @@
 import { processMapTextureColors } from './mapTextureProcessor';
 
-let lastKnownCanvasWidth: number;
-let lastKnownCanvasHeight: number;
-let lastPreviewDataUrl: string | undefined;
-let lastPreviewKey: string | undefined;
+// FIX ("jumping between levels"): these used to be single global slots
+// (lastKnownCanvasWidth/Height, lastPreviewDataUrl/Key) shared by every call
+// to generateMapTextureWithText, regardless of which product/step/aspect
+// ratio it was for. If a level transition ever calls this function before
+// ITS OWN mapCanvasWidth/mapCanvasHeight are ready, the old code silently
+// fell back to whatever a *different* level last used — a different aspect
+// ratio and framing — which shows up as the generated image visibly jumping.
+// Keying the cache by aspectRatio keeps each level's fallback dimensions and
+// preview image isolated from every other level's.
+interface DimensionCacheEntry {
+	width: number;
+	height: number;
+}
+interface PreviewCacheEntry {
+	key: string;
+	dataUrl: string;
+}
+const dimensionCacheByAspectRatio = new Map<number, DimensionCacheEntry>();
+const previewCacheByAspectRatio = new Map<number, PreviewCacheEntry>();
+
 	const mapFontsimg = {
 			title: { family: 'Arial, sans-serif', size: 120, weight: 'bold', style: 'normal' },
 			subtitle: { family: 'Georgia, serif', size: 80, weight: 'bold', style: 'italic' },
@@ -11,10 +27,8 @@ let lastPreviewKey: string | undefined;
 		};
 /** Reset cached state so the next call generates fresh from Mapbox API */
 export function resetMapTextureCache() {
-	lastKnownCanvasWidth = undefined as any;
-	lastKnownCanvasHeight = undefined as any;
-	lastPreviewDataUrl = undefined;
-	lastPreviewKey = undefined;
+	dimensionCacheByAspectRatio.clear();
+	previewCacheByAspectRatio.clear();
 }
 
 export interface MapTextureGenerationParams {
@@ -45,6 +59,8 @@ export interface MapTextureGenerationParams {
 	includeGradient?: boolean; // Whether to apply bottle color fade gradient
 	pinLocation?: { lat: number; lng: number } | null; // Optional pin marker on the map
 	pinColor?: string; // Pin marker color (default: map line color or #e74c3c)
+	bearing?: number; // Map rotation in degrees clockwise from north, MUST match the live popup map (e.g. map.getBearing()) or the fetched image and pin will not match what the user saw
+	pitch?: number; // Map tilt in degrees, MUST match the live popup map (e.g. map.getPitch())
 }
 
 /**
@@ -52,6 +68,25 @@ export interface MapTextureGenerationParams {
  */
 
 export const generateMapTextureWithText = async (params: MapTextureGenerationParams): Promise<string> => {
+	// TEMPORARY DEBUG LOG — remove once the "zooms out after refresh" issue
+	// is diagnosed. This logs exactly what this function was called with,
+	// so we can diff call #1 against call #2 (refresh) and see whether
+	// zoom/location/mapCanvasWidth/mapCanvasHeight actually change, or
+	// whether a mapPreviewDataUrl starts/stops being passed.
+	if (typeof console !== 'undefined') {
+		console.log('[generateMapTextureWithText] called with', {
+			location: params.location,
+			zoom: params.zoom,
+			pinLocation: params.pinLocation,
+			mapCanvasWidth: params.mapCanvasWidth,
+			mapCanvasHeight: params.mapCanvasHeight,
+			hasMapPreviewDataUrl: !!params.mapPreviewDataUrl,
+			bearing: params.bearing,
+			pitch: params.pitch,
+			aspectRatio: params.aspectRatio,
+		});
+	}
+
 	const {
 		location,
 		zoom,
@@ -74,6 +109,8 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		mapCanvasHeight,
 		mapPreviewDataUrl: incomingPreviewDataUrl,
 		includeGradient = true,
+		bearing = 0,
+		pitch = 0,
 	} = params;
 	let mapPreviewDataUrl = incomingPreviewDataUrl;
 
@@ -87,30 +124,59 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	const baseCanvasWidth = 2048;
 	const baseCanvasHeight = baseCanvasWidth / aspectRatio;
 
-	if (lastKnownCanvasWidth == null || lastKnownCanvasHeight == null) {
-		lastKnownCanvasWidth = Math.round((baseCanvasWidth * 2) / 3);
-		lastKnownCanvasHeight = Math.round(baseCanvasHeight * (1 - spacing.top - spacing.bottom));
+	// Cache entry is scoped to THIS aspectRatio only — a different
+	// product/level (different aspectRatio) can never read or overwrite it.
+	let dimensionCache = dimensionCacheByAspectRatio.get(aspectRatio);
+	if (!dimensionCache) {
+		dimensionCache = {
+			width: Math.round(baseCanvasWidth),
+			height: Math.round(baseCanvasHeight * (1 - spacing.top - spacing.bottom)),
+		};
+		dimensionCacheByAspectRatio.set(aspectRatio, dimensionCache);
 	}
 
 	if (!mapCanvasWidth || !mapCanvasHeight || mapCanvasWidth <= 0 || mapCanvasHeight <= 0) {
-		width = lastKnownCanvasWidth;
-		height = lastKnownCanvasHeight;
+		width = dimensionCache.width;
+		height = dimensionCache.height;
 	} else {
 		width = mapCanvasWidth;
 		height = mapCanvasHeight;
-		lastKnownCanvasWidth = width;
-		lastKnownCanvasHeight = height;
+		dimensionCache.width = width;
+		dimensionCache.height = height;
 	}
 
 	width = Math.max(64, Math.round(width));
 	height = Math.max(64, Math.round(height));
 
-	// Mapbox static API max is 1280x1280. Scale down proportionally if needed.
+	// FIX ("zoom level jumping"): Mapbox's Static Images API ties the
+	// geographic area shown DIRECTLY to how many pixels you request at a
+	// given zoom — asking for a smaller width/height at the same zoom shows
+	// LESS of the map, it isn't just a resolution change. The old code
+	// overwrote `width`/`height` themselves with a capped-down size whenever
+	// they exceeded Mapbox's 1280px limit, so every time the live popup
+	// canvas happened to be a different size, a different amount of
+	// shrinkage was applied — silently changing the visible area (i.e. the
+	// effective zoom) at the SAME `zoom` value. That's what showed up as the
+	// generated image's zoom level jumping between calls.
+	//
+	// Fix: `width`/`height` stay as the TRUE framing dimensions (this is
+	// what the pin math and layout below assume represents the map). We
+	// only compute a separate, capped size for the actual Mapbox request,
+	// and compensate by adjusting the requested zoom so the same real-world
+	// area is still captured — just at lower resolution if capping was
+	// unavoidable, never a different area.
 	const maxMapboxDim = 1280;
+	let fetchWidth = width;
+	let fetchHeight = height;
+	let fetchZoom = zoom;
 	if (width > maxMapboxDim || height > maxMapboxDim) {
-		const scale = maxMapboxDim / Math.max(width, height);
-		width = Math.round(width * scale);
-		height = Math.round(height * scale);
+		const capScale = maxMapboxDim / Math.max(width, height);
+		fetchWidth = Math.round(width * capScale);
+		fetchHeight = Math.round(height * capScale);
+		// Halving the requested pixel width at a fixed zoom halves the
+		// visible area too, so to keep the SAME area visible with fewer
+		// pixels we must zoom out by log2(capScale) (a negative number here).
+		fetchZoom = zoom + Math.log2(capScale);
 	}
 
 	const loadImage = (src: string): Promise<HTMLImageElement> =>
@@ -133,10 +199,12 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	].join('|');
 
 	if (mapPreviewDataUrl) {
-		lastPreviewDataUrl = mapPreviewDataUrl;
-		lastPreviewKey = previewKey;
-	} else if (lastPreviewKey === previewKey && lastPreviewDataUrl) {
-		mapPreviewDataUrl = lastPreviewDataUrl;
+		previewCacheByAspectRatio.set(aspectRatio, { key: previewKey, dataUrl: mapPreviewDataUrl });
+	} else {
+		const cachedPreview = previewCacheByAspectRatio.get(aspectRatio);
+		if (cachedPreview && cachedPreview.key === previewKey) {
+			mapPreviewDataUrl = cachedPreview.dataUrl;
+		}
 	}
 
 	const effectivePreviewSource = mapPreviewDataUrl;
@@ -171,12 +239,18 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		const mapStyleId = customMapStyle.startsWith('mapbox://styles/')
 			? customMapStyle.replace('mapbox://styles/', '')
 			: customMapStyle;
-		// Request the map at the highest resolution Mapbox's static API allows
-		// for this aspect ratio, rather than tying it to a small UI canvas size.
-		const aspect = width / height;
-		const fetchWidth = aspect >= 1 ? maxMapboxDim : Math.round(maxMapboxDim * aspect);
-		const fetchHeight = aspect >= 1 ? Math.round(maxMapboxDim / aspect) : maxMapboxDim;
-		const mapImageUrl = `https://api.mapbox.com/styles/v1/${mapStyleId}/static/${location.lng},${location.lat},${zoom}/${fetchWidth}x${fetchHeight}@2x?access_token=${accessToken}&logo=false&attribution=false`;
+		// Request at fetchWidth/fetchHeight/fetchZoom — these equal
+		// width/height/zoom (the true framing) unless the API's 1280px limit
+		// forced capping, in which case fetchZoom has already been adjusted
+		// so the SAME geographic area is captured, just at lower resolution.
+		// `@2x` gives a higher-resolution image for that framing, so that's
+		// the only lever for quality — never inflate the request dimensions.
+		//
+		// bearing/pitch must also match the live popup map. If the popup
+		// lets the user rotate/tilt the map (bearing != 0), a fetch that
+		// omits these always comes back north-up/flat — visibly different
+		// from what the user was looking at, independent of the pin math.
+		const mapImageUrl = `https://api.mapbox.com/styles/v1/${mapStyleId}/static/${location.lng},${location.lat},${fetchZoom},${bearing},${pitch}/${fetchWidth}x${fetchHeight}@2x?access_token=${accessToken}&logo=false&attribution=false`;
 
 		// Preload original to trigger error quickly if needed
 		await loadImage(mapImageUrl);
@@ -200,8 +274,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			// otherwise failed to load. Don't let that crash the whole
 			// generation call — fall back to a fresh Mapbox fetch, and clear
 			// the bad cache entry so we don't keep retrying it.
-			lastPreviewDataUrl = undefined;
-			lastPreviewKey = undefined;
+			previewCacheByAspectRatio.delete(aspectRatio);
 			processedImg = await fetchFreshMapboxImage();
 		}
 	} else {
@@ -219,9 +292,15 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	ctx.imageSmoothingQuality = 'high';
 
 	const drawProcessedMap = () => {
-		const targetMapWidth = (baseCanvasWidth * 2) / 2; // 2/3 of canvas width 
+		// Map now spans the full canvas width by design.
+		const targetMapWidth = baseCanvasWidth;
 		const targetMapHeight = baseCanvasHeight * (1 - spacing.top - spacing.bottom);
-		const imageAspectRatio = (processedImg.width / processedImg.height) * 1.6;
+
+		// FIX: removed the arbitrary "* 1.6" distortion factor. The source
+		// image's real aspect ratio must be preserved, or the map is
+		// stretched unevenly and what's visible no longer matches the zoom
+		// level/framing shown in the popup.
+		const imageAspectRatio = processedImg.width / processedImg.height;
 		const targetAspectRatio = targetMapWidth / targetMapHeight;
 		const mapDimensions =
 			imageAspectRatio > targetAspectRatio
@@ -232,26 +311,26 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		const topSpacingPx = baseCanvasHeight * spacing.top;
 		const mapY = topSpacingPx;
 		ctx.drawImage(processedImg, mapX, mapY, mapDimensions.mapW, mapDimensions.mapH);
-const imageData = ctx.getImageData(
-  mapX,
-  mapY,
-  mapDimensions.mapW,
-  mapDimensions.mapH
-);
+		const imageData = ctx.getImageData(
+			mapX,
+			mapY,
+			mapDimensions.mapW,
+			mapDimensions.mapH
+		);
 
-const data = imageData.data;
+		const data = imageData.data;
 
-for (let i = 0; i < data.length; i += 4) {
-  const r = data[i];
-  const g = data[i + 1];
-  const b = data[i + 2];
+		for (let i = 0; i < data.length; i += 4) {
+			const r = data[i];
+			const g = data[i + 1];
+			const b = data[i + 2];
 
-  if (r > 240 && g > 240 && b > 240) {
-    data[i + 3] = 0;
-  }
-}
+			if (r > 240 && g > 240 && b > 240) {
+				data[i + 3] = 0;
+			}
+		}
 
-ctx.putImageData(imageData, mapX, mapY);
+		ctx.putImageData(imageData, mapX, mapY);
 		if (!includeGradient) {
 			// For download/flat texture: fade map lines out at the bottom
 			// Use destination-out compositing to erase the map gradually
@@ -287,10 +366,20 @@ ctx.putImageData(imageData, mapX, mapY);
 			ctx.fillRect(mapX, fadeStartY, mapDimensions.mapW, fadeEndY - fadeStartY);
 		}
 
-		return { topSpacingPx, contentHeightPx: baseCanvasHeight * (1 - spacing.top - spacing.bottom) };
+		return {
+			topSpacingPx,
+			contentHeightPx: baseCanvasHeight * (1 - spacing.top - spacing.bottom),
+			// Return the ACTUAL drawn map rectangle so downstream code (pin
+			// placement) uses the same box the map was really drawn into,
+			// instead of recomputing (and potentially diverging from) it.
+			mapX,
+			mapY,
+			mapW: mapDimensions.mapW,
+			mapH: mapDimensions.mapH,
+		};
 	};
 
-	const { topSpacingPx, contentHeightPx } = drawProcessedMap();
+	const { topSpacingPx, contentHeightPx, mapX, mapY, mapW, mapH } = drawProcessedMap();
 
 	// Draw pin marker if pinLocation is set
 	const pinLocation = params.pinLocation;
@@ -308,23 +397,39 @@ ctx.putImageData(imageData, mapX, mapY);
 		const pinPxX = (pinLocation.lng + 180) / 360 * scale;
 		const pinPxY = (1 - Math.log(Math.tan(pinLocation.lat * degToRad) + 1 / Math.cos(pinLocation.lat * degToRad)) / Math.PI) / 2 * scale;
 
-		// Offset from center in world pixels
-		const offsetX = pinPxX - centerPxX;
-		const offsetY = pinPxY - centerPxY;
+		// Offset from center in world pixels (north-up / unrotated)
+		const rawOffsetX = pinPxX - centerPxX;
+		const rawOffsetY = pinPxY - centerPxY;
 
-		// Map area on canvas: 2/3 width, centered
-		const targetMapWidth = (baseCanvasWidth * 2) / 3;
-		const targetMapHeight = baseCanvasHeight * (1 - spacing.top - spacing.bottom);
+		// FIX: if the map is rotated (bearing != 0, as in the screenshot
+		// where the popup's streets run diagonally), a north-up offset is
+		// no longer the on-screen offset — it has to be rotated by the
+		// bearing first. Mapbox's bearing is degrees clockwise from north;
+		// rotating the offset vector by -bearing converts a world-space
+		// (north-up) delta into the screen-space delta for a map that has
+		// been rotated clockwise by `bearing`.
+		const bearingRad = (bearing * Math.PI) / 180;
+		const cosB = Math.cos(-bearingRad);
+		const sinB = Math.sin(-bearingRad);
+		const offsetX = rawOffsetX * cosB - rawOffsetY * sinB;
+		const offsetY = rawOffsetX * sinB + rawOffsetY * cosB;
 
-		// Scale from world pixels to canvas pixels
-		// The map image covers `width x height` world pixels and is drawn at targetMapWidth x targetMapHeight
-		const scaleToCanvas = targetMapWidth / width;
+		// FIX: scale using the ACTUAL drawn map box (mapW/mapH from
+		// drawProcessedMap) instead of an independently recomputed
+		// "targetMapWidth" — those two could disagree (e.g. when the source
+		// image doesn't exactly match the target aspect ratio and gets
+		// letterboxed), which threw the pin off-position.
+		// `width` is the world-pixel framing width the map image represents
+		// (see the comment above `maxMapboxDim`), so mapW/width converts
+		// world-pixel offsets into canvas pixels correctly regardless of
+		// whether the source came from the live preview or a fresh fetch.
+		const scaleToCanvas = mapW / width;
 
-		const pinCanvasX = targetMapWidth / 2 + offsetX * scaleToCanvas;
-		const pinCanvasY = topSpacingPx + targetMapHeight / 2 + offsetY * scaleToCanvas;
+		const pinCanvasX = mapX + mapW / 2 + offsetX * scaleToCanvas;
+		const pinCanvasY = mapY + mapH / 2 + offsetY * scaleToCanvas;
 
 		// Only draw if pin is within the map area
-		if (pinCanvasX > 0 && pinCanvasX < targetMapWidth && pinCanvasY > topSpacingPx && pinCanvasY < topSpacingPx + targetMapHeight) {
+		if (pinCanvasX > mapX && pinCanvasX < mapX + mapW && pinCanvasY > mapY && pinCanvasY < mapY + mapH) {
 			// Pin size relative to canvas. The mug is the widest product
 			// (aspect ~1.92, vs tumbler 1.68), so its pin looked oversized —
 			// shrink it 25% on the mug only.
@@ -364,26 +469,26 @@ ctx.putImageData(imageData, mapX, mapY);
 
 	// Very subtle darkening directly behind the text baseline only (not the
 	// whole bottom third), so the copper/orange map print look stays intact.
-if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
-  const scrimTop =
-    topSpacingPx + contentHeightPx * (mapTextPosition - 0.13);
+	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
+		const scrimTop =
+			topSpacingPx + contentHeightPx * (mapTextPosition - 0.13);
 
-  const scrimBottom =
-    topSpacingPx + contentHeightPx;
+		const scrimBottom =
+			topSpacingPx + contentHeightPx;
 
-  ctx.save();
+		ctx.save();
 
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+		ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
 
-  ctx.fillRect(
-    580,
-    scrimTop+220,
-    baseCanvasWidth-1150,
-    scrimBottom - scrimTop-240
-  );
+		ctx.fillRect(
+			580,
+			scrimTop + 220,
+			baseCanvasWidth - 1150,
+			scrimBottom - scrimTop - 240
+		);
 
-  ctx.restore();
-}
+		ctx.restore();
+	}
 
 	// Map text overlays using map line color (or black)
 	if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
@@ -417,21 +522,16 @@ if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
 			ctx.textAlign = 'center';
 		};
 
-		// if (mapFontsimg.coordinates) {
-		// 	const { family, size , weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
-		// 	ctx.font = `${style} ${weight} ${size}px ${family}`;
-		// 	drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY - 65, letterSpacing);
-		// }
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY+80, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY + 80, letterSpacing);
 		}
-		
+
 		if (mapFonts.subtitle && mapSubtitle) {
 			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY +160, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY + 160, letterSpacing);
 		}
 	}
 

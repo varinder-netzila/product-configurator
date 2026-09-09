@@ -258,7 +258,7 @@ export default function MapTextureControl({
   selectedMapLineColor = { hex: "#000000", name: "black" },
   bottleColor = "rgba(255, 255, 255, 0)",
   onZoomChange,
-  currentZoom = 12.3,
+  currentZoom = 10,
   spacing = { top: 0, bottom: 0 },
   mapTextPosition = 0.9,
   mapTextHorizontalPosition = 0.7, // center
@@ -434,7 +434,7 @@ export default function MapTextureControl({
       center: [mapControlLocation.lng, mapControlLocation.lat],
       zoom: mapZoom,
       minZoom: 5,
-      maxZoom: 60,
+      maxZoom: 20,
       interactive: true,
       preserveDrawingBuffer: true,
       attributionControl: false,
@@ -581,7 +581,7 @@ mapControlMap.current.on("load", () => {
     if (mapControlMap.current) {
       mapControlMap.current.flyTo({
         center: [lng, lat],
-        zoom: 12.3,
+        zoom: 10,
         duration: 2000
       });
     }
@@ -607,7 +607,7 @@ mapControlMap.current.on("load", () => {
             // most common intent of "Find my location" is marking it.
             setPinLocation(newLocation);
             if (mapControlMap.current) {
-              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 12.3, duration: 1500 });
+              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 10, duration: 1500 });
             }
             fetchLocationInfo(newLocation);
             resolve();
@@ -647,7 +647,23 @@ mapControlMap.current.on("load", () => {
     } else if (mapPreviewCacheRef.current) {
       mapPreviewDataUrl = mapPreviewCacheRef.current;
     }
-
+ console.log({
+      location,
+      zoom,
+      aspectRatio,
+      mapTitle: localMapTitle,
+      mapSubtitle: localMapSubtitle,
+      selectedMapLineColor,
+      bottleColor,
+      customMapStyle,
+      spacing,
+      mapTextPosition,
+      mapFonts,
+      mapCanvasWidth,
+      mapCanvasHeight,
+      mapPreviewDataUrl,
+      pinLocation,
+    });
     return generateMapTextureWithText({
       location,
       zoom,
