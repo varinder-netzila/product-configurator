@@ -684,7 +684,7 @@ const mapCanvasDims = useMemo(() => {
       try {
         const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
         if (!accessToken) throw new Error("Mapbox access token not found");
-        const baseSize = 2048;
+        const baseSize = 594;
         const width = Math.round(baseSize);
         const height = Math.round(baseSize / aspectRatio);
         const canvas = document.createElement("canvas");
@@ -870,7 +870,7 @@ const mapCanvasDims = useMemo(() => {
         primary,
         secondary,
         aspectRatio,
-        2048,
+        594,
       );
       switchToAllOverPrintMode(dataUrl);
     },
@@ -886,7 +886,7 @@ const mapCanvasDims = useMemo(() => {
         printTemplatePrimary,
         printTemplateSecondary,
         aspectRatio,
-        2048,
+        594,
       );
       setAllOverPrintBaseImage(dataUrl);
     }, 200);
