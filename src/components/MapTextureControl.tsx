@@ -262,6 +262,7 @@ export default function MapTextureControl({
   spacing = { top: 0, bottom: 0 },
   mapTextPosition = 0.9,
   mapTextHorizontalPosition = 0.7, // center
+  pinColor,
   mapFonts = {
     title: { family: 'Arial, sans-serif', size: 72, weight: 'bold', style: 'normal' },
     subtitle: { family: 'Georgia, serif', size: 48, weight: 'normal', style: 'italic' },
@@ -680,6 +681,7 @@ mapControlMap.current.on("load", () => {
       mapCanvasHeight,
       mapPreviewDataUrl,
       pinLocation,
+      pinColor,
     });
   }, [aspectRatio, localMapTitle, localMapSubtitle, customMapStyle, selectedMapLineColor, bottleColor, spacing, mapTextPosition, mapFonts, pinLocation]);
 

@@ -684,7 +684,7 @@ const mapCanvasDims = useMemo(() => {
       try {
         const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
         if (!accessToken) throw new Error("Mapbox access token not found");
-        const baseSize = 594;
+        const baseSize = 2048;
         const width = Math.round(baseSize);
         const height = Math.round(baseSize / aspectRatio);
         const canvas = document.createElement("canvas");
@@ -870,7 +870,7 @@ const mapCanvasDims = useMemo(() => {
         primary,
         secondary,
         aspectRatio,
-        594,
+        2048,
       );
       switchToAllOverPrintMode(dataUrl);
     },
@@ -886,7 +886,7 @@ const mapCanvasDims = useMemo(() => {
         printTemplatePrimary,
         printTemplateSecondary,
         aspectRatio,
-        594,
+        2048,
       );
       setAllOverPrintBaseImage(dataUrl);
     }, 200);
@@ -973,7 +973,7 @@ const mapCanvasDims = useMemo(() => {
     (color: any) => {
       setSelectedMapLineColor(color);
       if (mapImage && currentLocation) {
-           console.log('Line color:', color);
+           console.log('Line color', color);
         const regenerate = async () => {
           try {
             const [gradientUrl, flatUrl] = await Promise.all([
@@ -1829,6 +1829,7 @@ const mapCanvasDims = useMemo(() => {
         spacing={bottleSettings?.spacing || { top: 0, bottom: 0 }}
         mapTextPosition={bottleSettings?.mapTextPosition || 0.9}
         mapFonts={bottleSettings?.mapFonts}
+        pinColor={mapPinColor}
       />
 
       <ImageAreaSelector
