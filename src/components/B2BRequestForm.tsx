@@ -226,7 +226,9 @@ const b2bTotal_org = b2bPrice
 const b2bTotal = b2bTotal_org
   ? b2bTotal_org * (1 - discountPercent / 100)
   : null;
-
+const b2bperitem = b2bPrice
+  ? b2bPrice * (1 - discountPercent / 100)
+  : null;
   return (
     <div className="w-full max-w-4xl mx-auto mb-10">
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -278,7 +280,7 @@ const b2bTotal = b2bTotal_org
               </label>
               <label className="w-full text-green-600 font-bold flex items-center min-h-[40px]">
                 {/* {b2bPrice ? `€${b2bPrice.toFixed(2)}` : t("common.onRequest")} */}
-                €{selectedBottleType.price.toFixed(2)} 
+                €{b2bperitem.toFixed(2)} 
               </label>
             </div>
             <div>
@@ -306,7 +308,7 @@ const b2bTotal = b2bTotal_org
           {discounts && (
   <div className="mb-4 p-3 bg-gray-50 rounded-xl">
   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
-    Adviesprijs per staffel
+   {t("common.recommendedPrice")}
   </label>
 
   <div className="flex gap-2 flex-wrap">

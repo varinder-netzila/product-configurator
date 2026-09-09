@@ -22,7 +22,8 @@
     "b2c": "B2C",
     "pcs": "stuks",
     "perPiece": "per stuk",
-    "discount": "korting"
+    "discount": "korting",
+    "recommendedPrice": "Adviesprijs per staffel"
   },
   "nav": {
     "home": "Home",

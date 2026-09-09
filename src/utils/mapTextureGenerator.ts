@@ -379,7 +379,7 @@ if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
     580,
     scrimTop+220,
     baseCanvasWidth-1150,
-    scrimBottom - scrimTop-300
+    scrimBottom - scrimTop-240
   );
 
   ctx.restore();
@@ -428,11 +428,11 @@ if (mapTitle || mapSubtitle || mapFontsimg.coordinates) {
 			drawText(mapTitle, textCenterX, textBaseY+80, letterSpacing);
 		}
 		
-		// if (mapFonts.subtitle && mapSubtitle) {
-		// 	const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
-		// 	ctx.font = `${style} ${weight} ${size}px ${family}`;
-		// 	drawText(mapSubtitle, textCenterX, textBaseY +170, letterSpacing);
-		// }
+		if (mapFonts.subtitle && mapSubtitle) {
+			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
+			ctx.font = `${style} ${weight} ${size}px ${family}`;
+			drawText(mapSubtitle, textCenterX, textBaseY +160, letterSpacing);
+		}
 	}
 
 	// Optional: map logo on the transparent layer

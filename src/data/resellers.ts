@@ -234,7 +234,7 @@ export const RESELLERS: Record<string, ResellerConfig> = {
     companyName: "Marvins",
     logoUrl: "/assets/images/marvin-logo.png",
     accentColor: "#000C2C",
-    email: "info@marvins.cz",
+    email: "info@marvins.eu",
     stripPrefix: "IZY ",
     // Art + Jersey disabled for BF Promotions.
     features: { art: false, jersey: false },

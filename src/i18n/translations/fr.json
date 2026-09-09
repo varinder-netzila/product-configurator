@@ -22,7 +22,8 @@
     "b2c": "B2C",
     "pcs": "pièces",
     "perPiece": "par pièce",
-    "discount": "rabais"
+    "discount": "rabais",
+    "recommendedPrice": "Prix ​​recommandé par palier"
   },
   "nav": {
     "home": "Accueil",

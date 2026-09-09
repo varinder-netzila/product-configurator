@@ -22,7 +22,8 @@
     "b2c": "RRP",
     "pcs": "pcs",
     "perPiece": "per piece",
-    "discount": "Discount"
+    "discount": "Discount",
+    "recommendedPrice": "Recommended price per tier"
   },
   "nav": {
     "home": "Home",
@@ -307,7 +308,7 @@
   },
   "embed": {
     "unknownType": "Unknown product type. Use:",
-    "izyBottles": "IZY Bottles"
+    "izyBottles": "IZY Boards"
   },
   "admin": {
     "title": "3D Embed Manager",
