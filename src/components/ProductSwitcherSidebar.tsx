@@ -16,7 +16,7 @@ const BottleViewer = lazy(() => import("@/components/BottleViewer"));
 const ALL_BOTTLES = bottleTypesData.bottleTypes;
 const ALL_SETTINGS = bottleSettingsData.bottleSettings as Record<string, any>;
 
-// Bottle + Mug share one colour palette; Travel Bottle + Tumbler share another.
+// board + Mug share one colour palette; Travel board + Tumbler share another.
 // Colours must not carry across groups, so each preview uses its own palette's
 // default colour when it's in a different group than the selected product.
 const isTravelGroup = (name: string) =>
@@ -89,7 +89,7 @@ const otherBottles = selectedBottleType
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meshColors, selectedBottleType?.id, selectedBottleType?.name]);
 
-  // For map designs, regenerate texture per bottle with that bottle's settings.
+  // For map designs, regenerate texture per board with that bottle's settings.
   // Debounced 400ms so rapid color/title changes don't trigger 3 sequential
   // Mapbox API calls each time.
   useEffect(() => {
@@ -103,7 +103,7 @@ const otherBottles = selectedBottleType
 
     async function regenerateAll() {
       const textures: Record<string, string | null> = {};
-      for (const bottle of otherBottles) {
+      for (const board of otherBottles) {
         const settings = ALL_SETTINGS[bottle.name];
         const ar = (bottle.size?.width && bottle.size?.height)
           ? bottle.size.width / bottle.size.height

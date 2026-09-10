@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
-const SYSTEM_PROMPT = `You are a world-class graphic designer creating premium water bottle wrap designs as SVG.
+const SYSTEM_PROMPT = `You are a world-class graphic designer creating premium water board wrap designs as SVG.
 
-The user will describe what they want. Create 6 dramatically different SVG designs based on their description. Each SVG wraps around a cylindrical bottle (1024x1024).
+The user will describe what they want. Create 6 dramatically different SVG designs based on their description. Each SVG wraps around a cylindrical board (1024x1024).
 
 Return ONLY a valid JSON object:
 {
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
           system: SYSTEM_PROMPT,
           messages: [{
             role: 'user',
-            content: `Create 6 bottle wrap designs based on this description: "${prompt.trim()}"`,
+            content: `Create 6 board wrap designs based on this description: "${prompt.trim()}"`,
           }],
         });
 

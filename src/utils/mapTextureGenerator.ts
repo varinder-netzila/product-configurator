@@ -56,7 +56,7 @@ export interface MapTextureGenerationParams {
 	mapCanvasWidth?: number; // Live map canvas width
 	mapCanvasHeight?: number; // Live map canvas height
 	mapPreviewDataUrl?: string; // Optional pre-rendered map image from live preview
-	includeGradient?: boolean; // Whether to apply bottle color fade gradient
+	includeGradient?: boolean; // Whether to apply board color fade gradient
 	pinLocation?: { lat: number; lng: number } | null; // Optional pin marker on the map
 	pinColor?: string; // Pin marker color (default: map line color or #e74c3c)
 	bearing?: number; // Map rotation in degrees clockwise from north, MUST match the live popup map (e.g. map.getBearing()) or the fetched image and pin will not match what the user saw
@@ -350,7 +350,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		}
 
 		if (includeGradient) {
-			// Additional fade gradient to bottle base color (for 3D bottle rendering)
+			// Additional fade gradient to board base color (for 3D board rendering)
 			const hex = bottleColor.replace('#', '');
 			const r = parseInt(hex.substr(0, 2), 16);
 			const g = parseInt(hex.substr(2, 2), 16);
@@ -423,10 +423,10 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		// (see the comment above `maxMapboxDim`), so mapW/width converts
 		// world-pixel offsets into canvas pixels correctly regardless of
 		// whether the source came from the live preview or a fresh fetch.
-		const scaleToCanvas = mapW / width;
+		const scaleToCanvas = (mapW * 1.5) / width;
 
 		const pinCanvasX = mapX + mapW / 2 + offsetX * scaleToCanvas;
-		const pinCanvasY = mapY + mapH / 3 + offsetY * scaleToCanvas;
+		const pinCanvasY = mapY + mapH / 2 + offsetY * scaleToCanvas;
 
 		// Only draw if pin is within the map area
 		if (pinCanvasX > mapX && pinCanvasX < mapX + mapW && pinCanvasY > mapY && pinCanvasY < mapY + mapH) {

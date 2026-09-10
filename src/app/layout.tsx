@@ -6,11 +6,11 @@ import { Toaster } from '@/components/Toast'
 
 export const metadata: Metadata = {
   title: '3D Board Configurator - Marvins',
-  description: 'Design your perfect bottle with our 3D configurator and add it to your Shopify store',
+  description: 'Design your perfect board with our 3D configurator and add it to your Shopify store',
   icons: {
     icon: '/Favicon.png',
   },
-}
+} 
 
 export default function RootLayout({
   children,

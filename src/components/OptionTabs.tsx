@@ -800,7 +800,7 @@ useEffect(() => {
               </button>
             </div>
 
-            {/* Two Options: Upload Template or Design Bottle */}
+            {/* Two Options: Upload Template or Design board */}
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => {

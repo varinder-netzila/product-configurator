@@ -174,7 +174,7 @@ async function generateBrandImage(prompt: string): Promise<ImageResult> {
         size: '1024x1024',
         quality: 'medium',
         // CRITICAL: force opaque background. gpt-image-1's "auto" default
-        // returns transparent PNGs which make the bottle look see-through.
+        // returns transparent PNGs which make the board look see-through.
         background: 'opaque',
       }),
       signal: AbortSignal.timeout(60000),
@@ -266,7 +266,7 @@ extract a RICH brand fingerprint. Return ONLY a valid JSON object with this EXAC
   "mood": "3-6 adjectives separated by commas — e.g. 'calm, considered, premium, quietly confident'",
   "designLanguage": "one short sentence comparing this brand's visual language to a recognisable reference, e.g. 'Aesop-style editorial restraint with botanical motifs' or 'Patagonia outdoor heritage with utilitarian typography'",
   "motifs": ["0-4 short descriptors of visual motifs the brand uses, e.g. 'botanical line drawings', 'angled diagonal grids', 'circular badges'"],
-  "visualSignatures": ["2-4 SPECIFIC visual moves this brand uses — concrete and actionable for an image generator. Examples: Nike → 'oversized swoosh-inspired curves cutting across compositions', 'implied motion via diagonal speed lines', 'bold sans-serif at extreme scale'. Aesop → 'amber-bottle silhouettes with literary-style typography', 'serif type with generous letter-spacing and breathing whitespace', 'botanical line drawings as decorative borders'. Patagonia → 'mountain-silhouette colour blocks', 'vintage outdoor patches and badges', 'rugged sans-serif with kerning'."],
+  "visualSignatures": ["2-4 SPECIFIC visual moves this brand uses — concrete and actionable for an image generator. Examples: Nike → 'oversized swoosh-inspired curves cutting across compositions', 'implied motion via diagonal speed lines', 'bold sans-serif at extreme scale'. Aesop → 'amber-board silhouettes with literary-style typography', 'serif type with generous letter-spacing and breathing whitespace', 'botanical line drawings as decorative borders'. Patagonia → 'mountain-silhouette colour blocks', 'vintage outdoor patches and badges', 'rugged sans-serif with kerning'."],
   "whitespace": "breathing | dense | balanced"
 }
 
@@ -278,7 +278,7 @@ match the brand's true colours — do not invent generic palettes.`;
 
 function buildBrandImagePrompt(fingerprint: BrandFingerprint, direction: DesignDirection): string {
   const { companyName, tagline, industry, palette, typography, mood, designLanguage, motifs, visualSignatures } = fingerprint;
-  return `Design a premium, print-ready bottle wrap label for ${companyName}${industry && industry !== 'other' ? `, a ${industry} brand` : ''}.
+  return `Design a premium, print-ready board wrap label for ${companyName}${industry && industry !== 'other' ? `, a ${industry} brand` : ''}.
 
 THE FEEL: This design must feel unmistakably like a ${companyName} product. ${mood ? `The brand mood is ${mood}.` : ''} ${designLanguage}
 
@@ -405,11 +405,11 @@ async function step1_fingerprint(
 // gets editorial-restrained directions.
 
 const DIRECTIONS_PROMPT = `You are a senior art director. Given a brand fingerprint, propose 3
-DRAMATICALLY DIFFERENT design directions for a bottle wrap label. Each direction must
+DRAMATICALLY DIFFERENT design directions for a board wrap label. Each direction must
 genuinely tell a different visual story about THIS specific brand — not a generic
 "minimal vs bold vs premium" split.
 
-IMPORTANT — bottle geometry: the wrap covers a cylindrical bottle. The top ~15% AND
+IMPORTANT — board geometry: the wrap covers a cylindrical bottle. The top ~15% AND
 the bottom ~15% of the design disappear under the bottle's neck/cap and base curve.
 When proposing directions, place text, logos, and key focal elements in the visible
 BODY zone (the middle ~70% of the wrap), and treat the top and bottom 15% zones as
@@ -442,7 +442,7 @@ async function step2_directions(
       system: DIRECTIONS_PROMPT,
       messages: [{
         role: 'user',
-        content: `Brand fingerprint:\n${fpText}\n\nPropose 3 brand-specific design directions for the bottle wrap.`,
+        content: `Brand fingerprint:\n${fpText}\n\nPropose 3 brand-specific design directions for the board wrap.`,
       }],
     });
     const raw = message.content[0]?.type === 'text' ? message.content[0].text : '';

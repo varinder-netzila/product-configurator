@@ -641,7 +641,7 @@ export async function generateJerseyTexture(
   const JERSEY_H = Math.round(TEX_H * 0.60);
   const SHORTS_H = TEX_H - JERSEY_H;
   // Logo / name / number sit at the true centre of each panel half.
-  // The bottle model is rotated at render time so that U=0.25 (this point)
+  // The board model is rotated at render time so that U=0.25 (this point)
   // faces the camera by default, making it the visible front of the bottle.
   const FRONT_CX  = TEX_W * 0.25;
   const BACK_CX   = TEX_W * 0.75;
@@ -940,7 +940,7 @@ export async function compositeAIJersey(
   const { w: TEX_W, h: TEX_H } = getTextureDims(aspectRatio);
   const JERSEY_H = Math.round(TEX_H * 0.60);
   const SHORTS_H = TEX_H - JERSEY_H;
-  // True centre of each panel half — bottle rotates to put U=0.25 at the front.
+  // True centre of each panel half — board rotates to put U=0.25 at the front.
   const FRONT_CX  = TEX_W * 0.25;
   const BACK_CX   = TEX_W * 0.75;
 

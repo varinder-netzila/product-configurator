@@ -38,7 +38,7 @@ interface B2BConfiguration {
   texture?: string | null;
   [key: string]: any;
 }
-
+ 
 export async function sendB2BNotification(
   formData: B2BFormData,
   configuration: B2BConfiguration
@@ -135,7 +135,7 @@ const assetCells = [
 
   // Customer-facing branding: use the reseller's name, accent colour and logo
   // when the request came through a white-label embed, otherwise neutral.
-  const brandName = formData.resellerName || 'Bottle Configurator';
+  const brandName = formData.resellerName || '3D Board Configurator - Marvins';
   const brandAccent = formData.resellerAccentColor || '#1a1a1a';
   const brandHeader = formData.resellerLogoUrl
     ? `<img src="${formData.resellerLogoUrl}" alt="${brandName}" style="max-height: 48px; width: auto; display: block; margin-bottom: 16px;" />`
@@ -143,7 +143,7 @@ const assetCells = [
 
   try {
     await resend.emails.send({
-      from: `Bottle Configurator <${fromEmail}>`,
+      from: `3D Board Configurator - Marvins <${fromEmail}>`,
       to: recipients,
       replyTo: formData.email,
       subject: `${T.newRequest}${resellerTag}: ${formData.companyName} — ${formData.numberOfBottles}x ${formData.bottleName}`,

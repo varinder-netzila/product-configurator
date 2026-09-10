@@ -50,7 +50,7 @@ export default function EmbedPage() {
 
         setBottleType(foundBottle);
       } catch (error) {
-        console.error("Failed to load bottle types:", error);
+        console.error("Failed to load board types:", error);
       }
     }
 

@@ -220,9 +220,9 @@ useEffect(() => {
   const captureScreenshotRef = useRef<(() => Promise<string>) | null>(null);
   const finalDesignImageRef = useRef(finalDesignImage);
   finalDesignImageRef.current = finalDesignImage;
-  // Which colour palette the current product belongs to. Bottle + Mug share one
-  // palette; Travel Bottle + Tumbler share a different one. Used to reset the
-  // colour when switching across groups (a Bottle colour must not carry onto a
+  // Which colour palette the current product belongs to. board + Mug share one
+  // palette; Travel board + Tumbler share a different one. Used to reset the
+  // colour when switching across groups (a board colour must not carry onto a
   // Travel Bottle, and vice versa).
   const prevColorGroupRef = useRef<string | null>(null);
 
@@ -230,7 +230,7 @@ useEffect(() => {
   const aspectRatio = useMemo(() => {
     if (!selectedBottleType || !selectedBottleType.size) return 1;
     // CSS aspect-ratio = width / height
-    // IZY Bottle 500ml: 221.56mm / 238mm = 0.93 (portrait - narrower than tall)
+    // IZY board 500ml: 221.56mm / 238mm = 0.93 (portrait - narrower than tall)
     return selectedBottleType.size.width / selectedBottleType.size.height;
   }, [selectedBottleType]);
 
@@ -252,7 +252,7 @@ useEffect(() => {
   }, [currentLocation, currentMapZoom, mapTextureTitle, mapTextureSubtitle, selectedMapLineColor, meshColors.Body?.hex, mapPinLocation, mapPinColor]);
 
 
-  // Explicit canvas dimensions for the current bottle (bypass module-level cache)
+  // Explicit canvas dimensions for the current board (bypass module-level cache)
 const mapCanvasDims = useMemo(() => {
   const sp = bottleSettings?.spacing || { top: 0, bottom: 0 };
 
@@ -493,7 +493,7 @@ const mapCanvasDims = useMemo(() => {
     handleInitializeWithRefs();
   };
 
-  // Switch bottle type WITHOUT resetting the current design (for sidebar quick switching)
+  // Switch board type WITHOUT resetting the current design (for sidebar quick switching)
   const handleBottleTypeSwitch = (bottleType: BottleType) => {
     setSelectedBottleType(bottleType);
   };
@@ -581,7 +581,7 @@ const mapCanvasDims = useMemo(() => {
     doReverseGeocode();
   }, [currentLocation, mapTextureTitle, mapTextureSubtitle, setMapTextureTitle, setMapTextureSubtitle]);
 
-  // Load colors based on bottle type
+  // Load colors based on board type
   useEffect(() => {
     const loadColors = async () => {
       if (!selectedBottleType) return;
@@ -597,7 +597,7 @@ const mapCanvasDims = useMemo(() => {
 
         // Reset the colour when switching to a product in a DIFFERENT palette
         // group (Travel Bottle/Tumbler vs. Bottle/Mug) so colours never carry
-        // across palettes. Same-group switches (e.g. Bottle → Mug) keep the
+        // across palettes. Same-group switches (e.g. board → Mug) keep the
         // chosen colour. Skipped on first load (handled by the init effect).
         const isTravelGroup =
           selectedBottleType.name.includes("IZY Travel Bottle") ||
@@ -623,7 +623,7 @@ const mapCanvasDims = useMemo(() => {
     loadColors();
   }, [selectedBottleType, setColors, setIsLoadingColors, setMeshColors]);
 
-  // Load bottle settings
+  // Load board settings
   useEffect(() => {
     if (selectedBottleType && importedBottleSettings?.bottleSettings) {
       const settings = importedBottleSettings.bottleSettings[
@@ -750,7 +750,7 @@ const mapCanvasDims = useMemo(() => {
     [mapLogo, mapDirection, mapLogoScale, currentLocation, aspectRatio]
   );
 
-  // Compose all-over print texture with logo overlay (centered on bottle front)
+  // Compose all-over print texture with logo overlay (centered on board front)
   const generatePrintTextureWithLogo = useCallback(
     async (baseImageUrl: string): Promise<string> => {
       if (!printLogo) return baseImageUrl;
@@ -804,7 +804,7 @@ const mapCanvasDims = useMemo(() => {
         logoWidth *= printLogoScale;
         logoHeight *= printLogoScale;
 
-        // Center the logo on the bottle front (left half = front, right half = back)
+        // Center the logo on the board front (left half = front, right half = back)
         const frontCenterX = canvas.width * 0.25;
         const centerY = canvas.height / 2;
         const logoX = frontCenterX - logoWidth / 2;
@@ -953,7 +953,7 @@ const mapCanvasDims = useMemo(() => {
         const textureWithLogo = await generateMapTextureWithLogo(mapTextureUrl);
         setMapImageWithLogo(textureWithLogo);
         // Don't set selectedTexture directly to the transparent overlay — the compose
-        // effect will composite it with the bottle color and set selectedTexture itself.
+        // effect will composite it with the board color and set selectedTexture itself.
       } catch {
         switchToMapTextureMode(mapTextureUrl);
       }
@@ -1012,7 +1012,7 @@ const mapCanvasDims = useMemo(() => {
             setMapImageWithLogo(gradientUrl);
             setMapImageDesign(flatUrl);
             setMapImageDesignWithLogo(flatUrl);
-            // Let the compose effect composite this with the bottle color.
+            // Let the compose effect composite this with the board color.
           } catch (error) { console.error("Failed to regenerate map with new color:", error); }
         };
         regenerate();
@@ -1022,9 +1022,9 @@ const mapCanvasDims = useMemo(() => {
   );
 
   // Real-time logo settings → update mapImageWithLogo only.
-  // The compose effect (further down) will then composite it with the bottle color
+  // The compose effect (further down) will then composite it with the board color
   // and produce the final selectedTexture. We don't set selectedTexture directly
-  // here because that bypasses compose and leaves the bottle transparent.
+  // here because that bypasses compose and leaves the board transparent.
   useEffect(() => {
     if (!mapImage) return;
     const update = async () => {
@@ -1040,7 +1040,7 @@ const mapCanvasDims = useMemo(() => {
     update();
   }, [mapLogo, mapDirection, mapLogoScale, mapImage, generateMapTextureWithLogo, setMapImageWithLogo]);
 
-  // Regenerate map when bottle color, bottle type, bottle settings, pin color, or
+  // Regenerate map when board color, board type, board settings, pin color, or
   // pin location changes. (Map line color and full Apply have their own handlers.)
   const prevBottleColorRef = useRef<string | null>(null);
   const prevBottleTypeIdRef = useRef<number | null>(null);
@@ -1418,7 +1418,7 @@ const mapCanvasDims = useMemo(() => {
         </div>
 
         {/* Right Panel */}
-        <div className={`${currentStep === 3 ? "flex" : "hidden lg:flex"} w-full lg:w-1/2 h-full bg-white flex-col overflow-y-auto scrollbar-none lg:pl-10`} role="main" aria-label="Bottle configuration panel">
+        <div className={`${currentStep === 3 ? "flex" : "hidden lg:flex"} w-full lg:w-1/2 h-full bg-white flex-col overflow-y-auto scrollbar-none lg:pl-10`} role="main" aria-label="Board configuration panel">
           {/* Header */}
           <div className="hidden md:block sticky top-0 z-10 w-full pt-4 pb-2 bg-white">
             {/* Reseller branding (white-label only): logo if set, else the
@@ -1802,7 +1802,7 @@ const mapCanvasDims = useMemo(() => {
               setIsTransitioning(true);
               try {
                 if (!finalDesignImage) {
-                  throw new Error("No design available to upload. Please customize your bottle first.");
+                  throw new Error("No design available to upload. Please customize your board first.");
                 }
                 await prepareDesignAssets();
               } catch (error) {

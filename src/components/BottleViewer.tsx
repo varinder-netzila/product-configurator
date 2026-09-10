@@ -495,7 +495,7 @@ function AngleCapture({ onAnglesReady, cameraPosition }: { onAnglesReady: (angle
 
       // Straight-on eye level, far enough to show the entire bottle
       const dist = (cameraPosition[0] || 4) * 3.5;
-      const yPos = 1.0; // eye level with bottle center, not from below
+      const yPos = 1.0; // eye level with board center, not from below
       const target = new THREE.Vector3(0, 1, 0);
 
       // Save original state
@@ -533,7 +533,7 @@ function AngleCapture({ onAnglesReady, cameraPosition }: { onAnglesReady: (angle
       const heroDist = dist * 0.3;
       cam.fov = 40;
 
-      // Rotate the entire scene to tilt the bottle diagonally
+      // Rotate the entire scene to tilt the board diagonally
      // const sceneRotation = scene.rotation.clone();
      // scene.rotation.z = 0.4; // tilt top to the left
       //scene.rotation.x = -1.15; // lean slightly back
@@ -706,7 +706,7 @@ const BottleModel = ({
     if (shouldApplyTexture && textureToApply) {
       console.log('✅ Applying texture to scene');
       // Horizontal placement of the wrap, per texture type:
-      //  - Jersey: content sits at U=0.25/0.75; the bottle front is ~8% offset,
+      //  - Jersey: content sits at U=0.25/0.75; the board front is ~8% offset,
       //    so slide by -0.08 to centre it.
       //  - Map: ALWAYS independent of the all-over-print/brand "Horizontal
       //    position" (textureOffsetX). It uses its own per-product offset
@@ -1097,7 +1097,7 @@ export default function BottleViewer({
     []
   );
 
-  // Reset camera when bottle settings change
+  // Reset camera when board settings change
   useEffect(() => {
     if (bottleSettings?.camera?.position) {
       // Camera will be reset by CameraController when settings change

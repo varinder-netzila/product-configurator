@@ -56,10 +56,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Build the edit prompt. Keep the brand-wrap constraints so the refinement
-    // stays a usable bottle wrap (opaque, safe zones, no garments/photos).
-    const prompt = `Refine this bottle wrap label design with the following change: ${instruction.trim()}
+    // stays a usable board wrap (opaque, safe zones, no garments/photos).
+    const prompt = `Refine this board wrap label design with the following change: ${instruction.trim()}
 
-Keep it a flat 2D print-ready bottle wrap. The ENTIRE canvas stays filled with a SOLID, OPAQUE background (no transparency). Keep the top 15% and bottom 15% as background only (they're hidden under the bottle's cap and base) — keep text/logo in the central body. Maintain a seamless left/right edge for the 360° wrap. No photo-realistic objects, no people, no actual bottle imagery.`;
+Keep it a flat 2D print-ready board wrap. The ENTIRE canvas stays filled with a SOLID, OPAQUE background (no transparency). Keep the top 15% and bottom 15% as background only (they're hidden under the bottle's cap and base) — keep text/logo in the central body. Maintain a seamless left/right edge for the 360° wrap. No photo-realistic objects, no people, no actual board imagery.`;
 
     const form = new FormData();
     form.append('model', 'gpt-image-1');

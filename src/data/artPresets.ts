@@ -1,14 +1,14 @@
 export type ArtCategory = "van-gogh" | "impressionism" | "renaissance" | "modern";
 
 /**
- * Bottle IDs from bottleTypes.json:
+ * board IDs from bottleTypes.json:
  *   "1" = IZY Bottle
  *   "2" = IZY Travel Bottle
  *   "3" = IZY Mug
  *   "4" = IZY Tumbler
  *
  * Place artwork files in /public/art/.
- * Use textureUrlByBottle to supply a version cropped/sized for a specific bottle shape.
+ * Use textureUrlByBottle to supply a version cropped/sized for a specific board shape.
  * Falls back to textureUrl when no bottle-specific version exists.
  */
 export interface ArtPreset {
@@ -19,9 +19,9 @@ export interface ArtPreset {
   category: ArtCategory;
   /** Displayed in the grid — can be a low-res preview */
   imageUrl: string;
-  /** Default texture applied to the bottle */
+  /** Default texture applied to the board */
   textureUrl: string;
-  /** Optional per-bottle overrides, keyed by bottle ID */
+  /** Optional per-bottle overrides, keyed by board ID */
   textureUrlByBottle?: Record<string, string>;
 }
 

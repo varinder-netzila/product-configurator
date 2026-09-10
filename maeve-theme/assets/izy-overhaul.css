@@ -2738,12 +2738,12 @@ li.active_menu_links a,
 /* ==================================================
  * 19. IZY Tumblers collection — tighten card spacing
  * The product photos have a tall, near-square frame with a small
- * bottle centred and lots of empty margin (plus light/near-white
+ * board centred and lots of empty margin (plus light/near-white
  * background_color tiles), so the rows looked far apart.
  * Scope: ONLY collections using the "izy-tumblers" template suffix,
  * desktop/tablet only. Levers:
  *   - shorter card via a slightly wider aspect ratio -> cover crops
- *     the empty top/bottom margin around the bottle (gentle, no clip)
+ *     the empty top/bottom margin around the board (gentle, no clip)
  *   - smaller in-card padding and row-gap
  * ================================================== */
 @media (min-width: 768px) {

@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from 'next/server';
  *   - input_fidelity='high' on /edits — preserves brand elements faithfully
  *     (was unset = 'low'; that caused logo redraws / typos like "JAIL GP")
  *   - "FLAT 2D ARTWORK" framing in WRAP_CONSTRAINTS to stop the model from
- *     rendering the design AS a cylindrical bottle with edge distortion
+ *     rendering the design AS a cylindrical board with edge distortion
  *
  * Rollback paths (easiest first):
  *   - Set BRAND_AI_VERSION=v4 in Vercel env vars → frontend switches back
@@ -148,12 +148,12 @@ interface V8Output {
 
 const V8_SYSTEM_PROMPT = `You are a senior brand strategist AND an expert prompt engineer for OpenAI's gpt-image-1 model.
 
-You will receive a company's logo and a marketing image (og:image) plus some text metadata. Produce a JSON output with (a) a compact brand fingerprint and (b) ONE design direction for a premium bottle wrap label, with the complete, dense, optimized gpt-image-1 prompt for that direction. Each time you are called, propose a DIFFERENT strong direction — your temperature is 0.8, so explore the brand's visual space.
+You will receive a company's logo and a marketing image (og:image) plus some text metadata. Produce a JSON output with (a) a compact brand fingerprint and (b) ONE design direction for a premium board wrap label, with the complete, dense, optimized gpt-image-1 prompt for that direction. Each time you are called, propose a DIFFERENT strong direction — your temperature is 0.8, so explore the brand's visual space.
 
 OUTPUT FORMAT — CRITICAL, every imagePrompt must enforce these:
 - The output is a FLAT 2D ARTWORK. Like a printable poster, sticker, or flat label artwork. NOT a render of a bottle. NOT a 3D mockup. NOT a cylindrical product photo.
 - DO NOT instruct gpt-image-1 to apply cylindrical perspective, curvature distortion, edge fade, vignette, or wrap-effect to the artwork itself. The artwork must read as a perfectly flat 2D rectangle.
-- The artwork will be wrapped onto a bottle AFTER generation by separate software. Your prompt's job is only to produce the flat unwrapped artwork.
+- The artwork will be wrapped onto a board AFTER generation by separate software. Your prompt's job is only to produce the flat unwrapped artwork.
 
 CANVAS LAYOUT (every imagePrompt must enforce these):
 - Canvas size: 1024×1024 px, flat rectangular.
@@ -166,7 +166,7 @@ CANVAS LAYOUT (every imagePrompt must enforce these):
 ABSOLUTELY NO: cylindrical/curved/3D rendering of the artwork itself; transparent / semi-transparent backgrounds; photo-realistic 3D-rendered objects; images of bottles, mugs, cans, containers IN the design; photos of people, faces, body parts, animals; speech bubbles, watermarks, signatures, dates.
 
 PROMPTING STYLE for gpt-image-1 (you've prompted this model thousands of times — use what works):
-- Lead with the DESIGN GOAL in one strong sentence ("Design a premium FLAT 2D bottle wrap artwork for X, a [industry] brand").
+- Lead with the DESIGN GOAL in one strong sentence ("Design a premium FLAT 2D board wrap artwork for X, a [industry] brand").
 - Be HYPER specific about composition, typography weight/scale/placement, palette deployment, decorative motifs.
 - Use phrases the model responds to: "premium matte finish", "flat 2D graphic design", "no transparency", "full-color print artwork", "opaque background".
 - Reference real brand visual signatures when known (Nike-style swooshes, Aesop-style botanical line drawings, etc.).

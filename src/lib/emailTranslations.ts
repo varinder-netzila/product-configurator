@@ -51,7 +51,7 @@ const en: EmailStrings = {
   shippingAddress: 'Shipping Address',
   additionalNotes: 'Additional Notes',
   automatedFooter:
-    'This is an automated notification from the 3D Bottle Configurator. Reply directly to this email to contact the customer.',
+    'This is an automated notification from the 3D board Configurator. Reply directly to this email to contact the customer.',
   custSubject: 'We received your request — {brand}',
   thankYou: 'Thank you for your request!',
   hi: 'Hi {name},',

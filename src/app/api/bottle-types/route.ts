@@ -372,7 +372,7 @@ const translatedTitle =
     };
 
     // ---------------------------------------------------------
-    // 5. Return bottle types
+    // 5. Return board types
     // ---------------------------------------------------------
 
     return NextResponse.json(
@@ -380,7 +380,7 @@ const translatedTitle =
     );
   } catch (error: any) {
     console.error(
-      "Bottle types error:",
+      "board types error:",
       error
     );
 

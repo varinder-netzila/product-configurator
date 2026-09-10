@@ -84,7 +84,7 @@ export default function OverviewPage() {
           <div>
             <h1 className="text-lg font-bold text-gray-900">Product Overview</h1>
             <p className="text-xs text-gray-500 mt-0.5">
-              Your design applied to all products. Click a bottle to adjust its colors.
+              Your design applied to all products. Click a board to adjust its colors.
             </p>
           </div>
           <Link

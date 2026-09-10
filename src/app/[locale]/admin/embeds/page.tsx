@@ -369,7 +369,7 @@ export default function EmbedAdminPage() {
                 {/* Print file upload */}
                 <div>
                   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
-                    Print file (bottle wrap texture)
+                    Print file (board texture)
                   </label>
                   {variant.textureUrl ? (
                     <div className="space-y-2">
@@ -415,7 +415,7 @@ export default function EmbedAdminPage() {
                       />
                     </label>
                   )}
-                  <p className="text-[10px] text-gray-400 mt-1">The image wraps around the bottle body. Recommended: 1024x1024px PNG.</p>
+                  <p className="text-[10px] text-gray-400 mt-1">The image wraps around the board body. Recommended: 1024x1024px PNG.</p>
                 </div>
 
                 {product.components.map((comp) => (

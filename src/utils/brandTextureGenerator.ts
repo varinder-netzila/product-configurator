@@ -122,7 +122,7 @@ export async function rasterizeSvg(svgDataUrl: string, logoDataUrl?: string | nu
   canvas.height = SIZE;
   const ctx = canvas.getContext('2d')!;
   // Safety net: fill with white so any transparency in the source PNG/SVG
-  // doesn't make the bottle look see-through. Brand AI images can sometimes
+  // doesn't make the board look see-through. Brand AI images can sometimes
   // return semi-transparent backgrounds despite the opaque flag.
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, SIZE, SIZE);

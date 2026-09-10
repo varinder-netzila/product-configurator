@@ -32,7 +32,7 @@ export default function TextureUploadGuide({
     document.body.removeChild(link);
   };
 
-  // Get bottle name and size from selected bottle type
+  // Get board name and size from selected board type
   const bottleName = selectedBottleType?.name || "IZY Bottle";
   const bottleWidth = selectedBottleType?.size.width || 221.57;
   const bottleHeight = selectedBottleType?.size.height || 238;

@@ -17,7 +17,7 @@ interface TextureDesignManagerProps {
   onPreviewGenerated?: (previewUrl: string | null) => void;
 }
 
-// Bottle dimensions will be loaded from bottleTypes.json
+// board dimensions will be loaded from bottleTypes.json
 
 export default function TextureDesignManager({
   selectedBottleType,
@@ -43,7 +43,7 @@ export default function TextureDesignManager({
     }
   }, [previewUrl, onPreviewGenerated]);
 
-  // Get dimensions for the selected bottle type
+  // Get dimensions for the selected board type
   const dimensions = useMemo(() => {
     return selectedBottleType.size || { width: 221.56, height: 238, unit: "mm" };
   }, [selectedBottleType]);

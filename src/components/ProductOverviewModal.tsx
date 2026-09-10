@@ -17,7 +17,7 @@ const BottleViewer = lazy(() => import("@/components/BottleViewer"));
 
 const ALL_SETTINGS = bottleSettingsData.bottleSettings as Record<string, any>;
 
-// Bottle + Mug share one colour palette; Travel Bottle + Tumbler share another.
+// board + Mug share one colour palette; Travel board + Tumbler share another.
 // Colours must not carry across groups, so a product in a different group than
 // the source falls back to its own palette default.
 const isTravelGroup = (name: string) =>
@@ -88,7 +88,7 @@ useEffect(() => {
   loadProducts();
 }, []);
 const ALL_BOTTLES = allBottles;
-  // Regenerate map textures per bottle when modal opens
+  // Regenerate map textures per board when modal opens
   useEffect(() => {
     if (!isOpen || activeTab !== "map" || !mapParams?.location) return;
 
@@ -97,7 +97,7 @@ const ALL_BOTTLES = allBottles;
 
     async function regenerateAll() {
       const textures: Record<string, string | null> = {};
-      for (const bottle of ALL_BOTTLES) {
+      for (const board of ALL_BOTTLES) {
         const settings = ALL_SETTINGS[bottle.name];
         const ar = (bottle.size?.width && bottle.size?.height)
           ? bottle.size.width / bottle.size.height
@@ -106,7 +106,7 @@ const ALL_BOTTLES = allBottles;
         const texH = Math.max(2, Math.round(texW / ar));
         const spacing = settings?.spacing || { top: 0, bottom: 0 };
 
-        // Compute explicit canvas dimensions per bottle (don't rely on cache)
+        // Compute explicit canvas dimensions per board (don't rely on cache)
         const baseCanvasW = 2048;
         const baseCanvasH = baseCanvasW / ar;
         const mapCanvasWidth = Math.round((baseCanvasW * 2) / 2);

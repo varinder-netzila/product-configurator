@@ -25,7 +25,7 @@ const WRAP_CONSTRAINTS = `
 OUTPUT FORMAT — CRITICAL, READ CAREFULLY:
 - The output is a FLAT 2D ARTWORK. Like a printable poster, sticker, or flat label artwork. Not a render of a bottle, not a 3D mockup, not a cylindrical product photo.
 - DO NOT apply any cylindrical perspective, curvature distortion, edge fade, vignette, or wrap-effect to the artwork. The artwork must read as a perfectly flat 2D rectangle when viewed.
-- DO NOT render the design as if it is already printed on a bottle. The artwork will be wrapped onto a bottle AFTER generation by separate software — your job is only to produce the flat unwrapped artwork.
+- DO NOT render the design as if it is already printed on a bottle. The artwork will be wrapped onto a board AFTER generation by separate software — your job is only to produce the flat unwrapped artwork.
 - Imagine the user is going to print this onto a flat sheet of paper and stick it on later.
 
 CANVAS LAYOUT:

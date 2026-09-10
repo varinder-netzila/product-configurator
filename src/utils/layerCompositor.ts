@@ -17,7 +17,7 @@ export async function composeLayers(
   bottleColor?: string
 ): Promise<string> {
   if (layers.length === 0) {
-    // Return bottle color PNG (no layers) or transparent
+    // Return board color PNG (no layers) or transparent
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
@@ -36,7 +36,7 @@ export async function composeLayers(
 
   if (!ctx) throw new Error('Failed to create canvas context');
 
-  // Fill with bottle color as background only if provided
+  // Fill with board color as background only if provided
   if (bottleColor) {
     ctx.fillStyle = bottleColor;
     ctx.fillRect(0, 0, width, height);

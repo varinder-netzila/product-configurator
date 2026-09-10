@@ -23,8 +23,8 @@ export interface ConfiguratorState {
 
   // Textures
   selectedTexture: string | null;
-  allOverPrintTexture: string | null; // For 3D viewer (includes bottle color)
-  downloadTexture: string | null; // For download (PNG layers only, no bottle color)
+  allOverPrintTexture: string | null; // For 3D viewer (includes board color)
+  downloadTexture: string | null; // For download (PNG layers only, no board color)
   allOverPrintBaseImage: string | null; // Original uploaded image (without logo overlay)
   printLogo: string;
   printLogoScale: number;
@@ -62,7 +62,7 @@ export interface ConfiguratorState {
   // Navigation
   currentStep: number;
 
-  // Bottle settings (loaded by useEffect)
+  // board settings (loaded by useEffect)
   bottleSettings: any;
 
   // UI transient state
@@ -726,7 +726,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
           set({ isTransitioning: true });
           try {
             if (!finalDesignImage) {
-              showToast('Please customize your bottle before proceeding.', 'error');
+              showToast('Please customize your board before proceeding.', 'error');
               return; // Do NOT advance
             }
             await get().prepareDesignAssets();

@@ -16,7 +16,7 @@ const locale =
   )
     .then(async (response) => {
       if (!response.ok) {
-        throw new Error("Failed to load bottle types");
+        throw new Error("Failed to load board types");
       }
 
       return response.json();

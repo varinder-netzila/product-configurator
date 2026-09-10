@@ -10,7 +10,7 @@ const SYSTEM_PROMPT = `You are a world-class brand designer. The user has upload
 5. Visual style: patterns, imagery style, graphic elements, shapes
 6. Do's and don'ts: any specific design rules
 
-Then create 6 unique bottle wrap designs (SVG, 1024x1024) that STRICTLY follow the brand guide.
+Then create 6 unique board designs (SVG, 1024x1024) that STRICTLY follow the brand guide.
 
 Return ONLY valid JSON:
 {
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
           } as any,
           {
             type: 'text',
-            text: 'This is the company\'s brand/style guide. Study it carefully — extract ALL brand guidelines, exact colors, typography, and visual rules. Then create 6 bottle wrap designs that strictly follow this guide.',
+            text: 'This is the company\'s brand/style guide. Study it carefully — extract ALL brand guidelines, exact colors, typography, and visual rules. Then create 6 board wrap designs that strictly follow this guide.',
           },
         ],
       }],

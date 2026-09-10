@@ -1,10 +1,10 @@
-# 3D Bottle Configurator
+# 3D board Configurator
 
-A modern 3D bottle configurator built with Next.js, featuring an interactive design interface for customizing bottles.
+A modern 3D board configurator built with Next.js, featuring an interactive design interface for customizing bottles.
 
 ## Features
 
-- **Interactive 3D Configurator**: Step-by-step bottle customization
+- **Interactive 3D Configurator**: Step-by-step board customization
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 - **Modern UI**: Beautiful animated landing page with fashionable design
 - **Multi-step Configuration**: Bottle, Lid, Ring, and other component options
@@ -72,7 +72,7 @@ src/
 - Multi-step configuration interface
 - 3D scene placeholder (left panel)
 - Configuration options (right panel)
-- Navigation between steps: Bottle → Lid → Ring → Other Components
+- Navigation between steps: board → Lid → Ring → Other Components
 - Quantity selection and Add to Cart functionality
 
 ## Usage

@@ -40,9 +40,9 @@ export const PRINT_TEMPLATES: PrintTemplate[] = [
  * @param templateId Which template to draw
  * @param primary Primary color (hex)
  * @param secondary Secondary color (hex)
- * @param width Canvas width (default 2048 to match bottle wrap)
+ * @param width Canvas width (default 2048 to match board wrap)
  * @param height Canvas height (computed from aspect ratio if not provided)
- * @param aspectRatio Bottle aspect ratio (width / height)
+ * @param aspectRatio board aspect ratio (width / height)
  */
 export function generatePrintTemplate(
   templateId: PrintTemplateId,

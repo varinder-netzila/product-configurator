@@ -314,7 +314,7 @@ const setBodyMeshesToWhite = (scene: THREE.Object3D) => {
   });
 };
 
-// AR Bottle Model Component
+// AR board Model Component
 const ARBottleModel = ({
   modelPath,
   selectedColor,

@@ -104,7 +104,7 @@ export default function Home() {
                         Customize your IZY
                       </h1>
                       <p className="text-white/50 text-sm sm:text-base mt-3 text-center px-4">
-                        Design your own bottle — pick colors, add a texture or city map.
+                        Design your own board — pick colors, add a texture or city map.
                       </p>
                       <button
                         onClick={handleStartClick}

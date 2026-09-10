@@ -405,4 +405,4 @@ For questions about:
 ---
 
 **Last Updated**: 2026-07-29
-**Original Repo**: 3D Shopify Bottle Configurator
+**Original Repo**: 3D Shopify board Configurator

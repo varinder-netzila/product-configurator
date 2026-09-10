@@ -13,9 +13,9 @@ interface V7Response {
   error?: string;
 }
 
-const EXAMPLE_PROMPT = `MIMIC THE STYLE, COMPOSITION, AND ENERGY OF THE PROVIDED REFERENCE IMAGE (if attached) precisely. Translate that exact visual world into a bottle wrap for SailGP.
+const EXAMPLE_PROMPT = `MIMIC THE STYLE, COMPOSITION, AND ENERGY OF THE PROVIDED REFERENCE IMAGE (if attached) precisely. Translate that exact visual world into a board wrap for SailGP.
 
-Design a cinematic premium bottle wrap label for SailGP — the international foiling catamaran race series. The design must feel like a movie poster for elite sailing: dramatic black-and-white photography of foiling catamarans, layered triangular photo panels, urgent typography, and selective red accents. NOT a flat graphic — a layered editorial composition.
+Design a cinematic premium board wrap label for SailGP — the international foiling catamaran race series. The design must feel like a movie poster for elite sailing: dramatic black-and-white photography of foiling catamarans, layered triangular photo panels, urgent typography, and selective red accents. NOT a flat graphic — a layered editorial composition.
 
 RENDER QUALITY: hyper-detailed, sharp focus, premium print finish, magazine-cover sharpness, crisp edges, no soft / painted look. 4K editorial quality.
 
@@ -111,7 +111,7 @@ export default function BrandV7TestPage() {
           <p className="text-sm text-gray-500 mt-1">
             Write a dense, specific design prompt like you would in ChatGPT. Optionally upload a reference image
             (e.g. the design you want to mimic) — it will be passed to gpt-image-1&apos;s /edits endpoint as a visual
-            style anchor. We wrap your prompt in the bottle safe-zone rules and call gpt-image-1 quality=high.
+            style anchor. We wrap your prompt in the board safe-zone rules and call gpt-image-1 quality=high.
           </p>
         </header>
 

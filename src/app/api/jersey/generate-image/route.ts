@@ -46,7 +46,7 @@ function buildPrompt(b: GenerateBody): string {
 
   return `Create a highly realistic flat 360-degree wrap print design based on ${reference}.
 
-Transform the football kit into one continuous flat print that can wrap seamlessly around a bottle or mug. The design must be a clean, realistic, print-ready interpretation of the actual football shirt and shorts.
+Transform the football kit into one continuous flat print that can wrap seamlessly around a board or mug. The design must be a clean, realistic, print-ready interpretation of the actual football shirt and shorts.
 
 This is a UV texture wrap. The kit pattern and colour must cover the entire canvas — top to bottom, left to right, all four edges. Treat the canvas as a printed wrap label where colour bleeds to every edge. Do NOT leave any white, beige, grey or empty margins.
 
