@@ -78,20 +78,55 @@ export async function sendB2BNotification(
 
   // Build a "Design assets" block: 3D mockup + flat print design, each shown as
   // a thumbnail with a download link. Either may be absent.
-  const assetCard = (label: string, url: string) => `
+const assetCard = (label: string, url: string) => {
+  // Optimize the image specifically for email
+  const imageUrl = `${url}?tr=w-440,q-80,f-jpg`;
+
+  return `
     <td style="padding: 8px 12px 8px 0; vertical-align: top;">
-      <a href="${url}" target="_blank" style="text-decoration: none; color: #1a1a1a;">
-        <img src="${url}" alt="${label}" width="220" style="display: block; width: 220px; height: auto; border: 1px solid #e5e5e5; border-radius: 8px;" />
+      <a
+        href="${url}"
+        target="_blank"
+        style="text-decoration: none; color: #1a1a1a;"
+      >
+        <img
+          src="${imageUrl}"
+          alt="${label}"
+          width="220"
+          style="
+            display: block;
+            width: 220px;
+            max-width: 220px;
+            height: auto;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+          "
+        />
       </a>
+
       <div style="margin-top: 6px; font-size: 13px;">
         <strong>${label}</strong> —
-        <a href="${asDownload(url)}" style="color: #2563eb;">${T.download}</a>
+        <a
+          href="${asDownload(url)}"
+          target="_blank"
+          style="color: #2563eb;"
+        >
+          ${T.download}
+        </a>
       </div>
-    </td>`;
-  const assetCells = [
-    formData.mockupLink ? assetCard(T.mockup, formData.mockupLink) : '',
-    formData.designLink ? assetCard(T.flatDesign, formData.designLink) : '',
-  ].join('');
+    </td>
+  `;
+};
+
+const assetCells = [
+  formData.mockupLink
+    ? assetCard(T.mockup, formData.mockupLink)
+    : "",
+
+  formData.designLink
+    ? assetCard(T.flatDesign, formData.designLink)
+    : "",
+].join("");
   const designAssetsBlock = assetCells
     ? `
       <h2 style="color: #333; margin-top: 24px;">${T.design}</h2>

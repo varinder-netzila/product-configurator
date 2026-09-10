@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
 
       try {
         await resend.emails.send({
-          from: `Bottle Configurator <${fromEmail}>`,
+          from: `3D Board Configurator - Marvins <${fromEmail}>`,
           to: [salesEmail],
           replyTo: clientEmail || undefined,
           subject: `Design ${statusLabel} by ${clientName}`,
