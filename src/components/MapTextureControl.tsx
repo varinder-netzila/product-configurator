@@ -252,10 +252,10 @@ export default function MapTextureControl({
   onClose, 
   currentLocation, 
   onApplyChanges,
-  aspectRatio = 0.6172,
+  aspectRatio = 1,
   mapTitle = "",
   mapSubtitle = "",
-  selectedMapLineColor = { hex: "#000000", name: "black" },
+  selectedMapLineColor,
   bottleColor = "rgba(255, 255, 255, 0)",
   onZoomChange,
   currentZoom = 10,
@@ -631,8 +631,8 @@ mapControlMap.current.on("load", () => {
     if (mapControlMap.current) {
       const canvas = mapControlMap.current.getCanvas();
       if (canvas) {
-        mapCanvasWidth = canvas.width;
-        mapCanvasHeight = canvas.height;
+        mapCanvasWidth = 630; //canvas.width;
+        mapCanvasHeight = 630; //canvas.height;
         if ((mapCanvasWidth ?? 0) > 2048 || (mapCanvasHeight ?? 0) > 2048) {
           try {
             mapPreviewDataUrl = canvas.toDataURL('image/png', 1.0);

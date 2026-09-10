@@ -256,8 +256,8 @@ useEffect(() => {
 const mapCanvasDims = useMemo(() => {
   const sp = bottleSettings?.spacing || { top: 0, bottom: 0 };
 
-  let baseCanvasW = 594;
-  let baseCanvasH = 418; //baseCanvasW / aspectRatio;
+  let baseCanvasW = 630;
+  let baseCanvasH = 630; //baseCanvasW / aspectRatio;
 
   if (map.current) {
     const canvas = map.current.getCanvas();
@@ -972,6 +972,16 @@ const mapCanvasDims = useMemo(() => {
   const handleMapLineColorChange = useCallback(
     (color: any) => {
       setSelectedMapLineColor(color);
+      console.log({
+                location: currentLocation, zoom: currentMapZoom, aspectRatio,
+                mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
+                selectedMapLineColor: color, bottleColor: meshColors.Body?.hex || '#ffffff',
+                spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
+                mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
+                mapFonts: bottleSettings?.mapFonts, pinLocation: mapPinLocation, pinColor: mapPinColor,
+                mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
+                mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
+              });
       if (mapImage && currentLocation) {
            console.log('Line color', color);
         const regenerate = async () => {

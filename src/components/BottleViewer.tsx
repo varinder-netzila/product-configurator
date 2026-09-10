@@ -599,7 +599,7 @@ const BottleModel = ({
   textEngravings = [],
   bottleSettings,
   activeTab = "texture",
-  aspectRatio = 0.6172,
+  aspectRatio = 1,
   selectedBottleType,
   bottleTypesData,
 }: {
@@ -1019,7 +1019,7 @@ export default function BottleViewer({
   textEngravings = [],
   bottleSettings,
   activeTab = "texture",
-  aspectRatio = 0.6172,
+  aspectRatio = 1,
   selectedBottleType,
   onARStateChange,
   onCaptureReady,

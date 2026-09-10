@@ -426,7 +426,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		const scaleToCanvas = mapW / width;
 
 		const pinCanvasX = mapX + mapW / 2 + offsetX * scaleToCanvas;
-		const pinCanvasY = mapY + mapH / 2 + offsetY * scaleToCanvas;
+		const pinCanvasY = mapY + mapH / 3 + offsetY * scaleToCanvas;
 
 		// Only draw if pin is within the map area
 		if (pinCanvasX > mapX && pinCanvasX < mapX + mapW && pinCanvasY > mapY && pinCanvasY < mapY + mapH) {
@@ -481,9 +481,9 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
 
 		ctx.fillRect(
-			580,
+			480,
 			scrimTop + 220,
-			baseCanvasWidth - 1150,
+			baseCanvasWidth - 950,
 			scrimBottom - scrimTop - 240
 		);
 
