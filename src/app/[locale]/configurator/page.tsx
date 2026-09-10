@@ -1175,7 +1175,7 @@ const mapCanvasDims = useMemo(() => {
 
         // Download: highest res for print quality (4096px width = 16x pixels vs 1024px viewer)
         const downloadWidth = 4096;
-        const downloadHeight = Math.max(2, Math.round(4096 / aspectRatio));
+        const downloadHeight = Math.max(2, Math.round(4096 / (aspectRatio))) * 1.3;
         const layerTextureNoColor = await composeLayers(textureLayers, downloadWidth, downloadHeight);
         setDownloadTexture(layerTextureNoColor);
         setActiveOptionalTab('texture');

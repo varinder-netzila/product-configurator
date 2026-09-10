@@ -768,7 +768,7 @@ const BottleModel = ({
                     });
 
                     if (colorOverlay) {
-                      newMaterial.map = colorOverlay;
+                     // newMaterial.map = colorOverlay;
                       // For color overlays, tone down metallic look
                       newMaterial.metalness = engravingMask ? 0.6 : 0.0;
                       newMaterial.roughness = engravingMask ? 0.3 : 0.5;
@@ -850,7 +850,7 @@ const BottleModel = ({
                     });
 
                     if (colorOverlay) {
-                      newMaterial.map = colorOverlay;
+                    //  newMaterial.map = colorOverlay;
                       // For color overlays, tone down metallic look
                       newMaterial.metalness = engravingMask ? 0.6 : 0.0;
                       newMaterial.roughness = engravingMask ? 0.3 : 0.5;
