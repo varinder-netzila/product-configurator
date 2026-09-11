@@ -139,13 +139,31 @@ const applyTextureToMaterial = (
     textureLoader.crossOrigin = "anonymous";
 
     textureLoader.load(textureUrl, (texture) => {
-      texture.center.set(0.5, 0.5);
-      texture.flipY = false;
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.repeat.set(1, 1);
-      texture.offset.x = ((offsetX % 1) + 1) % 1; // normalize to [0,1)
-      mat.map = texture;
+    const printWidth = 1;
+const printHeight = 1.6;
+const targetAspect = printWidth / printHeight; // ~0.714
+
+// natural aspect ratio of the source image
+const texAspect = texture.image.width / texture.image.height;
+
+texture.center.set(0.5, 0.5);
+texture.flipY = false;
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.ClampToEdgeWrapping;
+
+if (texAspect > targetAspect) {
+  // texture is relatively WIDER than the print area -> crop left/right
+  const scaleX = targetAspect / texAspect;
+  texture.repeat.set(scaleX, 1);
+  texture.offset.set(((offsetX % 1) + 1) % 1, 0);
+} else {
+  // texture is relatively TALLER than the print area -> crop top/bottom
+  const scaleY = texAspect / targetAspect;
+  texture.repeat.set(1, scaleY);
+  texture.offset.set(((offsetX % 1) + 1) % 1, 0);
+}
+
+mat.map = texture;
 
       // Apply texture adjustments with fixed gamma
       const image = texture.image;

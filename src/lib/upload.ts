@@ -9,12 +9,12 @@ async function compressImage(dataUrl: string, maxSize = 4096, quality = 0.92): P
     i.src = dataUrl;
   });
 
-  let w = img.width;
-  let h = img.height;
+  let w = img.width*0.6;
+  let h = img.height*1.2;
   if (w > maxSize || h > maxSize) {
     const scale = maxSize / Math.max(w, h);
     w = Math.round(w * scale);
-    h = Math.round(h * scale);
+    h = Math.round(h * scale) ;
   }
 
   const canvas = document.createElement('canvas');

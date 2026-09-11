@@ -21,8 +21,19 @@ const dimensionCacheByAspectRatio = new Map<number, DimensionCacheEntry>();
 const previewCacheByAspectRatio = new Map<number, PreviewCacheEntry>();
 
 	const mapFontsimg = {
-			title: { family: 'Arial, sans-serif', size: 120, weight: 'bold', style: 'normal' },
-			subtitle: { family: 'Georgia, serif', size: 80, weight: 'bold', style: 'italic' },
+		title: {
+		family: 'Arial, sans-serif',
+		size: 100,
+		weight: 'bold',
+		style: 'normal',
+		},
+
+		subtitle: {
+		family: 'Georgia, serif',
+		size: 80,
+		weight: 'normal',
+		style: 'italic',
+		},
 			coordinates: { family: '"Courier New", monospace', size: 80, weight: 'bold', style: 'normal' }
 		};
 /** Reset cached state so the next call generates fresh from Mapbox API */
@@ -444,7 +455,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			ctx.fill();
 
 			// Pin body (teardrop shape)
-			const pinColor = params.pinColor || selectedMapLineColor?.hex || '#e74c3c';
+			const pinColor = '#000000'; //params.pinColor || selectedMapLineColor?.hex || '#000000';
 			ctx.beginPath();
 			ctx.arc(pinCanvasX, pinCanvasY - pinSize * 0.8, pinSize * 0.5, Math.PI, 0);
 			ctx.lineTo(pinCanvasX, pinCanvasY);
@@ -482,9 +493,9 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.fillRect(
 			480,
-			scrimTop + 220,
+			scrimTop + 190,
 			baseCanvasWidth - 950,
-			scrimBottom - scrimTop - 240
+			scrimBottom - scrimTop - 200
 		);
 
 		ctx.restore();
@@ -525,13 +536,13 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY + 80, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY + 40, letterSpacing);
 		}
 
 		if (mapFonts.subtitle && mapSubtitle) {
 			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY + 160, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY + 150, letterSpacing);
 		}
 	}
 

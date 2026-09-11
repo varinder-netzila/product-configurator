@@ -44,7 +44,7 @@ export async function sendB2BNotification(
   configuration: B2BConfiguration
 ): Promise<{ success: boolean; error?: string }> {
   const salesEmail = process.env.B2B_SALES_EMAIL;
-
+  console.log('mockupLink: ', formData.mockupLink);
   if (!salesEmail) {
     console.warn('B2B_SALES_EMAIL not configured — skipping email notification');
     return { success: false, error: 'Sales email not configured' };
@@ -92,6 +92,7 @@ export async function sendB2BNotification(
     formData.mockupLink ? assetCard(T.mockup, formData.mockupLink) : '',
     formData.designLink ? assetCard(T.flatDesign, formData.designLink) : '',
   ].join('');
+
   const designAssetsBlock = assetCells
     ? `
       <h2 style="color: #333; margin-top: 24px;">${T.design}</h2>

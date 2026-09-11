@@ -642,9 +642,9 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
 
         let defaultColor = null;
         if (colors && colors.colors) {
-          defaultColor =
-            colors.colors.find((c: any) => c.name === 'Burnt Orange' || c.name === 'burnt orange') ||
-            colors.colors[5];
+          defaultColor = "";
+            // colors.colors.find((c: any) => c.name === 'Burnt Orange' || c.name === 'burnt orange') ||
+            // colors.colors[5];
         }
 
         set({
@@ -678,12 +678,12 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
           ...(defaultColor
             ? {
                 meshColors: {
-                  Body: defaultColor,
-                  Frame: defaultColor,
-                  Lid: defaultColor,
-                  Ring: defaultColor,
-                  Handle: defaultColor,
-                  Straw: defaultColor,
+                  Body: "",
+                  Frame: "",
+                  Lid: "",
+                  Ring: "",
+                  Handle: "",
+                  Straw: "",
                 },
               }
             : {}),

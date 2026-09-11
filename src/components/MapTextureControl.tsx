@@ -258,7 +258,7 @@ export default function MapTextureControl({
   selectedMapLineColor,
   bottleColor = "rgba(255, 255, 255, 0)",
   onZoomChange,
-  currentZoom = 10,
+  currentZoom = 12,
   spacing = { top: 0, bottom: 0 },
   mapTextPosition = 0.9,
   mapTextHorizontalPosition = 0.7, // center
@@ -582,7 +582,7 @@ mapControlMap.current.on("load", () => {
     if (mapControlMap.current) {
       mapControlMap.current.flyTo({
         center: [lng, lat],
-        zoom: 10,
+        zoom: 12,
         duration: 2000
       });
     }
@@ -608,7 +608,7 @@ mapControlMap.current.on("load", () => {
             // most common intent of "Find my location" is marking it.
             setPinLocation(newLocation);
             if (mapControlMap.current) {
-              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 10, duration: 1500 });
+              mapControlMap.current.flyTo({ center: [longitude, latitude], zoom: 12, duration: 1500 });
             }
             fetchLocationInfo(newLocation);
             resolve();
@@ -631,8 +631,8 @@ mapControlMap.current.on("load", () => {
     if (mapControlMap.current) {
       const canvas = mapControlMap.current.getCanvas();
       if (canvas) {
-        mapCanvasWidth = 630; //canvas.width;
-        mapCanvasHeight = 630; //canvas.height;
+        mapCanvasWidth = canvas.width * 1.6;
+        mapCanvasHeight = canvas.height * 1.6;
         if ((mapCanvasWidth ?? 0) > 2048 || (mapCanvasHeight ?? 0) > 2048) {
           try {
             mapPreviewDataUrl = canvas.toDataURL('image/png', 1.0);

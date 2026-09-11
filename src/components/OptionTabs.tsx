@@ -1131,7 +1131,7 @@ useEffect(() => {
               </div>
 
               {/* Map Line Color + Pin Color — side by side */}
-              <div className="mb-4 grid grid-cols-2 gap-3">
+              <div className="mb-4 grid grid-cols-2 gap-3 hidden">
                 <div>
                   <label className="block text-xs font-bold text-gray-900 mb-2">{t("b2b.lineColor")}</label>
                   <div className="flex items-center gap-2">

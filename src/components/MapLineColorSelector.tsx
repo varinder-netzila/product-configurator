@@ -22,7 +22,7 @@ export default function MapLineColorSelector({
         {colors.colors.map((color: any, colorIndex: number) => (
           <button
             key={colorIndex}
-            onClick={() => onMapLineColorChange(color)}
+            onClick={() => onMapLineColorChange('#000000')}
             className={`md:w-8 md:h-8 w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center transition-all duration-200 ${
               selectedMapLineColor?.hex === color.hex
                 ? 'border-gray-600'

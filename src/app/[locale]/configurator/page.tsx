@@ -971,11 +971,11 @@ const mapCanvasDims = useMemo(() => {
   // Map line color change with regeneration
   const handleMapLineColorChange = useCallback(
     (color: any) => {
-      setSelectedMapLineColor(color);
+      setSelectedMapLineColor('#000000');
       console.log({
                 location: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-                selectedMapLineColor: color, bottleColor: meshColors.Body?.hex || '#ffffff',
+                selectedMapLineColor: '#000000',
                 spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -990,7 +990,7 @@ const mapCanvasDims = useMemo(() => {
               generateMapTextureWithText({
                 location: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-                selectedMapLineColor: color, bottleColor: meshColors.Body?.hex || '#ffffff',
+                selectedMapLineColor: '#000000',
                 spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -1000,7 +1000,7 @@ const mapCanvasDims = useMemo(() => {
               generateMapTextureWithText({
                 location: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-                selectedMapLineColor: color, bottleColor: meshColors.Body?.hex || '#ffffff',
+                selectedMapLineColor: '#000000',
                 spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, includeGradient: false, pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -1175,7 +1175,7 @@ const mapCanvasDims = useMemo(() => {
 
         // Download: highest res for print quality (4096px width = 16x pixels vs 1024px viewer)
         const downloadWidth = 4096;
-        const downloadHeight = Math.max(2, Math.round(4096 / (aspectRatio))) * 1.3;
+        const downloadHeight = Math.max(2, Math.round(4096 / (aspectRatio)));
         const layerTextureNoColor = await composeLayers(textureLayers, downloadWidth, downloadHeight);
         setDownloadTexture(layerTextureNoColor);
         setActiveOptionalTab('texture');
@@ -1839,7 +1839,7 @@ const mapCanvasDims = useMemo(() => {
         spacing={bottleSettings?.spacing || { top: 0, bottom: 0 }}
         mapTextPosition={bottleSettings?.mapTextPosition || 0.9}
         mapFonts={bottleSettings?.mapFonts}
-        pinColor={mapPinColor}
+        pinColor='#000000'
       />
 
       <ImageAreaSelector

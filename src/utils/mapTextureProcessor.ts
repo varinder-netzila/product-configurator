@@ -11,7 +11,7 @@ export interface ColorProcessingOptions {
 
 /**
  * Process map texture colors using Canvas API
- * Changes non-white pixels to selected color and makes pure white transparent
+ * Changes non-white pixels to selected color and makes near-white pixels transparent
  */
 export async function processMapTextureColors(
   imageUrl: string,
@@ -61,8 +61,18 @@ export async function processMapTextureColors(
       // Skip already transparent pixels
       if (pixelA === 0) continue;
       
-      // Check if pixel is exact white (RGB 255, 255, 255)
-      const isExactWhite = pixelR === 255 && pixelG === 255 && pixelB === 255;
+      // Check if pixel is white-ish background (anti-aliased edges, PNG/retina
+      // noise, and compression artifacts rarely land on EXACT 255,255,255 —
+      // they're often 253-254 range). Using a strict === 255 check here let
+      // those near-white pixels fall through to the "recolor" branch below,
+      // where they got painted solid with the selected line color and their
+      // alpha boosted. By the time the generator's own transparency pass
+      // runs later (which uses this same r/g/b > 240 threshold), those
+      // pixels were no longer anywhere near white — so they could never be
+      // made transparent again, leaving a solid color veil over the map.
+      // Matching the threshold here keeps both passes in agreement about
+      // what counts as background.
+      const isExactWhite = pixelR > 240 && pixelG > 240 && pixelB > 240;
       
       if (isExactWhite) {
         // Make white fully transparent to preserve only map lines
