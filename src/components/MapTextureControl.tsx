@@ -631,8 +631,8 @@ mapControlMap.current.on("load", () => {
     if (mapControlMap.current) {
       const canvas = mapControlMap.current.getCanvas();
       if (canvas) {
-        mapCanvasWidth = canvas.width * 2;
-        mapCanvasHeight = canvas.height * 2;
+        mapCanvasWidth = 1188;//canvas.width * 2;
+        mapCanvasHeight = 836//canvas.height * 2;
         if ((mapCanvasWidth ?? 0) > 2048 || (mapCanvasHeight ?? 0) > 2048) {
           try {
             mapPreviewDataUrl = canvas.toDataURL('image/png', 1.0);
