@@ -139,26 +139,35 @@ const applyTextureToMaterial = (
     textureLoader.crossOrigin = "anonymous";
 
     textureLoader.load(textureUrl, (texture) => {
-    const printWidth = 1;
+const printWidth = 1;
 const printHeight = 1.6;
 const targetAspect = printWidth / printHeight; // ~0.714
 
-// natural aspect ratio of the source image
 const texAspect = texture.image.width / texture.image.height;
 
-texture.center.set(0.5, 0.5);
 texture.flipY = false;
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.ClampToEdgeWrapping;
 
 if (texAspect > targetAspect) {
-  // texture is relatively WIDER than the print area -> crop left/right
+  // texture is WIDER than print area -> crop left/right
   const scaleX = targetAspect / texAspect;
+  const margin = 1 - scaleX; // total amount being cropped off (left + right)
+
+  // 0.5 = crop evenly (old behavior)
+  // >0.5 = crop more from LEFT, keep more of RIGHT
+  // <0.5 = crop more from RIGHT, keep more of LEFT
+  const CROP_BIAS = 1;
+  const leftCrop = margin * CROP_BIAS;
+
+  texture.center.set(0, 0); // use direct offset control, no pivot math
   texture.repeat.set(scaleX, 1);
-  texture.offset.set(((offsetX % 1) + 1) % 1, 0);
+  texture.offset.x = (((offsetX % 1) + 1) % 1) + leftCrop;
+  texture.offset.y = 0;
 } else {
-  // texture is relatively TALLER than the print area -> crop top/bottom
+  // texture is TALLER than print area -> crop top/bottom (still centered)
   const scaleY = texAspect / targetAspect;
+  texture.center.set(0.5, 0.5);
   texture.repeat.set(1, scaleY);
   texture.offset.set(((offsetX % 1) + 1) % 1, 0);
 }
