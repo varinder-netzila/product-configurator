@@ -256,8 +256,8 @@ useEffect(() => {
 const mapCanvasDims = useMemo(() => {
   const sp = bottleSettings?.spacing || { top: 0, bottom: 0 };
 
-  let baseCanvasW = 630;
-  let baseCanvasH = 630; //baseCanvasW / aspectRatio;
+  let baseCanvasW = 1188;
+  let baseCanvasH = 836; //baseCanvasW / aspectRatio;
 
   if (map.current) {
     const canvas = map.current.getCanvas();
