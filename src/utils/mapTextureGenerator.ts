@@ -489,14 +489,19 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-		ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+const rectX = 900;
+const rectY = scrimTop + 100;
+const rectW = baseCanvasWidth - 1070;
+const rectH = scrimBottom - scrimTop - 120;
 
-		ctx.fillRect(
-			900,
-			scrimTop + 170,
-			baseCanvasWidth - 1070,
-			scrimBottom - scrimTop - 160
-		);
+// Background
+ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+ctx.fillRect(rectX, rectY, rectW, rectH);
+
+// Border
+ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; // adjust color/opacity
+ctx.lineWidth = 4; // adjust thickness
+ctx.strokeRect(rectX, rectY, rectW, rectH);
 
 		ctx.restore();
 	}
@@ -536,14 +541,21 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY + 40, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY -60, letterSpacing);
 		}
 
 		if (mapFonts.subtitle && mapSubtitle) {
 			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY + 150, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY + 45, letterSpacing);
 		}
+
+		if (mapFonts.coordinates && mapTitle) {
+			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
+			ctx.font = `${style} ${weight} ${size}px ${family}`;
+			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY + 150, letterSpacing);
+		}
+
 	}
 
 	// Optional: map logo on the transparent layer
