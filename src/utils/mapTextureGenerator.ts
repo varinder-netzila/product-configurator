@@ -304,7 +304,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 	const drawProcessedMap = () => {
 		// Map now spans the full canvas width by design.
-		const targetMapWidth = baseCanvasWidth;
+		const targetMapWidth = (baseCanvasWidth * 2) / 3;
 		const targetMapHeight = baseCanvasHeight * (1 - spacing.top - spacing.bottom);
 
 		// FIX: removed the arbitrary "* 1.6" distortion factor. The source
@@ -318,7 +318,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 				? { mapH: targetMapHeight, mapW: targetMapHeight * imageAspectRatio }
 				: { mapW: targetMapWidth, mapH: targetMapWidth / imageAspectRatio };
 
-		const mapX = 0;
+		const mapX = 0; //baseCanvasWidth / 3;
 		const topSpacingPx = baseCanvasHeight * spacing.top;
 		const mapY = topSpacingPx;
 		ctx.drawImage(processedImg, mapX, mapY, mapDimensions.mapW, mapDimensions.mapH);
@@ -489,8 +489,8 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-const rectX = 900;
-const rectY = scrimTop + 100;
+const rectX = 925;
+const rectY = scrimTop+50;
 const rectW = baseCanvasWidth - 1070;
 const rectH = scrimBottom - scrimTop - 120;
 
@@ -541,19 +541,19 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY -60, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY -100, letterSpacing);
 		}
 
 		if (mapFonts.subtitle && mapSubtitle) {
 			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY + 45, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY + 0, letterSpacing);
 		}
 
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY + 150, letterSpacing);
+			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY + 105, letterSpacing);
 		}
 
 	}
