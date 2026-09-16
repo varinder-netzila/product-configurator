@@ -140,7 +140,7 @@ const applyTextureToMaterial = (
 
     textureLoader.load(textureUrl, (texture) => {
 const printWidth = 1;
-const printHeight = 1.6;
+const printHeight = 1.5;
 const targetAspect = printWidth / printHeight; // ~0.714
 
 const texAspect = texture.image.width / texture.image.height;
@@ -1172,13 +1172,13 @@ export default function BottleViewer({
       <Canvas
         camera={{ position: cameraPosition, fov: 45 }}
         shadows={!lowQuality}
-        gl={{ preserveDrawingBuffer: true, antialias: true, toneMapping: THREE.ACESFilmicToneMapping,
+        gl={{alpha: false, preserveDrawingBuffer: true, antialias: true, toneMapping: THREE.ACESFilmicToneMapping,
   toneMappingExposure: 1.1 }}
         dpr={lowQuality ? [1, 1.5] : [1, 2]}
         frameloop={lowQuality ? "demand" : "always"}
-        onCreated={() => {
-          // If WebGL context creation fails, error is caught by canvas error boundary above
-        }}
+   onCreated={({ gl }) => {
+     gl.setClearColor(0xffffff, 1);
+   }}
       >
         <Suspense fallback={null}>
           <CameraController
