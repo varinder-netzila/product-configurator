@@ -288,7 +288,7 @@ const b2bperitem = b2bPrice
                 {t("b2b.retailPrice")}
               </label>
               <label className="w-full text-gray-900 font-bold flex items-center min-h-[40px]">
-               €{selectedBottleType.compareAtPrice.toFixed(2)}
+               €{selectedBottleType.compareAtPrice?.toFixed(2)}
 
               </label>
             </div>
