@@ -19,11 +19,12 @@
     "from": "à partir de",
     "retail": "prix public",
     "b2b": "B2B",
-    "b2c": "B2C",
+    "b2c": "Prix ​​de vente conseillé",
     "pcs": "pièces",
     "perPiece": "par pièce",
     "discount": "rabais",
-    "recommendedPrice": "Prix ​​recommandé par palier"
+    "recommendedPrice": "Tarification par paliers",
+    "quoteRequest": "Demande de devis envoyée ! Nous vous contacterons dans les 24 heures."
   },
   "nav": {
     "home": "Accueil",
@@ -42,7 +43,7 @@
     "nextStep": "ÉTAPE SUIVANTE"
   },
   "bottleSelector": {
-    "b2bFrom": "Prix conseillé à partir de",
+    "b2bFrom": "à partir",
     "suggestedRetail": "Prix conseillé",
     "agentNotice": "Vous êtes un agent ? Contactez-nous pour des prix de gros spéciaux."
   },
@@ -251,9 +252,9 @@
     "bottleName": "Nom de la Planche",
     "amountOfBottles": "Nombre de Planches",
     "minOrder": "commande min. : {min} pièces",
-    "b2bPrice": "Prix conseillé (par pièce)",
-    "retailPrice": "Prix public (par pièce)",
-    "estimatedTotal": "Total estimé (HT)",
+    "b2bPrice": "APrix (par pièce)",
+    "retailPrice": "Prix ​​de vente conseillé (par pièce)",
+    "estimatedTotal": "Total (HT)",
     "volumePricing": "Prix conseillé par volume",
     "agentNotice": "Vous êtes un agent ? Contactez-nous pour des prix de gros spéciaux.",
     "orderSummary": "Récapitulatif de commande",
@@ -263,7 +264,7 @@
     "companyName": "Nom de l'entreprise *",
     "contactName": "Nom *",
     "email": "Adresse e-mail *",
-    "phone": "Numéro de téléphone *",
+    "phone": "Numéro de téléphone *", 
     "message": "Message",
     "additionalNotes": "Exigences particulières, préférences de livraison ou informations supplémentaires...",
     "yourInfo": "Vos informations",

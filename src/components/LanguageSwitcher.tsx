@@ -41,7 +41,7 @@ export default function LanguageSwitcher() {
     router.push(newPath + search);
     setTimeout(() => {
       window.location.reload();
-    }, 500);
+    }, 1000);
     
     setOpen(false);
   };

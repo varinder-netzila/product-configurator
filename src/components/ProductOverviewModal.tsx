@@ -130,7 +130,7 @@ const ALL_BOTTLES = allBottles;
             mapCanvasWidth,
             mapCanvasHeight,
           });
-          const bottleColor = globalColors.Bottle?.hex || globalColors.Mug?.hex || mapParams!.bottleColor;
+          const bottleColor = "#ffffff";//globalColors.Bottle?.hex || globalColors.Mug?.hex || mapParams!.bottleColor;
           const composed = await composeBaseTexture({
             width: texW,
             height: texH,

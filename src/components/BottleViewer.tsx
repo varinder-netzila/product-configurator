@@ -561,7 +561,7 @@ function AngleCapture({ onAnglesReady, cameraPosition }: { onAnglesReady: (angle
       cam.fov = 40;
 
       // Rotate the entire scene to tilt the board diagonally
-     // const sceneRotation = scene.rotation.clone();
+      const sceneRotation = scene.rotation.clone();
      // scene.rotation.z = 0.4; // tilt top to the left
       //scene.rotation.x = -1.15; // lean slightly back
 
@@ -1204,7 +1204,7 @@ export default function BottleViewer({
               scale={bottleSettings?.contactShadow?.scale || 10}
               blur={bottleSettings?.contactShadow?.blur || 3}
               far={bottleSettings?.contactShadow?.far || 1.5}
-              color={bottleSettings?.contactShadow?.color || "#000000"}
+              color={bottleSettings?.contactShadow?.color || "#ffffff"}
             />
           )}
 

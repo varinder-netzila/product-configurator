@@ -5,13 +5,22 @@ import { showToast } from '@/components/Toast';
 import { uploadTextureToImageKit, uploadFlatDesignToImageKit } from '@/lib/upload';
 import bottleTypes from '@/data/bottleTypes.json';
 import { artPresets } from '@/data/artPresets';
+import { getTranslation } from '@/i18n/useTranslation';
+import { Locale, defaultLocale, locales } from '@/i18n/config'; // adjust path to match your config
 
+function getLocaleFromUrl(): Locale {
+  if (typeof window === 'undefined') return defaultLocale; // SSR safety
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  const first = segments[0];
+  return locales.includes(first as Locale) ? (first as Locale) : defaultLocale;
+}
 // --- Types ---
 
 export interface ConfiguratorState {
   // Hydration
   _hasHydrated: boolean;
-
+  locale: string;
+  setLocale: (locale: string) => void;
   // Product
   selectedBottleType: BottleType;
   quantity: number;
@@ -83,6 +92,7 @@ export interface ConfiguratorState {
   finalDesignImage: string | null;
   /** Registered by the 3D viewer so the store can grab a mockup screenshot. */
   captureScreenshotFn: (() => Promise<string>) | null;
+   
 }
 
 export interface ConfiguratorActions {
@@ -200,6 +210,10 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       // --- Hydration ---
       _hasHydrated: false,
       setHasHydrated: (v) => set({ _hasHydrated: v }),
+
+      // --- Locale ---
+      locale: 'nl',
+      setLocale: (locale) => set({ locale }),
 
       // --- Initial State ---
       selectedBottleType: defaultBottleType,
@@ -742,7 +756,8 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       },
 
       handleB2BRequest: async (formData) => {
-        const { selectedBottleType, meshColors, selectedTexture, logoDecals, textEngravings } = get();
+        const { selectedBottleType, meshColors, selectedTexture, logoDecals, textEngravings, locale } = get();
+        const { t } = getTranslation(getLocaleFromUrl());
         set({ isSubmittingB2B: true });
 
         try {
@@ -774,7 +789,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
           });
 
           if (response.ok) {
-            showToast("Quote request submitted! We'll contact you within 24 hours.", 'success');
+            showToast(t("common.quoteRequest"), 'success');
             set({ currentStep: 1 });
           } else {
             const error = await response.json();

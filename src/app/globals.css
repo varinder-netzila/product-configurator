@@ -61,7 +61,7 @@ body {
 .scrollbar-thin::-webkit-scrollbar-corner {
   background: #f3f4f6;
 }
-
+.leftthumb.hidden{ display:none!important; }
 /* custom css */
 @media screen and (max-width: 767px) {
 .viewer-canvas canvas {

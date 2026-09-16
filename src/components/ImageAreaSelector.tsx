@@ -163,7 +163,7 @@ export default function ImageAreaSelector({
                 },
                 "& .MuiSlider-track": {
                   border: "none",
-                  backgroundColor: "#000000",
+                  backgroundColor: "#ffffff",
                 },
                 "& .MuiSlider-rail": {
                   backgroundColor: "#D9D9D9",

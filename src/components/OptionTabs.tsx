@@ -2673,7 +2673,7 @@ useEffect(() => {
                       },
                       "& .MuiSlider-track": {
                         border: "none",
-                        backgroundColor: !allOverPrintTexture ? "#D1D5DB" : "#000000",
+                        backgroundColor: !allOverPrintTexture ? "#D1D5DB" : "#ffffff",
                       },
                       "& .MuiSlider-rail": {
                         backgroundColor: "#D9D9D9",

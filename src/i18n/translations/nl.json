@@ -23,7 +23,8 @@
     "pcs": "stuks",
     "perPiece": "per stuk",
     "discount": "korting",
-    "recommendedPrice": "Staffelprijzen"
+    "recommendedPrice": "Staffelprijzen",
+    "quoteRequest": "Offerteaanvraag ingediend! We nemen binnen 24 uur contact met u op."
   },
   "nav": {
     "home": "Home",

@@ -19,11 +19,12 @@
     "from": "desde",
     "retail": "retail",
     "b2b": "B2B",
-    "b2c": "B2C",
+    "b2c": "Precio de venta recomendado",
     "pcs": "pcs",
     "perPiece": "por pieza",
     "discount": "descuento",
-    "recommendedPrice": "Precio recomendado por nivel"
+    "recommendedPrice": "Precios escalonados",
+    "quoteRequest": "¡Solicitud de presupuesto enviada! Nos pondremos en contacto con usted en un plazo de 24 horas."
   },
   "nav": {
     "home": "Inicio",
@@ -42,7 +43,7 @@
     "nextStep": "SIGUIENTE"
   },
   "bottleSelector": {
-    "b2bFrom": "Precio de venta sugerido desde",
+    "b2bFrom": "desde",
     "suggestedRetail": "Precio de venta sugerido",
     "agentNotice": "¿Eres un agente? Contáctanos para precios especiales al por mayor."
   },
@@ -251,9 +252,9 @@
     "bottleName": "Nombre de la Plank",
     "amountOfBottles": "Cantidad de planks",
     "minOrder": "pedido mín.: {min} piezas",
-    "b2bPrice": "Precio de venta sugerido (por pieza)",
-    "retailPrice": "Precio Minorista (por pieza)",
-    "estimatedTotal": "Total estimado (sin IVA)",
+    "b2bPrice": "Precio (por pieza)",
+    "retailPrice": "Precio de venta recomendado (por pieza)",
+    "estimatedTotal": "Total (sin IVA)",
     "volumePricing": "Precio de venta sugerido por volumen",
     "agentNotice": "¿Eres un agente? Contáctanos para precios especiales al por mayor.",
     "orderSummary": "Resumen del Pedido",

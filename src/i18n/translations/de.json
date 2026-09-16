@@ -19,11 +19,12 @@
     "from": "ab",
     "retail": "UVP",
     "b2b": "B2B",
-    "b2c": "B2C",
+    "b2c": "Unverbindliche Preisempfehlung",
     "pcs": "Stück",
     "perPiece": "pro Stück",
     "discount": "Rabatt",
-    "recommendedPrice": "Empfohlener Preis pro Stufe"
+    "recommendedPrice": "Gestaffelte Preisgestaltung",
+    "quoteRequest": "Angebotsanfrage gesendet! Wir melden uns innerhalb von 24 Stunden bei Ihnen."
   },
   "nav": {
     "home": "Startseite",
@@ -251,9 +252,9 @@
     "bottleName": "Brettnname",
     "amountOfBottles": "Anzahl der Brettn",
     "minOrder": "Mindestbestellung: {min} Stück",
-    "b2bPrice": "UVP (pro Stück)",
-    "retailPrice": "Einzelhandelspreis (pro Stück)",
-    "estimatedTotal": "Geschätzter Gesamtpreis (zzgl. MwSt.)",
+    "b2bPrice": "Preis (pro Stück)",
+    "retailPrice": "Unverbindliche Preisempfehlung (pro Stück)",
+    "estimatedTotal": "Gesamtpreis (zzgl. MwSt.)",
     "volumePricing": "UVP pro Staffel",
     "agentNotice": "Bist du Agent? Kontaktiere uns für Sonderkonditionen.",
     "orderSummary": "Bestellübersicht",

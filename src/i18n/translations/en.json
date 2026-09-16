@@ -255,7 +255,7 @@
     "minOrder": "min. order: {min} pieces",
     "b2bPrice": "Price (per piece)",
     "retailPrice": "RRP (per piece)",
-    "estimatedTotal": "Estimated total (ex. VAT)",
+    "estimatedTotal": "Total (ex. VAT)",
     "volumePricing": "Wholesale pricing per volume",
     "agentNotice": "Are you an agent? Contact us for special wholesale prices.",
     "orderSummary": "Order Summary",

@@ -229,6 +229,7 @@ const b2bTotal = b2bTotal_org
 const b2bperitem = b2bPrice
   ? b2bPrice * (1 - discountPercent / 100)
   : null;
+  const compareAtPrice = selectedBottleType.compareAtPrice ? selectedBottleType.compareAtPrice : 0;
   return (
     <div className="w-full max-w-4xl mx-auto mb-10">
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -288,7 +289,7 @@ const b2bperitem = b2bPrice
                 {t("b2b.retailPrice")}
               </label>
               <label className="w-full text-gray-900 font-bold flex items-center min-h-[40px]">
-               €{selectedBottleType.compareAtPrice?.toFixed(2)}
+               €{compareAtPrice.toFixed(2)}
 
               </label>
             </div>

@@ -136,7 +136,7 @@ const otherBottles = selectedBottleType
             mapCanvasWidth,
             mapCanvasHeight,
           });
-          const bottleColor = meshColors.Bottle?.hex || meshColors.Mug?.hex || mapParams!.bottleColor;
+          const bottleColor = "#ffffff";//meshColors.Bottle?.hex || meshColors.Mug?.hex || mapParams!.bottleColor;
           const composed = await composeBaseTexture({
             width: texW,
             height: texH,
@@ -170,7 +170,7 @@ const otherBottles = selectedBottleType
   if (!selectedBottleType) return null;
 
   return (
-    <div className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
+    <div className="leftthumb hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
       {otherBottles.map((bottle) => {
         const settings = ALL_SETTINGS[bottle.name];
         const ar = (bottle.size?.width && bottle.size?.height)
