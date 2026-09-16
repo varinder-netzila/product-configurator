@@ -489,9 +489,9 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-const rectX = 925;
+const rectX = 880;
 const rectY = scrimTop+50;
-const rectW = baseCanvasWidth - 1070;
+const rectW = baseCanvasWidth - 1020;
 const rectH = scrimBottom - scrimTop - 120;
 
 // Background

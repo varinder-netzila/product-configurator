@@ -1002,7 +1002,7 @@ const BottleModel = ({
   }, [clonedScene]);
 
   return (
-  <group scale={[1.5, 1.5, 1.5]} position={[1, 1.7, 0.1]}>
+  <group scale={[1.5, 1.5, 1.5]} position={[0.7, 1.5, 0.01]}>
     {clonedScene && <primitive object={clonedScene.baseBodyScene} />}
     {clonedScene?.hasLogoLayer && <primitive object={clonedScene.logoLayerScene} />}
     {clonedScene?.hasTextLayer && <primitive object={clonedScene.textLayerScene} />}
@@ -1197,16 +1197,7 @@ export default function BottleViewer({
 <directionalLight position={[-5, 3, 5]} intensity={0.35} />
 <directionalLight position={[0, 5, -5]} intensity={0.3} />
 
-          {!lowQuality && (
-            <ContactShadows
-              position={bottleSettings?.contactShadow?.position || [0, 0, 0]}
-              opacity={bottleSettings?.contactShadow?.opacity || 0.7}
-              scale={bottleSettings?.contactShadow?.scale || 10}
-              blur={bottleSettings?.contactShadow?.blur || 3}
-              far={bottleSettings?.contactShadow?.far || 1.5}
-              color={bottleSettings?.contactShadow?.color || "#ffffff"}
-            />
-          )}
+
 
           <BottleModel
             key={memoizedModelPath}
