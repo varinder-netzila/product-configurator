@@ -23,7 +23,8 @@
     "pcs": "pcs",
     "perPiece": "per piece",
     "discount": "Discount",
-    "recommendedPrice": "Recommended price per tier"
+    "recommendedPrice": "Tiered pricing",
+    "quoteRequest": "Quote request submitted! We'll contact you within 24 hours."
   },
   "nav": {
     "home": "Home",
@@ -42,8 +43,8 @@
     "nextStep": "NEXT STEP"
   },
   "bottleSelector": {
-    "b2bFrom": "Price (per piece)",
-    "suggestedRetail": "RRP",
+    "b2bFrom": "From (per piece)",
+    "suggestedRetail": "Recommended retail price",
     "agentNotice": "Are you an agent? Contact us for special wholesale prices."
   },
   "configurator": {

@@ -104,9 +104,9 @@ const otherBottles = selectedBottleType
     async function regenerateAll() {
       const textures: Record<string, string | null> = {};
       for (const board of otherBottles) {
-        const settings = ALL_SETTINGS[bottle.name];
-        const ar = (bottle.size?.width && bottle.size?.height)
-          ? bottle.size.width / bottle.size.height
+        const settings = ALL_SETTINGS[board.name];
+        const ar = (board.size?.width && board.size?.height)
+          ? board.size.width / board.size.height
           : 1;
         const texW = 1024;
         const texH = Math.max(2, Math.round(texW / ar));
@@ -144,9 +144,9 @@ const otherBottles = selectedBottleType
             mapLayerDataUrl: mapOverlay,
             output: "png",
           });
-          if (!cancelled) textures[bottle.name] = composed;
+          if (!cancelled) textures[board.name] = composed;
         } catch {
-          textures[bottle.name] = null;
+          textures[board.name] = null;
         }
       }
       if (!cancelled) {

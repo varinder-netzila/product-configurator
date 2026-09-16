@@ -19,11 +19,11 @@
     "from": "vanaf",
     "retail": "adviesprijs",
     "b2b": "B2B",
-    "b2c": "B2C",
+    "b2c": "Adviesverkoopprijs",
     "pcs": "stuks",
     "perPiece": "per stuk",
     "discount": "korting",
-    "recommendedPrice": "Adviesprijs per staffel"
+    "recommendedPrice": "Staffelprijzen"
   },
   "nav": {
     "home": "Home",
@@ -42,7 +42,7 @@
     "nextStep": "VOLGENDE STAP"
   },
   "bottleSelector": {
-    "b2bFrom": "Adviesprijs vanaf",
+    "b2bFrom": "vanaf",
     "suggestedRetail": "Adviesprijs",
     "agentNotice": "Ben je agent? Neem contact met ons op voor speciale inkoopprijzen."
   },
@@ -251,10 +251,10 @@
     "bottleName": "Flesnaam",
     "amountOfBottles": "Aantal planksen",
     "minOrder": "min. bestelling: {min} stuks",
-    "b2bPrice": "Adviesprijs (per stuk)",
-    "retailPrice": "Retailprijs (per stuk)",
-    "estimatedTotal": "Geschatte totaalprijs (ex. BTW)",
-    "volumePricing": "Adviesprijs per staffel",
+    "b2bPrice": "Prijs (per stuk)",
+    "retailPrice": "Adviesverkoopprijs (per stuk)",
+    "estimatedTotal": "Totaalprijs (ex. BTW)",
+    "volumePricing": "Staffelprijzen",
     "agentNotice": "Ben je agent? Neem contact met ons op voor speciale inkoopprijzen.",
     "orderSummary": "Besteloverzicht",
     "backToDesign": "Terug naar ontwerp",
