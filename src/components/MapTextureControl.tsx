@@ -729,9 +729,18 @@ mapControlMap.current.on("load", () => {
       const zoom = mapControlMap.current.getZoom();
       
       setIsGeneratingTexture(true);
-      
+      const map = mapControlMap.current;
+
+// const center = map.getCenter();
+
+const point = map.project(center);
+
+const newCenter = map.unproject([
+  point.x + map.getCanvas().width * 0.3,
+  point.y,
+]);
       try {
-        const mapTextureUrl = await generateMapTexture({ lat: center.lat, lng: center.lng }, zoom);
+        const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, zoom);
         onApplyChanges({ lat: center.lat, lng: center.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
         if (currentSnapshot) {
           lastTextureDetailsRef.current = currentSnapshot;

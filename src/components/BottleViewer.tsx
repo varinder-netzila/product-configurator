@@ -157,7 +157,7 @@ if (texAspect > targetAspect) {
   // 0.5 = crop evenly (old behavior)
   // >0.5 = crop more from LEFT, keep more of RIGHT
   // <0.5 = crop more from RIGHT, keep more of LEFT
-  const CROP_BIAS = 1;
+  const CROP_BIAS = 0.5;
   const leftCrop = margin * CROP_BIAS;
 
   texture.center.set(0, 0); // use direct offset control, no pivot math

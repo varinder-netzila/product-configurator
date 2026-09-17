@@ -489,9 +489,9 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-const rectX = 880;
+const rectX = 530;
 const rectY = scrimTop+50;
-const rectW = baseCanvasWidth - 1020;
+const rectW = baseCanvasWidth - 1060;
 const rectH = scrimBottom - scrimTop - 120;
 
 // Background
@@ -511,7 +511,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		const textColor = selectedMapLineColor?.hex || '#000000';
 		ctx.fillStyle = textColor;
 		ctx.textAlign = 'center';
-		const textCenterX = baseCanvasWidth / 1.45; // center of map area
+		const textCenterX = baseCanvasWidth / 2; // center of map area
 		const textBaseY = topSpacingPx + contentHeightPx * mapTextPosition;
 
 		// Helper: draw text with optional letter-spacing (manually placed, since
