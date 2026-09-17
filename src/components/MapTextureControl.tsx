@@ -230,7 +230,7 @@ interface MapTextureControlProps {
   isOpen: boolean;
   onClose: () => void;
   currentLocation: { lat: number; lng: number } | null;
-  onApplyChanges: (newLocation: { lat: number; lng: number }, newZoom: number, mapTextureUrl: string, title?: string, subtitle?: string, pinLocation?: { lat: number; lng: number } | null) => void;
+  onApplyChanges: (newLocation: { lat: number; lng: number }, newLocation2: { lat: number; lng: number }, newZoom: number, mapTextureUrl: string, title?: string, subtitle?: string, pinLocation?: { lat: number; lng: number } | null) => void;
   aspectRatio?: number;
   mapTitle?: string;
   mapSubtitle?: string;
@@ -294,7 +294,7 @@ export default function MapTextureControl({
   const searchDebounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitialized = useRef(false); // NEW: Track if we've already initialized
   const lastTextureDetailsRef = useRef<MapTextureSnapshot | null>(null);
-
+  const [mapcenter, setMapcenter] = useState<{ lat: number; lng: number } | null>(null);
   const customMapStyle = process.env.NEXT_PUBLIC_MAPBOX_CUSTOM_STYLE || 'mapbox://styles/kakao74/cmfybornd001v01rj72f94cuy';
   const mapStyle = customMapStyle;
   
@@ -729,19 +729,20 @@ mapControlMap.current.on("load", () => {
       const zoom = mapControlMap.current.getZoom();
       
       setIsGeneratingTexture(true);
-      const map = mapControlMap.current;
+      const map2 = mapControlMap.current;
 
 // const center = map.getCenter();
 
-const point = map.project(center);
+const point = map2.project(center);
 
-const newCenter = map.unproject([
-  point.x + map.getCanvas().width * 0.3,
+const newCenter = map2.unproject([
+  point.x + map2.getCanvas().width * 0.3,
   point.y,
 ]);
+
       try {
         const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, zoom);
-        onApplyChanges({ lat: center.lat, lng: center.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
+        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
         if (currentSnapshot) {
           lastTextureDetailsRef.current = currentSnapshot;
         }
@@ -751,6 +752,7 @@ const newCenter = map.unproject([
       } finally {
         setIsGeneratingTexture(false);
       }
+
     } else {
       alert('Map control map is not available');
     }

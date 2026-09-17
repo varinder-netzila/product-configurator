@@ -553,7 +553,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${location.lat.toFixed(3)}°N ${location.lng.toFixed(3)}°E`, textCenterX, textBaseY + 105, letterSpacing);
+			drawText(`${location.lat.toFixed(3)}°N ${(location.lng-0.051).toFixed(3)}°E`, textCenterX, textBaseY + 105, letterSpacing);
 		}
 
 	}

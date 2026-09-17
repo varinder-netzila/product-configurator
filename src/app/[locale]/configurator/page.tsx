@@ -920,6 +920,7 @@ const mapCanvasDims = useMemo(() => {
   const applyMapControl = useCallback(
     async (
       newLocation: { lat: number; lng: number },
+      newLocation2: { lat: number; lng: number },
       newZoom: number,
       mapTextureUrl: string,
       title?: string,
@@ -937,7 +938,7 @@ const mapCanvasDims = useMemo(() => {
       let flatTextureUrl: string | null = null;
       try {
         flatTextureUrl = await generateMapTextureWithText({
-          location: newLocation, zoom: newZoom, aspectRatio,
+          location: newLocation2, zoom: newZoom, aspectRatio,
           mapTitle: title || "", mapSubtitle: subtitle || "",
           selectedMapLineColor, bottleColor: meshColors.Body?.hex || "#ffffff",
           spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
