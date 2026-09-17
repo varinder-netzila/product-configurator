@@ -1279,17 +1279,17 @@ const mapCanvasDims = useMemo(() => {
             setEmbedCode(data.embedCode);
           } else {
             console.error('Failed to create 3D viewer:', data.error || 'Unknown error');
-            showToast('Could not create 3D viewer link. Screenshot shared instead.', 'error');
+            showToast(t("showToast.viewerNotReady"), "error");
           }
         } catch (error) {
           console.error('Failed to share design:', error);
-          showToast('Failed to share design. Please try again.', 'error');
+          showToast(t("showToast.failedShareDesign"), "error");
           setShowSharePopup(false);
         } finally {
           setIsUploadingShare(false);
         }
       } else {
-        showToast('3D viewer is not ready yet. Please wait a moment.', 'error');
+          showToast(t("showToast.viewerNotReady"), "error");
       }
     };
     window.addEventListener("shareDesign", handleShareDesign as EventListener);
@@ -1871,7 +1871,7 @@ const mapCanvasDims = useMemo(() => {
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
             <div className="md:p-8 p-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-gray-900">Download Texture Design</h2>
+                <h2 className="text-2xl font-semibold text-gray-900"> {t("common.downloadTextureDesign")}</h2>
                 <button onClick={() => setShowTextureDesignManager(false)} className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-100 hover:bg-gray-200 rounded-full p-1">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

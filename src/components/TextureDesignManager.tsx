@@ -341,7 +341,7 @@ export default function TextureDesignManager({
     <div className="bg-white rounded-lg">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-md font-bold text-gray-900">
-          Preview
+          {t("common.preview")}     
         </h3>
         <div className="text-md text-gray-600">
           {dimensions.width}mm × {dimensions.height}mm

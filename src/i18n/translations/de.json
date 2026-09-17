@@ -24,13 +24,27 @@
     "perPiece": "pro Stück",
     "discount": "Rabatt",
     "recommendedPrice": "Gestaffelte Preisgestaltung",
-    "quoteRequest": "Angebotsanfrage gesendet! Wir melden uns innerhalb von 24 Stunden bei Ihnen."
+    "downloadTextureDesign": "Texturdesign herunterladen",
+    "preview": "Vorschau"
   },
+  "showToast": {
+    "quoteRequest": "Angebotsanfrage gesendet! Wir melden uns innerhalb von 24 Stunden bei Ihnen.",
+    "failedSubmit": "Die Anfrage konnte nicht übermittelt werden. Bitte versuchen Sie es erneut.",    
+    "viewerNotReady": "Der 3D-Viewer ist noch nicht bereit. Bitte warten Sie einen Moment.",
+    "failedShare": "Das Design konnte nicht geteilt werden. Bitte versuchen Sie es erneut.",
+    "failedViewerLink": "Es konnte kein 3D-Viewer-Link erstellt werden. Stattdessen wurde ein Screenshot geteilt."
+  },  
   "nav": {
     "home": "Startseite",
     "custom": "Individuell",
     "designYourSample": "Gestalte dein Muster",
     "needSupport": "Hilfe benötigt? Hier klicken."
+  },
+  "support": {
+    "needSupport": "Benötigen Sie Hilfe?",
+    "contactDirectly": "Kontaktieren Sie uns direkt:",
+    "close": "Schließen",
+    "sendEmail": "E-Mail senden"
   },
   "steps": {
     "selectBottle": "Brett wählen",

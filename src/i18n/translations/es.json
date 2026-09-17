@@ -24,13 +24,27 @@
     "perPiece": "por pieza",
     "discount": "descuento",
     "recommendedPrice": "Precios escalonados",
-    "quoteRequest": "¡Solicitud de presupuesto enviada! Nos pondremos en contacto con usted en un plazo de 24 horas."
+    "downloadTextureDesign": "Descargar diseño de textura",
+    "preview": "Vista previa"
   },
+  "showToast": {
+    "quoteRequest": "¡Solicitud de presupuesto enviada! Nos pondremos en contacto con usted en un plazo de 24 horas.",
+    "failedSubmit": "No se pudo enviar la solicitud. Inténtelo de nuevo.",    
+    "viewerNotReady": "El visor 3D aún no está listo. Por favor, espera un momento.",
+    "failedShare": "No se pudo compartir el diseño. Inténtalo de nuevo.",
+    "failedViewerLink": "No se pudo crear el enlace del visor 3D. Se compartió una captura de pantalla en su lugar."
+  }, 
   "nav": {
     "home": "Inicio",
     "custom": "Personalizado",
     "designYourSample": "Diseña tu muestra",
     "needSupport": "¿Necesitas ayuda? Haz clic aquí."
+  },
+  "support": {
+    "needSupport": "¿Necesitas ayuda?",
+    "contactDirectly": "Contáctanos directamente:",
+    "close": "Cerrar",
+    "sendEmail": "Enviar correo electrónico"
   },
   "steps": {
     "selectBottle": "Seleccionar Plank",

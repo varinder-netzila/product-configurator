@@ -740,12 +740,12 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
           set({ isTransitioning: true });
           try {
             if (!finalDesignImage) {
-              showToast('Please customize your board before proceeding.', 'error');
+              showToast(t("showToast.customizeBoard"), 'error');
               return; // Do NOT advance
             }
             await get().prepareDesignAssets();
           } catch {
-            showToast('Failed to upload design. Please try again.', 'error');
+            showToast(t("showToast.failedUpload"), 'error');
             return; // Do NOT advance
           } finally {
             set({ isTransitioning: false });
@@ -789,14 +789,14 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
           });
 
           if (response.ok) {
-            showToast(t("common.quoteRequest"), 'success');
+            showToast(t("showToast.quoteRequest"), 'success');
             set({ currentStep: 1 });
           } else {
             const error = await response.json();
-            showToast(`Failed to submit request: ${error.error}`, 'error');
+            showToast(t("showToast.failedSubmit") + ` : ${error.error}`, 'error');
           }
         } catch {
-          showToast('Failed to submit request. Please try again.', 'error');
+          showToast(t("showToast.failedSubmit"), 'error');
         } finally {
           set({ isSubmittingB2B: false });
         }

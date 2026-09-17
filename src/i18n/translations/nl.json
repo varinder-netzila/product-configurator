@@ -24,13 +24,27 @@
     "perPiece": "per stuk",
     "discount": "korting",
     "recommendedPrice": "Staffelprijzen",
-    "quoteRequest": "Offerteaanvraag ingediend! We nemen binnen 24 uur contact met u op."
+    "downloadTextureDesign": "Textuurontwerp downloaden",
+    "preview": "Voorbeeld"
+  },
+  "showToast": {
+    "quoteRequest": "Offerteaanvraag ingediend! We nemen binnen 24 uur contact met u op.",
+    "failedSubmit": "Verzoek verzonden. Probeer het opnieuw.",
+    "viewerNotReady": "3D-viewer is nog niet klaar. Even geduld alstublieft.",
+    "failedShare": "Het delen van het ontwerp is mislukt. Probeer het opnieuw.",
+    "failedViewerLink": "Kon geen 3D-viewerlink maken. Er is in plaats daarvan een schermafbeelding gedeeld."
   },
   "nav": {
     "home": "Home",
     "custom": "Eigen ontwerp",
     "designYourSample": "Ontwerp je sample",
     "needSupport": "Hulp nodig? Klik hier."
+  },
+"support": {
+    "needSupport": "Hulp nodig?",
+    "contactDirectly": "Neem rechtstreeks contact met ons op:",
+    "close": "Sluiten",
+    "sendEmail": "E-mail verzenden"
   },
   "steps": {
     "selectBottle": "Kies plank",

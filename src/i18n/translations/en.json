@@ -24,13 +24,29 @@
     "perPiece": "per piece",
     "discount": "Discount",
     "recommendedPrice": "Tiered pricing",
-    "quoteRequest": "Quote request submitted! We'll contact you within 24 hours."
+    "downloadTextureDesign": "Download Texture Design",
+    "preview": "Preview"
+    },
+  "showToast":{
+    "quoteRequest": "Quote request submitted! We'll contact you within 24 hours.",
+    "failedSubmit": "Failed to submit request. Please try again.",
+    "failedUpload": "Failed to upload design. Please try again.",
+    "customizeBoard": "Please customize your board before proceeding.",
+    "viewerNotReady": "3D viewer is not ready yet. Please wait a moment.",
+    "failedShareDesign": "Failed to share design. Please try again.",
+    "viewerLinkFailed": "Could not create 3D viewer link. Screenshot shared instead."
   },
   "nav": {
     "home": "Home",
     "custom": "Custom",
     "designYourSample": "Design your sample",
     "needSupport": "Need support? Click here."
+  },
+  "support": {
+    "needSupport": "Need Support?",
+    "contactDirectly": "Contact us directly:",
+    "close": "Close",
+    "sendEmail": "Send Email"
   },
   "steps": {
     "selectBottle": "Select Board",

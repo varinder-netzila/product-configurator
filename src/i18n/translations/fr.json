@@ -24,13 +24,27 @@
     "perPiece": "par pièce",
     "discount": "rabais",
     "recommendedPrice": "Tarification par paliers",
-    "quoteRequest": "Demande de devis envoyée ! Nous vous contacterons dans les 24 heures."
+    "downloadTextureDesign": "Télécharger le design de texture",
+    "preview": "Aperçu"
+  },
+  "showToast": {
+    "quoteRequest": "Demande de devis envoyée ! Nous vous contacterons dans les 24 heures.",
+    "failedSubmit": "Échec de l'envoi de la requête. Veuillez réessayer.",    
+    "viewerNotReady": "La visionneuse 3D n'est pas encore prête. Veuillez patienter un instant.",
+    "failedShare": "Impossible de partager le design. Veuillez réessayer.",
+    "failedViewerLink": "Impossible de créer un lien vers la visionneuse 3D. Une capture d'écran a été partagée à la place."
   },
   "nav": {
     "home": "Accueil",
     "custom": "Personnalisé",
     "designYourSample": "Créez votre échantillon",
     "needSupport": "Besoin d'aide ? Cliquez ici."
+  },
+  "support": {
+    "needSupport": "Besoin d'aide ?",
+    "contactDirectly": "Contactez-nous directement :",
+    "close": "Fermer",
+    "sendEmail": "Envoyer un e-mail"
   },
   "steps": {
     "selectBottle": "Choisir la Planche",

@@ -164,8 +164,8 @@ export default function ConfiguratorNavigation({
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4 shadow-2xl">
             <div className="mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Need Support?</h3>
-              <p className="text-sm text-gray-600 mt-1">Contact us directly:</p>
+              <h3 className="text-lg font-bold text-gray-900">{t("support.needSupport")}</h3>
+              <p className="text-sm text-gray-600 mt-1">{t("support.contactDirectly")}</p>
             </div>
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
               <p className="text-sm font-semibold text-gray-900">{getSupportEmail()}</p>
@@ -175,7 +175,7 @@ export default function ConfiguratorNavigation({
                 onClick={() => setShowSupportModal(false)}
                 className="flex-1 px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
               >
-                Close
+                {t("support.close")}
               </button>
               <a
                 href={`mailto:${getSupportEmail()}`}
@@ -183,7 +183,7 @@ export default function ConfiguratorNavigation({
                 style={accentBg}
                 className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-black hover:bg-gray-800 rounded-lg transition-colors text-center"
               >
-                Send Email
+                {t("support.sendEmail")}
               </a>
             </div>
           </div>
