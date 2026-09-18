@@ -110,6 +110,7 @@ useEffect(() => {
     mapImageDesign, setMapImageDesign,
     mapImageDesignWithLogo, setMapImageDesignWithLogo,
     currentLocation, setCurrentLocation,
+    currentCenter, setCurrentCenter,
     showMapControl, setShowMapControl,
     mapPinLocation, setMapPinLocation,
     mapPinColor, setMapPinColor,
@@ -241,6 +242,7 @@ useEffect(() => {
     if (!currentLocation) return null;
     return {
       location: currentLocation,
+      locationmodel: currentCenter,
       zoom: currentMapZoom,
       title: mapTextureTitle,
       subtitle: mapTextureSubtitle,
@@ -249,7 +251,7 @@ useEffect(() => {
       pinLocation: mapPinLocation,
       pinColor: mapPinColor,
     };
-  }, [currentLocation, currentMapZoom, mapTextureTitle, mapTextureSubtitle, selectedMapLineColor, meshColors.Body?.hex, mapPinLocation, mapPinColor]);
+  }, [currentLocation, currentCenter, currentMapZoom, mapTextureTitle, mapTextureSubtitle, selectedMapLineColor, meshColors.Body?.hex, mapPinLocation, mapPinColor]);
 
 
   // Explicit canvas dimensions for the current board (bypass module-level cache)
@@ -928,6 +930,7 @@ const mapCanvasDims = useMemo(() => {
       pin?: { lat: number; lng: number } | null
     ) => {
       setCurrentLocation(newLocation);
+      setCurrentCenter(newLocation2);
       setCurrentMapZoom(newZoom);
       setShowMapControl(false);
       setMapTextureTitle(title || "");
@@ -938,7 +941,7 @@ const mapCanvasDims = useMemo(() => {
       let flatTextureUrl: string | null = null;
       try {
         flatTextureUrl = await generateMapTextureWithText({
-          location: newLocation2, zoom: newZoom, aspectRatio,
+          location: newLocation2, locationmodel: newLocation, zoom: newZoom, aspectRatio,
           mapTitle: title || "", mapSubtitle: subtitle || "",
           selectedMapLineColor, bottleColor: meshColors.Body?.hex || "#ffffff",
           spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
@@ -966,30 +969,19 @@ const mapCanvasDims = useMemo(() => {
       setAllOverPrintTexture(null);
       setTextureImageUrl(null);
     },
-    [aspectRatio, bottleSettings, generateMapTextureWithLogo, meshColors.Body?.hex, selectedMapLineColor, switchToMapTextureMode, setCurrentLocation, setCurrentMapZoom, setShowMapControl, setMapTextureTitle, setMapTextureSubtitle, setMapPinLocation, setMapImage, setMapImageWithLogo, setSelectedTexture, setMapImageDesign, setMapImageDesignWithLogo, setAllOverPrintTexture, setTextureImageUrl, mapCanvasDims]
+    [aspectRatio, bottleSettings, generateMapTextureWithLogo, meshColors.Body?.hex, selectedMapLineColor, switchToMapTextureMode, setCurrentLocation, setCurrentCenter, setCurrentMapZoom, setShowMapControl, setMapTextureTitle, setMapTextureSubtitle, setMapPinLocation, setMapImage, setMapImageWithLogo, setSelectedTexture, setMapImageDesign, setMapImageDesignWithLogo, setAllOverPrintTexture, setTextureImageUrl, mapCanvasDims]
   );
 
   // Map line color change with regeneration
   const handleMapLineColorChange = useCallback(
     (color: any) => {
       setSelectedMapLineColor('#000000');
-      console.log({
-                location: currentLocation, zoom: currentMapZoom, aspectRatio,
-                mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-                selectedMapLineColor: '#000000',
-                spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
-                mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
-                mapFonts: bottleSettings?.mapFonts, pinLocation: mapPinLocation, pinColor: mapPinColor,
-                mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
-                mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
-              });
       if (mapImage && currentLocation) {
-           console.log('Line color', color);
         const regenerate = async () => {
           try {
             const [gradientUrl, flatUrl] = await Promise.all([
               generateMapTextureWithText({
-                location: currentLocation, zoom: currentMapZoom, aspectRatio,
+                location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
                 selectedMapLineColor: '#000000',
                 spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
@@ -999,7 +991,7 @@ const mapCanvasDims = useMemo(() => {
                 mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
               }),
               generateMapTextureWithText({
-                location: currentLocation, zoom: currentMapZoom, aspectRatio,
+                location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
                 selectedMapLineColor: '#000000',
                 spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
@@ -1019,7 +1011,7 @@ const mapCanvasDims = useMemo(() => {
         regenerate();
       }
     },
-    [mapImage, currentLocation, aspectRatio, mapTextureTitle, mapTextureSubtitle, currentMapZoom, bottleSettings, meshColors.Body?.hex, setSelectedMapLineColor, setMapImage, setMapImageWithLogo, setMapImageDesign, setMapImageDesignWithLogo, mapCanvasDims]
+    [mapImage, currentLocation, currentCenter, aspectRatio, mapTextureTitle, mapTextureSubtitle, currentMapZoom, bottleSettings, meshColors.Body?.hex, setSelectedMapLineColor, setMapImage, setMapImageWithLogo, setMapImageDesign, setMapImageDesignWithLogo, mapCanvasDims]
   );
 
   // Real-time logo settings → update mapImageWithLogo only.
@@ -1079,7 +1071,7 @@ const mapCanvasDims = useMemo(() => {
       try {
         const [gradientUrl, flatUrl] = await Promise.all([
           generateMapTextureWithText({
-            location: currentLocation, zoom: currentMapZoom, aspectRatio,
+            location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
             mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
             selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
             mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
@@ -1089,7 +1081,7 @@ const mapCanvasDims = useMemo(() => {
             mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
           }),
           generateMapTextureWithText({
-            location: currentLocation, zoom: currentMapZoom, aspectRatio,
+            location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
             mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
             selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
             mapTextPosition: bottleSettings?.mapTextPosition || 0.9,

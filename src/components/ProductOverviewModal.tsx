@@ -28,6 +28,7 @@ const defaultColorFor = (name: string) =>
 
 interface MapParams {
   location: { lat: number; lng: number };
+  locationmodel: { lat: number; lng: number };
   zoom: number;
   title: string;
   subtitle: string;
@@ -98,9 +99,9 @@ const ALL_BOTTLES = allBottles;
     async function regenerateAll() {
       const textures: Record<string, string | null> = {};
       for (const board of ALL_BOTTLES) {
-        const settings = ALL_SETTINGS[bottle.name];
-        const ar = (bottle.size?.width && bottle.size?.height)
-          ? bottle.size.width / bottle.size.height
+        const settings = ALL_SETTINGS[board.name];
+        const ar = (board.size?.width && board.size?.height)
+          ? board.size.width / board.size.height
           : 1;
         const texW = 1024;
         const texH = Math.max(2, Math.round(texW / ar));
@@ -115,6 +116,7 @@ const ALL_BOTTLES = allBottles;
         try {
           const mapOverlay = await generateMapTextureWithText({
             location: mapParams!.location,
+            locationmodel: mapParams!.locationmodel,
             zoom: mapParams!.zoom,
             aspectRatio: ar,
             mapTitle: mapParams!.title,
@@ -138,9 +140,9 @@ const ALL_BOTTLES = allBottles;
             mapLayerDataUrl: mapOverlay,
             output: "png",
           });
-          if (!cancelled) textures[bottle.name] = composed;
+          if (!cancelled) textures[board.name] = composed;
         } catch {
-          textures[bottle.name] = null;
+          textures[board.name] = null;
         }
       }
       if (!cancelled) {

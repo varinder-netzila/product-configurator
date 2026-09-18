@@ -624,7 +624,7 @@ mapControlMap.current.on("load", () => {
     }
   }, [fetchLocationInfo]);
 
-  const generateMapTexture = useCallback(async (location: { lat: number; lng: number }, zoom: number): Promise<string> => {
+  const generateMapTexture = useCallback(async (location: { lat: number; lng: number }, locationmodel: { lat: number; lng: number }, zoom: number): Promise<string> => {
     let mapCanvasWidth: number | undefined;
     let mapCanvasHeight: number | undefined;
     let mapPreviewDataUrl: string | undefined = mapPreviewCacheRef.current;
@@ -648,25 +648,10 @@ mapControlMap.current.on("load", () => {
     } else if (mapPreviewCacheRef.current) {
       mapPreviewDataUrl = mapPreviewCacheRef.current;
     }
- console.log({
-      location,
-      zoom,
-      aspectRatio,
-      mapTitle: localMapTitle,
-      mapSubtitle: localMapSubtitle,
-      selectedMapLineColor,
-      bottleColor,
-      customMapStyle,
-      spacing,
-      mapTextPosition,
-      mapFonts,
-      mapCanvasWidth,
-      mapCanvasHeight,
-      mapPreviewDataUrl,
-      pinLocation,
-    });
+
     return generateMapTextureWithText({
       location,
+      locationmodel,
       zoom,
       aspectRatio,
       mapTitle: localMapTitle,
@@ -741,7 +726,7 @@ const newCenter = map2.unproject([
 ]);
 
       try {
-        const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, zoom);
+        const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, { lat: center.lat, lng: center.lng }, zoom);
         onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
         if (currentSnapshot) {
           lastTextureDetailsRef.current = currentSnapshot;

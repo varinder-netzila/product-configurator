@@ -477,7 +477,7 @@ function CanvasCapture({ onCaptureReady }: { onCaptureReady?: (captureFn: () => 
             const exportSize = 2048;
             gl.setPixelRatio(1);
             gl.setSize(exportSize, exportSize, false);
-            cam.aspect = 0.5;
+            cam.aspect = 0.9;
             cam.updateProjectionMatrix();
             gl.render(scene, camera);
 

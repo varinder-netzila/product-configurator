@@ -26,6 +26,7 @@ const defaultColorFor = (name: string) =>
 
 interface MapParams {
   location: { lat: number; lng: number };
+  locationmodel: { lat: number; lng: number };
   zoom: number;
   title: string;
   subtitle: string;
@@ -121,6 +122,7 @@ const otherBottles = selectedBottleType
         try {
           const mapOverlay = await generateMapTextureWithText({
             location: mapParams!.location,
+            locationmodel: mapParams!.locationmodel,
             zoom: mapParams!.zoom,
             aspectRatio: ar,
             mapTitle: mapParams!.title,
@@ -181,7 +183,7 @@ const otherBottles = selectedBottleType
         const thumbColor = thumbColorByBottle[bottle.name] || meshColors;
 
         return (
-          <button
+          <div
             key={bottle.id}
             onClick={() => onSelectBottle(bottle as BottleType)}
             className="group relative w-24 h-32 bg-white border-2 border-gray-200 hover:border-gray-900 rounded-xl overflow-hidden transition-all hover:shadow-lg cursor-pointer"
@@ -224,7 +226,7 @@ const otherBottles = selectedBottleType
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1 pointer-events-none">
               <p className="text-[9px] font-bold text-white truncate">{bottle.capacity}</p>
             </div>
-          </button>
+          </div>
         );
       })}
     </div>

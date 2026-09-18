@@ -49,6 +49,7 @@ export interface ConfiguratorState {
   mapImageDesign: string | null;
   mapImageDesignWithLogo: string | null;
   currentLocation: { lat: number; lng: number } | null;
+  currentCenter: { lat: number; lng: number } | null;
   mapTextureTitle: string;
   mapTextureSubtitle: string;
   currentMapZoom: number;
@@ -121,6 +122,7 @@ export interface ConfiguratorActions {
   setMapImageDesign: (img: string | null) => void;
   setMapImageDesignWithLogo: (img: string | null) => void;
   setCurrentLocation: (loc: { lat: number; lng: number } | null) => void;
+  setCurrentCenter: (loc: { lat: number; lng: number } | null) => void;
   setMapTextureTitle: (t: string) => void;
   setMapTextureSubtitle: (t: string) => void;
   setCurrentMapZoom: (z: number) => void;
@@ -237,6 +239,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       mapImageDesign: null,
       mapImageDesignWithLogo: null,
       currentLocation: null,
+      currentCenter: null,
       mapTextureTitle: '',
       mapTextureSubtitle: '',
       currentMapZoom: 1,
@@ -297,6 +300,7 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
       setMapImageDesign: (img) => set({ mapImageDesign: img }),
       setMapImageDesignWithLogo: (img) => set({ mapImageDesignWithLogo: img }),
       setCurrentLocation: (loc) => set({ currentLocation: loc }),
+      setCurrentCenter: (loc) => set({ currentCenter: loc }),
       setMapTextureTitle: (t) => set({ mapTextureTitle: t }),
       setMapTextureSubtitle: (t) => set({ mapTextureSubtitle: t }),
       setCurrentMapZoom: (z) => set({ currentMapZoom: z }),

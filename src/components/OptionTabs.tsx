@@ -1169,7 +1169,7 @@ useEffect(() => {
               </div>
 
               {/* Map Logo Controls */}
-              <div class="hidden">
+              <div className="hidden">
                 <div className="flex flex-col gap-4">
                   {/* Logo Upload Button */}
                   <div className="mt-4">

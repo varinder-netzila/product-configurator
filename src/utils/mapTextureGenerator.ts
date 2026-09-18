@@ -44,6 +44,7 @@ export function resetMapTextureCache() {
 
 export interface MapTextureGenerationParams {
 	location: { lat: number; lng: number };
+	locationmodel: { lat: number; lng: number };
 	zoom: number;
 	aspectRatio: number;
 	mapTitle?: string;
@@ -84,22 +85,10 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	// so we can diff call #1 against call #2 (refresh) and see whether
 	// zoom/location/mapCanvasWidth/mapCanvasHeight actually change, or
 	// whether a mapPreviewDataUrl starts/stops being passed.
-	if (typeof console !== 'undefined') {
-		console.log('[generateMapTextureWithText] called with', {
-			location: params.location,
-			zoom: params.zoom,
-			pinLocation: params.pinLocation,
-			mapCanvasWidth: params.mapCanvasWidth,
-			mapCanvasHeight: params.mapCanvasHeight,
-			hasMapPreviewDataUrl: !!params.mapPreviewDataUrl,
-			bearing: params.bearing,
-			pitch: params.pitch,
-			aspectRatio: params.aspectRatio,
-		});
-	}
 
 	const {
 		location,
+		locationmodel,
 		zoom,
 		aspectRatio,
 		mapTitle = "",
@@ -397,7 +386,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	if (pinLocation && ctx) {
 		// Convert lat/lng offset from map center to pixel offset
 		// Using Web Mercator projection
-		const scale = Math.pow(2, zoom) * 256; // pixels per world at this zoom
+		const scale = Math.pow(2.035, zoom) * 256; // pixels per world at this zoom
 		const degToRad = Math.PI / 180;
 
 		// Center of map in pixels
@@ -553,7 +542,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${location.lat.toFixed(3)}°N ${(location.lng-0.051).toFixed(3)}°E`, textCenterX, textBaseY + 105, letterSpacing);
+			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 105, letterSpacing);
 		}
 
 	}
