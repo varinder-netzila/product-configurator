@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     // at this same App Proxy path, so login resumes the SSO handoff.
     const returnTo = encodeURIComponent('/apps/sso/configurator');
     return NextResponse.redirect(
-      `https://marvins.eu/customer_authentication/login?return_to=${returnTo}`
+      `https://www.marvins.eu/account/login?return_to=${returnTo}`
     );
   }
 
