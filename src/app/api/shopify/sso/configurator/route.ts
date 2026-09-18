@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyProxySignature } from '@/lib/verifyProxySignature';
 import { createSsoToken } from '@/lib/ssoToken';
 
-// Shopify App Proxy config: Subpath prefix "apps", Subpath "sso",
-// Proxy URL "https://marvinscloud.com/api/shopify/sso".
-// A click on https://marvins.eu/apps/sso/configurator arrives here,
-// with logged_in_customer_id + signature added automatically by Shopify
-// when the visitor is logged into the storefront.
+// Catch-all: matches /api/shopify/sso AND /api/shopify/sso/anything.
+// Shopify's App Proxy forwards https://marvins.eu/apps/sso/<anything>
+// to https://marvinscloud.com/api/shopify/sso/<anything> - this route
+// accepts any trailing path so the exact link used in the theme
+// (with or without a suffix) doesn't matter.
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
@@ -20,9 +20,8 @@ export async function GET(req: NextRequest) {
 
   if (!loggedInCustomerId) {
     // Signature is valid, but nobody is logged in on the storefront.
-    // Send them to Shopify's new customer login with return_to pointing
-    // back at this same App Proxy path, so after a successful login
-    // Shopify sends them right back here and the SSO handoff resumes.
+    // Send to Shopify's new customer login with return_to pointing back
+    // at this same App Proxy path, so login resumes the SSO handoff.
     const returnTo = encodeURIComponent('/apps/sso/configurator');
     return NextResponse.redirect(
       `https://marvins.eu/customer_authentication/login?return_to=${returnTo}`
