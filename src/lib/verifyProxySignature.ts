@@ -3,7 +3,7 @@ import crypto from 'crypto';
 // This is the Client secret of your custom Shopify app (Configuration tab).
 // Shopify signs every App Proxy request with it; we recompute the same
 // signature and compare, so we can trust logged_in_customer_id wasn't forged.
-const SHOPIFY_APP_SECRET = process.env.SHOPIFY_APP_SECRET!;
+const SHOPIFY_APP_SECRET = process.env.SHOPIFY_API_SECRET!;
 
 /**
  * Verifies a Shopify App Proxy request signature.
