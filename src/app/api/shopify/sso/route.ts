@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     // theme's login form includes a hidden `return_to` field populated
     // from it (see main-login.liquid). This sends them back to this same
     // App Proxy path, so after a successful login the SSO handoff resumes.
-    const returnUrl = encodeURIComponent('/apps/sso/configurator');
+    const returnUrl = encodeURIComponent('/apps/sso');
     return NextResponse.redirect(
       `https://marvins.eu/account/login?return_url=${returnUrl}`
     );

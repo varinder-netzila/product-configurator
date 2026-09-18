@@ -65,7 +65,7 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
     // No valid SSO token and no existing session - send to Shopify's new
     // customer login, with return_to pointing back through our App Proxy
     // so the SSO handoff runs again immediately after login succeeds.
-    const returnTo = encodeURIComponent("/apps/sso/configurator");
+    const returnTo = encodeURIComponent("/apps/sso");
     return NextResponse.redirect(
       `https://www.marvins.eu/account/login?return_to=${returnTo}`
     );
