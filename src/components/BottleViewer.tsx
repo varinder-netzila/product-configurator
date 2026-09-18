@@ -477,7 +477,7 @@ function CanvasCapture({ onCaptureReady }: { onCaptureReady?: (captureFn: () => 
             const exportSize = 2048;
             gl.setPixelRatio(1);
             gl.setSize(exportSize, exportSize, false);
-            cam.aspect = 0.9;
+            cam.aspect = 1;
             cam.updateProjectionMatrix();
             gl.render(scene, camera);
 
@@ -1002,7 +1002,7 @@ const BottleModel = ({
   }, [clonedScene]);
 
   return (
-  <group scale={[1.5, 1.5, 1.5]} position={[0.7, 1.5, 0.01]}>
+  <group scale={[1.7, 1.7, 1.7]} position={[0.7, 1.5, 0.01]}>
     {clonedScene && <primitive object={clonedScene.baseBodyScene} />}
     {clonedScene?.hasLogoLayer && <primitive object={clonedScene.logoLayerScene} />}
     {clonedScene?.hasTextLayer && <primitive object={clonedScene.textLayerScene} />}
