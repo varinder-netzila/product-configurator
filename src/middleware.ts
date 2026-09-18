@@ -61,15 +61,15 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
     // Invalid/expired token - fall through to the session check below
   }
 
-  if (!existingSession) {
-    // No valid SSO token and no existing session - send to Shopify's new
-    // customer login, with return_to pointing back through our App Proxy
-    // so the SSO handoff runs again immediately after login succeeds.
-    const returnTo = encodeURIComponent("/apps/sso");
-    return NextResponse.redirect(
-      `https://www.marvins.eu/account/login?return_to=${returnTo}`
-    );
-  }
+  // if (!existingSession) {
+  //   // No valid SSO token and no existing session - send to Shopify's new
+  //   // customer login, with return_to pointing back through our App Proxy
+  //   // so the SSO handoff runs again immediately after login succeeds.
+  //   const returnTo = encodeURIComponent("/apps/sso");
+  //   return NextResponse.redirect(
+  //     `https://www.marvins.eu/account/login?return_to=${returnTo}`
+  //   );
+  // }
 
   return null; // Session already valid - let the request continue normally
 }

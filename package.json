@@ -44,6 +44,7 @@
     "zustand": "^4.5.7"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
