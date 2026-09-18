@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySsoToken } from "@/lib/ssoToken";
 
 const locales = ["nl", "en", "fr", "de", "cs", "es"];
 const defaultLocale = "nl";
 
 // Paths that should NOT be locale-prefixed
 const publicPaths = ["/api/", "/assets/", "/_next/", "/favicon", "/Favicon"];
+
+const SESSION_COOKIE = "mc_session";
+const SESSION_MAX_AGE = 60 * 60 * 24; // 1 day - tune to taste
 
 function getPreferredLocale(request: NextRequest): string {
   // 1. Check cookie
@@ -21,6 +25,55 @@ function getPreferredLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
+// Matches "/configurator" or "/configurator/..." (locale prefix already stripped)
+function isProtectedPath(pathWithoutLocale: string): boolean {
+  return pathWithoutLocale === "/configurator" || pathWithoutLocale.startsWith("/configurator/");
+}
+
+// Handles the SSO handoff + session check for the configurator route.
+// Returns a NextResponse if it wants to redirect (block, or consume the
+// token and set a session cookie), or null to mean "let the request through
+// as normal" so the caller can continue with locale-cookie logic etc.
+function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
+  const { searchParams } = request.nextUrl;
+  const token = searchParams.get("token");
+  const existingSession = request.cookies.get(SESSION_COOKIE)?.value;
+
+  if (token) {
+    const payload = verifySsoToken(token);
+    if (payload) {
+      // Valid SSO handoff - set our own session cookie, redirect to the
+      // same URL with ?token= stripped so it never lingers in the address
+      // bar / history.
+      const cleanUrl = request.nextUrl.clone();
+      cleanUrl.searchParams.delete("token");
+
+      const res = NextResponse.redirect(cleanUrl);
+      res.cookies.set(SESSION_COOKIE, JSON.stringify({ customerId: payload.customerId }), {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: SESSION_MAX_AGE,
+      });
+      return res;
+    }
+    // Invalid/expired token - fall through to the session check below
+  }
+
+  if (!existingSession) {
+    // No valid SSO token and no existing session - send to Shopify's new
+    // customer login, with return_to pointing back through our App Proxy
+    // so the SSO handoff runs again immediately after login succeeds.
+    const returnTo = encodeURIComponent("/apps/sso/configurator");
+    return NextResponse.redirect(
+      `https://marvins.eu/customer_authentication/login?return_to=${returnTo}`
+    );
+  }
+
+  return null; // Session already valid - let the request continue normally
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -35,6 +88,14 @@ export function middleware(request: NextRequest) {
   );
 
   if (pathnameLocale) {
+    const pathWithoutLocale = pathname.slice(`/${pathnameLocale}`.length) || "/";
+
+    // Guard the configurator route before anything else
+    if (isProtectedPath(pathWithoutLocale)) {
+      const guardResponse = handleConfiguratorAccess(request);
+      if (guardResponse) return guardResponse;
+    }
+
     // Set locale cookie and continue
     const response = NextResponse.next();
     response.cookies.set("locale", pathnameLocale, { path: "/", maxAge: 31536000 });
@@ -42,6 +103,7 @@ export function middleware(request: NextRequest) {
   }
 
   // No locale in path → redirect to preferred locale
+  // (search params, including a possible ?token=, are preserved by clone())
   const locale = getPreferredLocale(request);
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname}`;
