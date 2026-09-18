@@ -67,7 +67,7 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
     // so the SSO handoff runs again immediately after login succeeds.
     const returnTo = encodeURIComponent("/apps/sso/configurator");
     return NextResponse.redirect(
-      `https://marvins.eu/customer_authentication/login?return_to=${returnTo}`
+      `https://www.marvins.eu/account/login?return_to=${returnTo}`
     );
   }
 
