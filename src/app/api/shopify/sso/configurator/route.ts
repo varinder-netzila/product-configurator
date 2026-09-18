@@ -20,11 +20,13 @@ export async function GET(req: NextRequest) {
 
   if (!loggedInCustomerId) {
     // Signature is valid, but nobody is logged in on the storefront.
-    // Send to Shopify's new customer login with return_to pointing back
-    // at this same App Proxy path, so login resumes the SSO handoff.
-    const returnTo = encodeURIComponent('/apps/sso/configurator');
+    // Classic accounts: /account/login honors return_url as long as the
+    // theme's login form includes a hidden `return_to` field populated
+    // from it (see main-login.liquid). This sends them back to this same
+    // App Proxy path, so after a successful login the SSO handoff resumes.
+    const returnUrl = encodeURIComponent('/apps/sso/configurator');
     return NextResponse.redirect(
-      `https://www.marvins.eu/account/login?return_to=${returnTo}`
+      `https://marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
