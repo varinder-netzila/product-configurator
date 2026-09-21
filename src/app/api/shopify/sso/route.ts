@@ -25,9 +25,9 @@ export async function GET(req: NextRequest) {
     // from it (see main-login.liquid). This sends them back to this same
     // App Proxy path, so after a successful login the SSO handoff resumes.
     const returnUrl = encodeURIComponent('/apps/sso');
-    // return NextResponse.redirect(
-    //   `https://marvins.eu/account/login?return_url=${returnUrl}`
-    // );
+    return NextResponse.redirect(
+      `https://marvins.eu/account/login?return_url=${returnUrl}`
+    );
   }
  console.log(loggedInCustomerId);
   const token = createSsoToken({ customerId: loggedInCustomerId, shop });
