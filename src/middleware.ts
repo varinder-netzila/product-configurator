@@ -26,53 +26,53 @@ function getPreferredLocale(request: NextRequest): string {
 }
 
 // Matches "/configurator" or "/configurator/..." (locale prefix already stripped)
-function isProtectedPath(pathWithoutLocale: string): boolean {
-  return pathWithoutLocale === "/configurator" || pathWithoutLocale.startsWith("/configurator/");
-}
+// function isProtectedPath(pathWithoutLocale: string): boolean {
+//   return pathWithoutLocale === "/configurator" || pathWithoutLocale.startsWith("/configurator/");
+// }
 
 // Handles the SSO handoff + session check for the configurator route.
 // Returns a NextResponse if it wants to redirect (block, or consume the
 // token and set a session cookie), or null to mean "let the request through
 // as normal" so the caller can continue with locale-cookie logic etc.
-function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
-  const { searchParams } = request.nextUrl;
-  const token = searchParams.get("token");
-  const existingSession = request.cookies.get(SESSION_COOKIE)?.value;
+// function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
+//   const { searchParams } = request.nextUrl;
+//   const token = searchParams.get("token");
+//   const existingSession = request.cookies.get(SESSION_COOKIE)?.value;
 
-  if (token) {
-    const payload = verifySsoToken(token);
-    if (payload) {
-      // Valid SSO handoff - set our own session cookie, redirect to the
-      // same URL with ?token= stripped so it never lingers in the address
-      // bar / history.
-      const cleanUrl = request.nextUrl.clone();
-      cleanUrl.searchParams.delete("token");
+//   if (token) {
+//     const payload = verifySsoToken(token);
+//     if (payload) {
+//       // Valid SSO handoff - set our own session cookie, redirect to the
+//       // same URL with ?token= stripped so it never lingers in the address
+//       // bar / history.
+//       const cleanUrl = request.nextUrl.clone();
+//       cleanUrl.searchParams.delete("token");
 
-      const res = NextResponse.redirect(cleanUrl);
-      res.cookies.set(SESSION_COOKIE, JSON.stringify({ customerId: payload.customerId }), {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: SESSION_MAX_AGE,
-      });
-      return res;
-    }
-    // Invalid/expired token - fall through to the session check below
-  }
+//       const res = NextResponse.redirect(cleanUrl);
+//       res.cookies.set(SESSION_COOKIE, JSON.stringify({ customerId: payload.customerId }), {
+//         httpOnly: true,
+//         secure: true,
+//         sameSite: "lax",
+//         path: "/",
+//         maxAge: SESSION_MAX_AGE,
+//       });
+//       return res;
+//     }
+//     // Invalid/expired token - fall through to the session check below
+//   }
 
-  if (!existingSession) {
-    // No valid SSO token and no existing session - send to Shopify's
-    // classic customer login, with return_url pointing back through our
-    // App Proxy so the SSO handoff runs again immediately after login.
-    const returnUrl = encodeURIComponent("/apps/sso/configurator");
-    return NextResponse.redirect(
-      `https://marvins.eu/account/login?return_url=${returnUrl}`
-    );
-  }
+//   if (!existingSession) {
+//     // No valid SSO token and no existing session - send to Shopify's
+//     // classic customer login, with return_url pointing back through our
+//     // App Proxy so the SSO handoff runs again immediately after login.
+//     const returnUrl = encodeURIComponent("/apps/sso/configurator");
+//     return NextResponse.redirect(
+//       `https://marvins.eu/account/login?return_url=${returnUrl}`
+//     );
+//   }
 
-  return null; // Session already valid - let the request continue normally
-}
+//   return null; // Session already valid - let the request continue normally
+// }
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -91,10 +91,10 @@ export function middleware(request: NextRequest) {
     const pathWithoutLocale = pathname.slice(`/${pathnameLocale}`.length) || "/";
 
     // Guard the configurator route before anything else
-    if (isProtectedPath(pathWithoutLocale)) {
-      const guardResponse = handleConfiguratorAccess(request);
-      if (guardResponse) return guardResponse;
-    }
+    // if (isProtectedPath(pathWithoutLocale)) {
+    //   const guardResponse = handleConfiguratorAccess(request);
+    //   if (guardResponse) return guardResponse;
+    // }
 
     // Set locale cookie and continue
     const response = NextResponse.next();
