@@ -112,9 +112,9 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = {
-  matcher: [
-    // Match all paths except static files and api routes
-    "/((?!api|_next/static|_next/image|assets|favicon|Favicon|.*\\.).*)",
-  ],
-};
+// export const config = {
+//   matcher: [
+//     // Match all paths except static files and api routes
+//     "/((?!api|_next/static|_next/image|assets|favicon|Favicon|.*\\.).*)",
+//   ],
+// };
