@@ -62,12 +62,12 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
   }
 
   if (!existingSession) {
-    // No valid SSO token and no existing session - send to Shopify's new
-    // customer login, with return_to pointing back through our App Proxy
-    // so the SSO handoff runs again immediately after login succeeds.
-    const returnTo = encodeURIComponent("/apps/sso");
+    // No valid SSO token and no existing session - send to Shopify's
+    // classic customer login, with return_url pointing back through our
+    // App Proxy so the SSO handoff runs again immediately after login.
+    const returnUrl = encodeURIComponent("/apps/sso/configurator");
     return NextResponse.redirect(
-      `https://www.marvins.eu/account/login?return_to=${returnTo}`
+      `https://marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
