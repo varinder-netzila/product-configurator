@@ -41,6 +41,11 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
 
   if (token) {
     const payload = verifySsoToken(token);
+    console.error("DEBUG:", {
+  token,
+  payload,
+  url: request.url,
+});
     if (payload) {
       // Valid SSO handoff - set our own session cookie, redirect to the
       // same URL with ?token= stripped so it never lingers in the address
@@ -61,14 +66,14 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
     // Invalid/expired token - fall through to the session check below
   }
 
-  if (!existingSession) {
+  if (token) {
     // No valid SSO token and no existing session - send to Shopify's
     // classic customer login, with return_url pointing back through our
     // App Proxy so the SSO handoff runs again immediately after login.
     const returnUrl = encodeURIComponent("/apps/sso-pro");
-    // return NextResponse.redirect(
-    //   `https://marvins.eu/account/login?return_url=${returnUrl}`
-    // );
+    return NextResponse.redirect(
+      `https://marvins.eu/account/login?return_url=${returnUrl}`
+    );
   }
 
   return null; // Session already valid - let the request continue normally
