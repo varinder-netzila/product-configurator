@@ -1,67 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
+import crypto from "crypto";
+import { NextRequest, NextResponse } from "next/server";
 
-function verifyProxySignature(
-  searchParams: URLSearchParams,
-  secret: string
-): boolean {
-  const params = Object.fromEntries(searchParams.entries());
-  const { signature, ...rest } = params;
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
 
-  if (!signature) return false;
+  const signature = url.searchParams.get("signature");
 
-  const sortedParams = Object.keys(rest)
-    .sort()
-    .map((key) => `${key}=${rest[key]}`)
-    .join('');
+  if (!signature) {
+    return NextResponse.json(
+      { error: "Missing signature" },
+      { status: 401 }
+    );
+  }
+
+  // Copy all query parameters except signature
+  const params = new URLSearchParams(url.searchParams);
+  params.delete("signature");
+
+  // Shopify requires parameters sorted alphabetically
+  const message = [...params.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${key}=${value}`)
+    .join("");
+
+  const secret = process.env.SHOPIFY_API_SECRET!;
 
   const calculatedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(sortedParams)
-    .digest('hex');
+    .createHmac("sha256", secret)
+    .update(message)
+    .digest("hex");
 
-  return calculatedSignature === signature;
-}
+  const valid =
+    calculatedSignature.length === signature.length &&
+    crypto.timingSafeEqual(
+      Buffer.from(calculatedSignature),
+      Buffer.from(signature)
+    );
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-
-  const secret = process.env.SHOPIFY_API_SECRET;
-  if (!secret) {
-    return new NextResponse('Server misconfiguration', { status: 500 });
+  if (!valid) {
+    return NextResponse.json(
+      { error: "Invalid signature" },
+      { status: 401 }
+    );
   }
 
-  if (!verifyProxySignature(searchParams, secret)) {
-    return new NextResponse('Invalid signature', { status: 401 });
-  }
+  const shop = url.searchParams.get("shop");
+  const customerId = url.searchParams.get("logged_in_customer_id");
 
-  const shop = searchParams.get('shop');
-  const loggedInCustomerId = searchParams.get('logged_in_customer_id');
-
-  return new NextResponse(
-    `<div>Hello from your app proxy, shop: ${shop}</div>`,
-    {
-      status: 200,
-      headers: { 'Content-Type': 'application/liquid' },
-    }
-  );
-}
-
-export async function POST(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-
-  const secret = process.env.SHOPIFY_API_SECRET;
-  if (!secret) {
-    return new NextResponse('Server misconfiguration', { status: 500 });
-  }
-
-  if (!verifyProxySignature(searchParams, secret)) {
-    return new NextResponse('Invalid signature', { status: 401 });
-  }
-
-  const body = await req.json().catch(() => null);
-
-  // handle POST logic here
-
-  return NextResponse.json({ success: true });
+  return NextResponse.json({
+    success: true,
+    shop,
+    customerId,
+  });
 }
