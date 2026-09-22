@@ -66,9 +66,9 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
     // classic customer login, with return_url pointing back through our
     // App Proxy so the SSO handoff runs again immediately after login.
     const returnUrl = encodeURIComponent("/apps/sso-pro");
-    return NextResponse.redirect(
-      `https://marvins.eu/account/login?return_url=${returnUrl}`
-    );
+    // return NextResponse.redirect(
+    //   `https://marvins.eu/account/login?return_url=${returnUrl}`
+    // );
   }
 
   return null; // Session already valid - let the request continue normally

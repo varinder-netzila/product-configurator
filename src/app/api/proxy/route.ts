@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
   const loggedInCustomerId = searchParams.get('logged_in_customer_id'); 
   const shop = searchParams.get('shop') || 'marvins.eu';
-
+ 
   if (!loggedInCustomerId) {
     // Signature is valid, but nobody is logged in on the storefront.
     // Classic accounts: /account/login honors return_url as long as the
