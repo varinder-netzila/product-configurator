@@ -17,11 +17,17 @@ export function createSsoToken(payload: SsoTokenPayload): string {
 
 export function verifySsoToken(token: string): SsoTokenPayload | null {
   console.error("🔥 VERIFY TOKEN START");
+  console.error("🔥 SSO_SECRET EXISTS:", !!process.env.SSO_SECRET);
+console.error("🔥 SSO_SECRET LENGTH:", process.env.SSO_SECRET?.length);
+console.error("🔥 TOKEN LENGTH:", token.length);
   try {
     console.error("🔥 JWT VERIFIED:", jwt.verify(token, SSO_SECRET) as SsoTokenPayload);
     return jwt.verify(token, SSO_SECRET) as SsoTokenPayload;
   } catch {
     console.error("🔥 JWT VERIFY FAILED:");
+    console.error("🔥 ERROR MESSAGE:", error instanceof Error ? error.message : String(error));
+    console.error("🔥 ERROR NAME:", error instanceof Error ? error.name : "unknown");
+    console.error("🔥 ERROR STACK:", error instanceof Error ? error.stack : "no stack");
     return null;
   }
 }
