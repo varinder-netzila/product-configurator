@@ -17,8 +17,8 @@ export function createSsoToken(payload: SsoTokenPayload): string {
 
 export function verifySsoToken(token: string): SsoTokenPayload | null {
   console.error("🔥 VERIFY TOKEN START");
-  console.error("🔥 SSO_SECRET EXISTS:", !!process.env.SSO_SECRET);
-console.error("🔥 SSO_SECRET LENGTH:", process.env.SSO_SECRET?.length);
+  console.error("🔥 SSO_SECRET EXISTS:", !!SSO_SECRET);
+console.error("🔥 SSO_SECRET LENGTH:", SSO_SECRET?.length);
 console.error("🔥 TOKEN LENGTH:", token.length);
   try {
     console.error("🔥 JWT VERIFIED:", jwt.verify(token, SSO_SECRET) as SsoTokenPayload);
