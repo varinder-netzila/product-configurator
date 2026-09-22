@@ -39,44 +39,60 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
   const token = searchParams.get("token");
   const existingSession = request.cookies.get(SESSION_COOKIE)?.value;
 
-  if (token) {
-    const payload = verifySsoToken(token);
-    console.error("DEBUG:", {
-  token,
-  payload,
-  url: request.url,
-});
-    if (payload) {
-      // Valid SSO handoff - set our own session cookie, redirect to the
-      // same URL with ?token= stripped so it never lingers in the address
-      // bar / history.
-      const cleanUrl = request.nextUrl.clone();
-      cleanUrl.searchParams.delete("token");
+  console.error("🔥 handleConfiguratorAccess HIT");
 
-      const res = NextResponse.redirect(cleanUrl);
-      res.cookies.set(SESSION_COOKIE, JSON.stringify({ customerId: payload.customerId }), {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: SESSION_MAX_AGE,
-      });
-      return res;
+  console.error("🔥 handleConfiguratorAccess HIT");
+  console.error("🔥 URL:", request.url);
+  console.error("🔥 TOKEN:", token);
+  console.error("🔥 PAYLOAD:", payload);
+  console.error("🔥 EXISTING SESSION:", existingSession);
+
+  return new NextResponse(
+    JSON.stringify({
+      message: "HANDLE CONFIGURATOR ACCESS HIT",
+      token,
+      payload,
+      existingSession,
+    }, null, 2),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-SSO": "handleConfiguratorAccess-hit",
+      },
     }
+  );
+    // if (payload) {
+    //   // Valid SSO handoff - set our own session cookie, redirect to the
+    //   // same URL with ?token= stripped so it never lingers in the address
+    //   // bar / history.
+    //   const cleanUrl = request.nextUrl.clone();
+    //   cleanUrl.searchParams.delete("token");
+
+    //   const res = NextResponse.redirect(cleanUrl);
+    //   res.cookies.set(SESSION_COOKIE, JSON.stringify({ customerId: payload.customerId }), {
+    //     httpOnly: true,
+    //     secure: true,
+    //     sameSite: "lax",
+    //     path: "/",
+    //     maxAge: SESSION_MAX_AGE,
+    //   });
+    //   return res;
+    // }
     // Invalid/expired token - fall through to the session check below
-  }
+  //}
 
-  if (!token) {
-    // No valid SSO token and no existing session - send to Shopify's
-    // classic customer login, with return_url pointing back through our
-    // App Proxy so the SSO handoff runs again immediately after login.
-    const returnUrl = encodeURIComponent("/apps/sso-pro");
-    return NextResponse.redirect(
-      `https://marvins.eu/account/login?return_url=${returnUrl}`
-    );
-  }
+  // if (!token) {
+  //   // No valid SSO token and no existing session - send to Shopify's
+  //   // classic customer login, with return_url pointing back through our
+  //   // App Proxy so the SSO handoff runs again immediately after login.
+  //   const returnUrl = encodeURIComponent("/apps/sso-pro");
+  //   return NextResponse.redirect(
+  //     `https://marvins.eu/account/login?return_url=${returnUrl}`
+  //   );
+  // }
 
-  return null; // Session already valid - let the request continue normally
+  // return null; // Session already valid - let the request continue normally
 }
 
 export function middleware(request: NextRequest) {
