@@ -66,7 +66,7 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
     // Invalid/expired token - fall through to the session check below
   }
 
-  if (token) {
+  if (!token) {
     // No valid SSO token and no existing session - send to Shopify's
     // classic customer login, with return_url pointing back through our
     // App Proxy so the SSO handoff runs again immediately after login.
