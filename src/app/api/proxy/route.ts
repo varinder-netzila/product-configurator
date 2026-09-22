@@ -1,55 +1,38 @@
-import crypto from "crypto";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyProxySignature } from '@/lib/verifyProxySignature';
+import { createSsoToken } from '@/lib/ssoToken';
 
-export async function GET(request: NextRequest) {
-  const url = new URL(request.url);
+// This route only exists at exactly /api/shopify/sso (no sub-paths).
+// The theme link and App Proxy must point to https://marvins.eu/apps/sso
+// with no trailing segment, since a flat route.ts doesn't match anything
+// beyond its own exact path.
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
 
-  const signature = url.searchParams.get("signature");
+  if (!verifyProxySignature(searchParams)) {
+    // Request didn't genuinely come from Shopify - reject it
+    return NextResponse.redirect('https://www.marvins.eu/apps/sso-pro');
+  }
 
-  if (!signature) {
-    return NextResponse.json(
-      { error: "Missing signature" },
-      { status: 401 }
+  const loggedInCustomerId = searchParams.get('logged_in_customer_id'); 
+  const shop = searchParams.get('shop') || 'marvins.eu';
+
+  if (!loggedInCustomerId) {
+    // Signature is valid, but nobody is logged in on the storefront.
+    // Classic accounts: /account/login honors return_url as long as the
+    // theme's login form includes a hidden `return_to` field populated
+    // from it (see main-login.liquid). This sends them back to this same
+    // App Proxy path (no suffix, matching this route), so after a
+    // successful login the SSO handoff resumes.
+    const returnUrl = encodeURIComponent('/apps/sso-pro');
+    return NextResponse.redirect(
+      `https://www.marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
-  // Copy all query parameters except signature
-  const params = new URLSearchParams(url.searchParams);
-  params.delete("signature");
+  const token = createSsoToken({ customerId: loggedInCustomerId, shop });
 
-  // Shopify requires parameters sorted alphabetically
-  const message = [...params.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `${key}=${value}`)
-    .join("");
-
-  const secret = process.env.SHOPIFY_API_SECRET!;
-
-  const calculatedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(message)
-    .digest("hex");
-
-  const valid =
-    calculatedSignature.length === signature.length &&
-    crypto.timingSafeEqual(
-      Buffer.from(calculatedSignature),
-      Buffer.from(signature)
-    );
-
-  if (!valid) {
-    return NextResponse.json(
-      { error: "Invalid signature" },
-      { status: 401 }
-    );
-  }
-
-  const shop = url.searchParams.get("shop");
-  const customerId = url.searchParams.get("logged_in_customer_id");
-
-  return NextResponse.json({
-    success: true,
-    shop,
-    customerId,
-  });
+  return NextResponse.redirect(
+    `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(token)}`
+  );
 }
