@@ -41,11 +41,7 @@ function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
 
   if (token) {
     const payload = verifySsoToken(token);
-    console.error("DEBUG:", {
-  token,
-  payload,
-  url: request.url,
-});
+
     if (payload) {
       // Valid SSO handoff - set our own session cookie, redirect to the
       // same URL with ?token= stripped so it never lingers in the address
