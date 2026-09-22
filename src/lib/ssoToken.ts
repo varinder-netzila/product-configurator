@@ -21,7 +21,7 @@ export function verifySsoToken(token: string): SsoTokenPayload | null {
     console.error("🔥 JWT VERIFIED:", jwt.verify(token, SSO_SECRET) as SsoTokenPayload);
     return jwt.verify(token, SSO_SECRET) as SsoTokenPayload;
   } catch {
-    console.error("🔥 JWT VERIFY FAILED:", error);
+    console.error("🔥 JWT VERIFY FAILED:");
     return null;
   }
 }
