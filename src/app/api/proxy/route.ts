@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
   // BACKGROUND SHOPIFY LOGIN CHECK
   // ==========================================
   if (isAuthCheck) {
-    if (!loggedInCustomerId) {
+    if (loggedInCustomerId) {
       return NextResponse.redirect(
         `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(
           token
