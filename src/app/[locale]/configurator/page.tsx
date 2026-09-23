@@ -77,40 +77,85 @@ export default function ConfiguratorPage() {
  const [bottleTypes, setBottleTypes] = useState<any[]>([]);
 const [productsLoading, setProductsLoading] = useState(true);
 useEffect(() => {
-  const checkShopifyLogin = async () => {
-    try {
-      const response = await fetch(
-        'https://www.marvins.eu/apps/sso-pro?check=1',
-        {
-          credentials: 'include',
-          cache: 'no-store',
-        }
-      );
+  let iframe: HTMLIFrameElement | null = null;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
 
-      if (response.status === 401) {
-        console.log('Shopify customer logged out');
+  const checkShopifyLogin = () => {
+    iframe?.remove();
 
-        window.location.href =
-          'https://www.marvins.eu/account/login';
+    iframe = document.createElement('iframe');
 
-        return;
-      }
+    iframe.style.display = 'none';
 
-      const data = await response.json();
+    iframe.src =
+      'https://www.marvins.eu/apps/sso-pro?check=1&t=' +
+      Date.now();
 
-      if (!data.authenticated) {
-        window.location.href =
-          'https://www.marvins.eu/account/login';
-      }
-    } catch (error) {
+    document.body.appendChild(iframe);
+
+    timeout = setTimeout(() => {
       console.error(
-        'Shopify authentication check failed:',
-        error
+        'Shopify authentication check timed out'
       );
-    }
+
+      iframe?.remove();
+      iframe = null;
+    }, 10000);
   };
 
-  // Check immediately
+  const handleMessage = (event: MessageEvent) => {
+    // Only accept messages from Shopify storefront
+    if (event.origin !== 'https://www.marvins.eu') {
+      return;
+    }
+
+    let data;
+
+    try {
+      data =
+        typeof event.data === 'string'
+          ? JSON.parse(event.data)
+          : event.data;
+    } catch {
+      return;
+    }
+
+    if (data?.type !== 'SHOPIFY_AUTH_CHECK') {
+      return;
+    }
+
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+
+    iframe?.remove();
+    iframe = null;
+
+    console.log(
+      'Shopify authentication:',
+      data.authenticated
+    );
+
+    if (!data.authenticated) {
+      window.location.href =
+        'https://www.marvins.eu/account/login?return_url=/apps/sso-pro';
+
+      return;
+    }
+
+    console.log(
+      'Shopify customer still logged in:',
+      data.customerId
+    );
+  };
+
+  window.addEventListener(
+    'message',
+    handleMessage
+  );
+
+  // Initial check
   checkShopifyLogin();
 
   // Check every 30 seconds
@@ -119,7 +164,19 @@ useEffect(() => {
     30_000
   );
 
-  return () => clearInterval(interval);
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener(
+      'message',
+      handleMessage
+    );
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    iframe?.remove();
+  };
 }, []);
 useEffect(() => {
   if (!shop || !isAuthenticated) {

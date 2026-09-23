@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 
   const isAuthCheck =
     searchParams.get('check') === '1';
-    
+
   // Verify Shopify App Proxy signature
   if (!verifyProxySignature(searchParams)) {
     return NextResponse.json(
@@ -51,31 +51,40 @@ export async function GET(req: NextRequest) {
   // ==========================================
   // BACKGROUND SHOPIFY LOGIN CHECK
   // ==========================================
-  if (isAuthCheck) {
-    if (!loggedInCustomerId) {
-      return NextResponse.json(
-        {
-          authenticated: false,
-        },
-        {
-          status: 401,
-          headers: CORS_HEADERS,
-        }
-      );
-    }
+if (isAuthCheck) {
+  const authenticated = !!loggedInCustomerId;
 
-    return NextResponse.json(
-      {
-        authenticated: true,
-        customerId: loggedInCustomerId,
-        shop,
-      },
-      {
-        status: 200,
-        headers: CORS_HEADERS,
-      }
-    );
-  }
+  const message = JSON.stringify({
+    type: 'SHOPIFY_AUTH_CHECK',
+    authenticated,
+    customerId: loggedInCustomerId || null,
+  });
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+</head>
+<body>
+<script>
+  window.parent.postMessage(
+    ${JSON.stringify(message)},
+    'https://marvinscloud.com'
+  );
+</script>
+</body>
+</html>
+`;
+
+  return new NextResponse(html, {
+    status: authenticated ? 200 : 401,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
 
   // ==========================================
   // NORMAL SSO FLOW
