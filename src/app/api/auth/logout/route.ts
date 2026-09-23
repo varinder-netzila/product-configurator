@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const response = NextResponse.json({
-    success: true,
-    message: "All cookies deleted",
-  });
+  const response = NextResponse.redirect("https://www.marvins.eu/");
 
   const allCookies = request.cookies.getAll();
 
@@ -28,7 +25,6 @@ export async function GET(request: NextRequest) {
     path: "/",
     maxAge: 60 * 5, // 5 min grace window
   });
-    return NextResponse.redirect(
-      `https://www.marvins.eu/`
-    );
+
+  return response;
 }

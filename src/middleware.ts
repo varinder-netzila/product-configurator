@@ -55,26 +55,18 @@ async function handleConfiguratorAccess(
             maxAge: SESSION_MAX_AGE,
           }
         );
-        // A real, freshly verified token means the user (re)authenticated
-        // on purpose — clear the logged-out flag so normal auto-SSO resumes.
         res.cookies.set(LOGGED_OUT_COOKIE, "", { path: "/", maxAge: 0 });
       }
       return res;
     }
-    // Invalid/expired token — fall through.
   }
 
-  // User explicitly logged out and hasn't presented a fresh token yet.
-  // Don't auto-bounce through Shopify SSO — send them to a neutral page.
-  if (loggedOut && !token) {
-    return NextResponse.redirect(
-      `https://www.marvins.eu/apps/sso-pro?check=1`
-    );
-  }
-
+  // No session (logged out, or session expired) → send to Shopify's
+  // actual login form, not the silent check=1 auto-auth path.
   if (!token && !existingSession) {
+    const returnUrl = encodeURIComponent("/apps/sso-pro");
     return NextResponse.redirect(
-      `https://www.marvins.eu/apps/sso-pro?check=1`
+      `https://www.marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
