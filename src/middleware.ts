@@ -55,14 +55,24 @@ async function handleConfiguratorAccess(
             maxAge: SESSION_MAX_AGE,
           }
         );
+        // Real, freshly verified token = deliberate login. Clear the flag.
         res.cookies.set(LOGGED_OUT_COOKIE, "", { path: "/", maxAge: 0 });
       }
       return res;
     }
+    // Invalid/expired token — fall through to the checks below.
   }
 
-  // No session (logged out, or session expired) → send to Shopify's
-  // actual login form, not the silent check=1 auto-auth path.
+  // Checked BEFORE existingSession on purpose: if the user explicitly
+  // logged out, don't trust a leftover/stale mc_session cookie to let
+  // them straight back in. Force them through Shopify's login form.
+  if (loggedOut && !token) {
+    const returnUrl = encodeURIComponent("/apps/sso-pro");
+    return NextResponse.redirect(
+      `https://www.marvins.eu/account/login?return_url=${returnUrl}`
+    );
+  }
+
   if (!token && !existingSession) {
     const returnUrl = encodeURIComponent("/apps/sso-pro");
     return NextResponse.redirect(
@@ -70,6 +80,7 @@ async function handleConfiguratorAccess(
     );
   }
 
+  // Existing session is valid, user hasn't logged out
   return null;
 }
 
