@@ -1,18 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-const SESSION_COOKIE = 'mc_session';
-
-export async function GET() {
+export async function GET(request: NextRequest) {
   const response = NextResponse.json({
     success: true,
-    message: "mc_session deleted",
+    message: "All cookies deleted",
   });
 
-  response.cookies.delete({
-    name: SESSION_COOKIE,
-    path: "https://marvinscloud.com/en/configurator",       // must match the path used when the cookie was set
-    domain: "marvinscloud.com", // only if you explicitly set a domain originally
-  });
+  const allCookies = request.cookies.getAll();
+
+  for (const cookie of allCookies) {
+    response.cookies.set(cookie.name, "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0, // expires immediately
+    });
+  }
 
   return response;
 }
