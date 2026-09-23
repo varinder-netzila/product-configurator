@@ -45,38 +45,46 @@ async function handleConfiguratorAccess(
     const payload = await verifySsoToken(token);
 
     if (payload) {
-      // Valid SSO handoff - set our own session cookie, redirect to the
-      // same URL with ?token= stripped so it never lingers in the address
-      // bar / history.
+      // Valid SSO handoff - create our own session
+      // and remove token from the URL.
       const cleanUrl = request.nextUrl.clone();
       cleanUrl.searchParams.delete("token");
 
       const res = NextResponse.redirect(cleanUrl);
-      res.cookies.set(SESSION_COOKIE, JSON.stringify({ customerId: payload.customerId }), {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: SESSION_MAX_AGE,
-      });
+
+      res.cookies.set(
+        SESSION_COOKIE,
+        JSON.stringify({
+          customerId: payload.customerId,
+        }),
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          path: "/",
+          maxAge: SESSION_MAX_AGE,
+        }
+      );
+
       return res;
     }
-    // Invalid/expired token - fall through to the session check below
+
+    // Invalid/expired token.
+    // Fall through to session check below.
   }
 
-  if (!token) {
-    // No valid SSO token and no existing session - send to Shopify's
-    // classic customer login, with return_url pointing back through our
-    // App Proxy so the SSO handoff runs again immediately after login.
+  // No token and no existing session
+  if (!token && !existingSession) {
     const returnUrl = encodeURIComponent("/apps/sso-pro");
+
     return NextResponse.redirect(
       `https://marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
-  return null; // Session already valid - let the request continue normally
+  // Existing session is valid
+  return null;
 }
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
