@@ -2,35 +2,46 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyProxySignature } from '@/lib/verifyProxySignature';
 import { createSsoToken } from '@/lib/ssoToken';
 
-// This route only exists at exactly /api/shopify/sso (no sub-paths).
-// The theme link and App Proxy must point to https://marvins.eu/apps/sso
-// with no trailing segment, since a flat route.ts doesn't match anything
-// beyond its own exact path.
+export const runtime = 'nodejs';
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
+  // Verify Shopify App Proxy signature
   if (!verifyProxySignature(searchParams)) {
-    // Request didn't genuinely come from Shopify - reject it
-    return NextResponse.redirect('https://www.marvins.eu/apps/sso-pro');
+    return NextResponse.redirect(
+      'https://www.marvins.eu/apps/sso-pro'
+    );
   }
 
-  const loggedInCustomerId = searchParams.get('logged_in_customer_id'); 
-  const shop = searchParams.get('shop') || 'marvins.eu';
- 
+  const loggedInCustomerId =
+    searchParams.get('logged_in_customer_id');
+
+  const shop =
+    searchParams.get('shop') || 'marvins.eu';
+
+  // Customer is not logged in
   if (!loggedInCustomerId) {
-    // Signature is valid, but nobody is logged in on the storefront.
-    // Classic accounts: /account/login honors return_url as long as the
-    // theme's login form includes a hidden `return_to` field populated
-    // from it (see main-login.liquid). This sends them back to this same
-    // App Proxy path (no suffix, matching this route), so after a
-    // successful login the SSO handoff resumes.
-    const returnUrl = encodeURIComponent('/apps/sso-pro');
+    const returnUrl = encodeURIComponent(
+      '/apps/sso-pro'
+    );
+
     return NextResponse.redirect(
       `https://www.marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
-  const token = createSsoToken({ customerId: loggedInCustomerId, shop });
+  // IMPORTANT: createSsoToken() is async
+  const token = await createSsoToken({
+    customerId: loggedInCustomerId,
+    shop,
+  });
+
+  console.error('🔥 TOKEN TYPE:', typeof token);
+  console.error(
+    '🔥 TOKEN PARTS:',
+    token.split('.').length
+  );
 
   return NextResponse.redirect(
     `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(token)}`
