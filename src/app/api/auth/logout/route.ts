@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
     path: "/",
     maxAge: 60 * 5, // 5 min grace window
   });
-
-  return response;
+    return NextResponse.redirect(
+      `https://www.marvins.eu/`
+    );
 }

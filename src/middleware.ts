@@ -67,7 +67,9 @@ async function handleConfiguratorAccess(
   // User explicitly logged out and hasn't presented a fresh token yet.
   // Don't auto-bounce through Shopify SSO — send them to a neutral page.
   if (loggedOut && !token) {
-    return NextResponse.redirect(new URL("/logged-out", request.url));
+    return NextResponse.redirect(
+      `https://www.marvins.eu/apps/sso-pro?check=1`
+    );
   }
 
   if (!token && !existingSession) {
