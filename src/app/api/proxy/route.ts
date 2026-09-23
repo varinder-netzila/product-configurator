@@ -9,7 +9,13 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Credentials': 'true',
   'Cache-Control': 'no-store',
 };
+const locales = ["nl", "en", "fr", "de", "cs", "es"];
+const defaultLocale = "nl";
 
+function getLocaleFromPath(pathname: string): string {
+  const segment = pathname.split('/')[1]; // e.g. "en" from "/en/apps/sso-pro"
+  return locales.includes(segment) ? segment : defaultLocale;
+}
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
@@ -23,7 +29,7 @@ export async function OPTIONS() {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-
+  const locale = getLocaleFromPath(pathname);
   const loggedInCustomerId =
     searchParams.get('logged_in_customer_id');
 
@@ -60,7 +66,7 @@ export async function GET(req: NextRequest) {
   if (isAuthCheck) {
     if (loggedInCustomerId) {
       return NextResponse.redirect(
-        `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(
+        `https://marvinscloud.com/${locale}/configurator?token=${encodeURIComponent(
           token
         )}`
       );
@@ -91,7 +97,7 @@ export async function GET(req: NextRequest) {
   );
 
   return NextResponse.redirect(
-    `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(
+    `https://marvinscloud.com/${locale}/configurator?token=${encodeURIComponent(
       token
     )}`
   );
