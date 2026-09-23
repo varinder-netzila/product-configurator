@@ -11,7 +11,7 @@ export async function GET() {
   response.cookies.delete({
     name: SESSION_COOKIE,
     path: "https://marvinscloud.com/en/configurator",       // must match the path used when the cookie was set
-    // domain: "marvinscloud.com", // only if you explicitly set a domain originally
+    domain: "marvinscloud.com", // only if you explicitly set a domain originally
   });
 
   return response;
