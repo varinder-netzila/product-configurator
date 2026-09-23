@@ -77,6 +77,51 @@ export default function ConfiguratorPage() {
  const [bottleTypes, setBottleTypes] = useState<any[]>([]);
 const [productsLoading, setProductsLoading] = useState(true);
 useEffect(() => {
+  const checkShopifyLogin = async () => {
+    try {
+      const response = await fetch(
+        'https://www.marvins.eu/apps/sso-pro?check=1',
+        {
+          credentials: 'include',
+          cache: 'no-store',
+        }
+      );
+
+      if (response.status === 401) {
+        console.log('Shopify customer logged out');
+
+        window.location.href =
+          'https://www.marvins.eu/account/login';
+
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!data.authenticated) {
+        window.location.href =
+          'https://www.marvins.eu/account/login';
+      }
+    } catch (error) {
+      console.error(
+        'Shopify authentication check failed:',
+        error
+      );
+    }
+  };
+
+  // Check immediately
+  checkShopifyLogin();
+
+  // Check every 30 seconds
+  const interval = setInterval(
+    checkShopifyLogin,
+    30_000
+  );
+
+  return () => clearInterval(interval);
+}, []);
+useEffect(() => {
   if (!shop || !isAuthenticated) {
     return;
   }

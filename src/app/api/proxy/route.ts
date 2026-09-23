@@ -7,10 +7,16 @@ export const runtime = 'nodejs';
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
-  // Verify Shopify App Proxy signature
+  // --------------------------------------------------
+  // 1. Verify Shopify App Proxy signature
+  // --------------------------------------------------
   if (!verifyProxySignature(searchParams)) {
-    return NextResponse.redirect(
-      'https://www.marvins.eu/apps/sso-pro'
+    return NextResponse.json(
+      {
+        authenticated: false,
+        error: 'Invalid Shopify App Proxy signature',
+      },
+      { status: 401 }
     );
   }
 
@@ -20,7 +26,39 @@ export async function GET(req: NextRequest) {
   const shop =
     searchParams.get('shop') || 'marvins.eu';
 
-  // Customer is not logged in
+  const isAuthCheck =
+    searchParams.get('check') === '1';
+
+  // --------------------------------------------------
+  // 2. BACKGROUND AUTH CHECK
+  // --------------------------------------------------
+  // Called by:
+  // /apps/sso-pro?check=1
+  //
+  // No redirect and no JWT creation.
+  // Shopify tells us whether a customer is logged in
+  // through logged_in_customer_id.
+  // --------------------------------------------------
+  if (isAuthCheck) {
+    if (!loggedInCustomerId) {
+      return NextResponse.json(
+        {
+          authenticated: false,
+        },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json({
+      authenticated: true,
+      customerId: loggedInCustomerId,
+      shop,
+    });
+  }
+
+  // --------------------------------------------------
+  // 3. NORMAL SSO FLOW
+  // --------------------------------------------------
   if (!loggedInCustomerId) {
     const returnUrl = encodeURIComponent(
       '/apps/sso-pro'
@@ -31,7 +69,9 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // IMPORTANT: createSsoToken() is async
+  // --------------------------------------------------
+  // 4. Create 30-second SSO JWT
+  // --------------------------------------------------
   const token = await createSsoToken({
     customerId: loggedInCustomerId,
     shop,
@@ -43,7 +83,12 @@ export async function GET(req: NextRequest) {
     token.split('.').length
   );
 
+  // --------------------------------------------------
+  // 5. Redirect to configurator
+  // --------------------------------------------------
   return NextResponse.redirect(
-    `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(token)}`
+    `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(
+      token
+    )}`
   );
 }
