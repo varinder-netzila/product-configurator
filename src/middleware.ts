@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 const locales = ["nl", "en", "fr", "de", "cs", "es"];
 const defaultLocale = "nl";
 
-// Paths that should NOT be locale-prefixed
 const publicPaths = [
   "/api/",
   "/assets/",
@@ -15,14 +14,12 @@ const publicPaths = [
 const SESSION_COOKIE = "mc_session";
 
 function getPreferredLocale(request: NextRequest): string {
-  // 1. Check locale cookie
   const cookieLocale = request.cookies.get("locale")?.value;
 
   if (cookieLocale && locales.includes(cookieLocale)) {
     return cookieLocale;
   }
 
-  // 2. Check browser language
   const acceptLang =
     request.headers.get("accept-language") || "";
 
@@ -41,45 +38,39 @@ function getPreferredLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
-// Matches "/configurator" or "/configurator/..."
-function isProtectedPath(pathWithoutLocale: string): boolean {
+function isProtectedPath(path: string): boolean {
   return (
-    pathWithoutLocale === "/configurator" ||
-    pathWithoutLocale.startsWith("/configurator/")
+    path === "/configurator" ||
+    path.startsWith("/configurator/")
   );
 }
 
-// Check whether the app session exists
-async function handleConfiguratorAccess(
-  request: NextRequest
-): Promise<NextResponse | null> {
-  const existingSession =
-    request.cookies.get(SESSION_COOKIE)?.value;
+function hasValidSession(request: NextRequest): boolean {
+  const session = request.cookies.get(SESSION_COOKIE)?.value;
 
-  // No app session
-  if (!existingSession) {
-    // Send the user through Shopify App Proxy.
-    //
-    // Shopify will automatically add:
-    // logged_in_customer_id
-    // shop
-    //
-    // The SSO route will create mc_session and
-    // redirect back to the configurator.
-    return NextResponse.redirect(
-      "https://www.marvins.eu/apps/sso-pro"
-    );
+  if (!session) {
+    return false;
   }
 
-  // Session exists → allow request
-  return null;
+  try {
+    const data = JSON.parse(session);
+
+    return (
+      typeof data.customerId === "string" &&
+      data.customerId.length > 0 &&
+      typeof data.shop === "string" &&
+      data.shop.length > 0
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ------------------------------------------
-  // Skip public paths
+  // PUBLIC PATHS
   // ------------------------------------------
   if (
     publicPaths.some((path) =>
@@ -90,7 +81,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // ------------------------------------------
-  // Check whether URL already has a locale
+  // LOCALE ALREADY PRESENT
   // ------------------------------------------
   const pathnameLocale = locales.find(
     (locale) =>
@@ -98,24 +89,26 @@ export async function middleware(request: NextRequest) {
       pathname === `/${locale}`
   );
 
-  // ------------------------------------------
-  // URL HAS LOCALE
-  // ------------------------------------------
   if (pathnameLocale) {
     const pathWithoutLocale =
-      pathname.slice(pathnameLocale.length + 1) || "/";
+      pathname.slice(`/${pathnameLocale}`.length) || "/";
 
-    // Protect configurator
+    // ------------------------------------------
+    // PROTECT CONFIGURATOR
+    // ------------------------------------------
     if (isProtectedPath(pathWithoutLocale)) {
-      const guardResponse =
-        await handleConfiguratorAccess(request);
+      const sessionValid = hasValidSession(request);
 
-      if (guardResponse) {
-        return guardResponse;
+      if (!sessionValid) {
+        return NextResponse.redirect(
+          "https://www.marvins.eu/apps/sso-pro"
+        );
       }
     }
 
-    // Store locale preference
+    // ------------------------------------------
+    // SAVE LOCALE
+    // ------------------------------------------
     const response = NextResponse.next();
 
     response.cookies.set(
@@ -131,9 +124,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // ------------------------------------------
-  // NO LOCALE → ADD PREFERRED LOCALE
+  // NO LOCALE → ADD LOCALE
   // ------------------------------------------
-
   const locale = getPreferredLocale(request);
 
   const url = request.nextUrl.clone();
