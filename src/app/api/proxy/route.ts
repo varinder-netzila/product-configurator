@@ -28,7 +28,7 @@ export async function OPTIONS() {
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
+   const { searchParams, pathname } = req.nextUrl;
   const locale = getLocaleFromPath(pathname);
   const loggedInCustomerId =
     searchParams.get('logged_in_customer_id');
