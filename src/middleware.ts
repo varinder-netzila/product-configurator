@@ -1,153 +1,131 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySsoToken } from "@/lib/ssoToken";
 
 const locales = ["nl", "en", "fr", "de", "cs", "es"];
 const defaultLocale = "nl";
 
-const publicPaths = [
-  "/api/",
-  "/assets/",
-  "/_next/",
-  "/favicon",
-  "/Favicon",
-];
+// Paths that should NOT be locale-prefixed
+const publicPaths = ["/api/", "/assets/", "/_next/", "/favicon", "/Favicon"];
 
 const SESSION_COOKIE = "mc_session";
+const SESSION_MAX_AGE = 60*15; // 1 day - tune to taste
 
 function getPreferredLocale(request: NextRequest): string {
+  // 1. Check cookie
   const cookieLocale = request.cookies.get("locale")?.value;
+  if (cookieLocale && locales.includes(cookieLocale)) return cookieLocale;
 
-  if (cookieLocale && locales.includes(cookieLocale)) {
-    return cookieLocale;
-  }
-
-  const acceptLang =
-    request.headers.get("accept-language") || "";
-
+  // 2. Check Accept-Language header
+  const acceptLang = request.headers.get("accept-language") || "";
   for (const lang of acceptLang.split(",")) {
-    const code = lang
-      .split(";")[0]
-      .trim()
-      .substring(0, 2)
-      .toLowerCase();
-
-    if (locales.includes(code)) {
-      return code;
-    }
+    const code = lang.split(";")[0].trim().substring(0, 2).toLowerCase();
+    if (locales.includes(code)) return code;
   }
 
   return defaultLocale;
 }
 
-function isProtectedPath(path: string): boolean {
-  return (
-    path === "/configurator" ||
-    path.startsWith("/configurator/")
-  );
+// Matches "/configurator" or "/configurator/..." (locale prefix already stripped)
+function isProtectedPath(pathWithoutLocale: string): boolean {
+  return pathWithoutLocale === "/configurator" || pathWithoutLocale.startsWith("/configurator/");
 }
 
-function hasValidSession(request: NextRequest): boolean {
-  const session = request.cookies.get(SESSION_COOKIE)?.value;
+// Handles the SSO handoff + session check for the configurator route.
+// Returns a NextResponse if it wants to redirect (block, or consume the
+// token and set a session cookie), or null to mean "let the request through
+// as normal" so the caller can continue with locale-cookie logic etc.
+async function handleConfiguratorAccess(
+  request: NextRequest
+): Promise<NextResponse | null> {
+  const { searchParams } = request.nextUrl;
+  const token = searchParams.get("token");
+  const existingSession = request.cookies.get(SESSION_COOKIE)?.value;
 
-  if (!session) {
-    return false;
+  if (token) {
+    const payload = await verifySsoToken(token);
+
+    if (payload) {
+      // Valid SSO handoff - create our own session
+      // and remove token from the URL.
+      const cleanUrl = request.nextUrl.clone();
+      cleanUrl.searchParams.delete("token");
+
+      const res = NextResponse.redirect(cleanUrl);
+    if (cleanUrl.pathname.includes("configurator")) {
+      res.cookies.set(
+        SESSION_COOKIE,
+        JSON.stringify({
+          customerId: payload.customerId,
+        }),
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          path: "/",
+          maxAge: SESSION_MAX_AGE,
+        }
+      );
+    }
+      return res;
+    }
+
+    // Invalid/expired token.
+    // Fall through to session check below.
   }
 
-  try {
-    const data = JSON.parse(session);
+  // No token and no existing session
+  if (!token && !existingSession) {
+    //const returnUrl = encodeURIComponent("/apps/sso-pro");
 
-    return (
-      typeof data.customerId === "string" &&
-      data.customerId.length > 0 &&
-      typeof data.shop === "string" &&
-      data.shop.length > 0
+    return NextResponse.redirect(
+      `https://www.marvins.eu/apps/sso-pro?check=1`
     );
-  } catch {
-    return false;
   }
-}
 
-export async function middleware(request: NextRequest) {
+  // Existing session is valid
+  return null;
+}
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ------------------------------------------
-  // PUBLIC PATHS
-  // ------------------------------------------
-  if (
-    publicPaths.some((path) =>
-      pathname.startsWith(path)
-    )
-  ) {
+  // Skip public paths
+  if (publicPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
-  // ------------------------------------------
-  // LOCALE ALREADY PRESENT
-  // ------------------------------------------
+  // Check if pathname already has a locale
   const pathnameLocale = locales.find(
-    (locale) =>
-      pathname.startsWith(`/${locale}/`) ||
-      pathname === `/${locale}`
+    (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
   );
 
   if (pathnameLocale) {
-    const pathWithoutLocale =
-      pathname.slice(`/${pathnameLocale}`.length) || "/";
+    const pathWithoutLocale = pathname.slice(`/${pathnameLocale}`.length) || "/";
 
-    // ------------------------------------------
-    // PROTECT CONFIGURATOR
-    // ------------------------------------------
+    // Guard the configurator route before anything else
     if (isProtectedPath(pathWithoutLocale)) {
-      const sessionValid = hasValidSession(request);
-
-      if (!sessionValid) {
-        return NextResponse.redirect(
-          "https://www.marvins.eu/apps/sso-pro"
-        );
-      }
+      const guardResponse = handleConfiguratorAccess(request);
+      if (guardResponse) return guardResponse;
     }
 
-    // ------------------------------------------
-    // SAVE LOCALE
-    // ------------------------------------------
+    // Set locale cookie and continue
     const response = NextResponse.next();
-
-    response.cookies.set(
-      "locale",
-      pathnameLocale,
-      {
-        path: "/",
-        maxAge: 31536000,
-      }
-    );
-
+    response.cookies.set("locale", pathnameLocale, { path: "/", maxAge: 31536000 });
     return response;
   }
 
-  // ------------------------------------------
-  // NO LOCALE → ADD LOCALE
-  // ------------------------------------------
+  // No locale in path → redirect to preferred locale
+  // (search params, including a possible ?token=, are preserved by clone())
   const locale = getPreferredLocale(request);
-
   const url = request.nextUrl.clone();
-
   url.pathname = `/${locale}${pathname}`;
-
   const response = NextResponse.redirect(url);
-
-  response.cookies.set(
-    "locale",
-    locale,
-    {
-      path: "/",
-      maxAge: 31536000,
-    }
-  );
-
+  response.cookies.set("locale", locale, { path: "/", maxAge: 31536000 });
   return response;
 }
 
 export const config = {
   matcher: [
+    // Match all paths except static files and api routes
     "/((?!api|_next/static|_next/image|assets|favicon|Favicon|.*\\.).*)",
   ],
 };

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyProxySignature } from '@/lib/verifyProxySignature';
+import { createSsoToken } from '@/lib/ssoToken';
 
 export const runtime = 'nodejs';
-
-const SESSION_COOKIE = 'mc_session';
-const SESSION_MAX_AGE = 60 * 15; // 15 minutes
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://marvinscloud.com',
@@ -26,9 +24,18 @@ export async function OPTIONS() {
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
-  // ------------------------------------------
+  const loggedInCustomerId =
+    searchParams.get('logged_in_customer_id');
+
+  const shop =
+    searchParams.get('shop') || 'marvins.eu';
+
+  const isAuthCheck =
+    searchParams.get('check') === '1';
+  const returnUrl = encodeURIComponent(
+    '/apps/sso-pro'
+  );   
   // Verify Shopify App Proxy signature
-  // ------------------------------------------
   if (!verifyProxySignature(searchParams)) {
     return NextResponse.json(
       {
@@ -42,66 +49,50 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const loggedInCustomerId =
-    searchParams.get('logged_in_customer_id');
+  // Create 30-second SSO JWT
+  const token = await createSsoToken({
+    customerId: loggedInCustomerId,
+    shop,
+  });
+  // ==========================================
+  // BACKGROUND SHOPIFY LOGIN CHECK
+  // ==========================================
+  if (isAuthCheck) {
+    if (!loggedInCustomerId) {
+      return NextResponse.redirect(
+        `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(
+          token
+        )}`
+      );
+    }
 
-  const shop =
-    searchParams.get('shop') || 'marvins.eu';
+    return NextResponse.redirect(
+      `https://www.marvins.eu/account/login?return_url=${returnUrl}`
+    );
+  }
 
-  const isAuthCheck =
-    searchParams.get('check') === '1';
+  // ==========================================
+  // NORMAL SSO FLOW
+  // ==========================================
 
-  const returnUrl = encodeURIComponent(
-    '/apps/sso-pro'
-  );
-
-  // ------------------------------------------
-  // CUSTOMER NOT LOGGED IN
-  // ------------------------------------------
+  // Customer is not logged in
   if (!loggedInCustomerId) {
     return NextResponse.redirect(
       `https://www.marvins.eu/account/login?return_url=${returnUrl}`
     );
   }
 
-  // ------------------------------------------
-  // AUTH CHECK
-  // ------------------------------------------
-  if (isAuthCheck) {
-    return NextResponse.json(
-      {
-        authenticated: true,
-        customerId: loggedInCustomerId,
-        shop,
-      },
-      {
-        status: 200,
-        headers: CORS_HEADERS,
-      }
-    );
-  }
 
-  // ------------------------------------------
-  // CREATE APP SESSION
-  // ------------------------------------------
-  const sessionData = JSON.stringify({
-    customerId: loggedInCustomerId,
-    shop,
-  });
 
-  console.log('🔥 Creating mc_session:', sessionData);
-
-  const response = NextResponse.redirect(
-    'https://marvinscloud.com/en/configurator'
+  console.error('🔥 TOKEN TYPE:', typeof token);
+  console.error(
+    '🔥 TOKEN PARTS:',
+    token.split('.').length
   );
 
-  response.cookies.set(SESSION_COOKIE, sessionData, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: SESSION_MAX_AGE,
-  });
-
-  return response;
+  return NextResponse.redirect(
+    `https://marvinscloud.com/en/configurator?token=${encodeURIComponent(
+      token
+    )}`
+  );
 }

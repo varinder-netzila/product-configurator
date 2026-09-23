@@ -76,7 +76,6 @@ export default function ConfiguratorPage() {
   const store = useConfiguratorStore();
  const [bottleTypes, setBottleTypes] = useState<any[]>([]);
 const [productsLoading, setProductsLoading] = useState(true);
-
 useEffect(() => {
   if (!shop || !isAuthenticated) {
     return;
