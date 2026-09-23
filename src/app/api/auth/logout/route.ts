@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const SESSION_COOKIE = 'SESSION_COOKIE';
+const SESSION_COOKIE = 'mc_session';
 
 export async function GET() {
   const response = NextResponse.redirect(
