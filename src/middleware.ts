@@ -34,13 +34,15 @@ function isProtectedPath(pathWithoutLocale: string): boolean {
 // Returns a NextResponse if it wants to redirect (block, or consume the
 // token and set a session cookie), or null to mean "let the request through
 // as normal" so the caller can continue with locale-cookie logic etc.
-function handleConfiguratorAccess(request: NextRequest): NextResponse | null {
+async function handleConfiguratorAccess(
+  request: NextRequest
+): Promise<NextResponse | null> {
   const { searchParams } = request.nextUrl;
   const token = searchParams.get("token");
   const existingSession = request.cookies.get(SESSION_COOKIE)?.value;
 
   if (token) {
-    const payload = verifySsoToken(token);
+    const payload = await verifySsoToken(token);
 
     if (payload) {
       // Valid SSO handoff - set our own session cookie, redirect to the
