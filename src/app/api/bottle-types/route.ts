@@ -1,7 +1,7 @@
 // src/app/api/bottle-types/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-
+export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const shop = process.env.SHOPIFY_STORE_DOMAIN;
