@@ -13,6 +13,7 @@ const locales = ["nl", "en", "fr", "de", "cs", "es"];
 const defaultLocale = "nl";
 
 function getLocaleFromPath(pathname: string): string {
+   console.error('🔥 TOKEN TYPE:',  pathname);
   const segment = pathname.split('/')[1]; // e.g. "en" from "/en/apps/sso-pro"
   return locales.includes(segment) ? segment : defaultLocale;
 }
