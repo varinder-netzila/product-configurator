@@ -24,6 +24,15 @@ export async function OPTIONS() {
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
+  const loggedInCustomerId =
+    searchParams.get('logged_in_customer_id');
+
+  const shop =
+    searchParams.get('shop') || 'marvins.eu';
+
+  const isAuthCheck =
+    searchParams.get('check') === '1';
+    
   // Verify Shopify App Proxy signature
   if (!verifyProxySignature(searchParams)) {
     return NextResponse.json(
@@ -38,14 +47,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const loggedInCustomerId =
-    searchParams.get('logged_in_customer_id');
-
-  const shop =
-    searchParams.get('shop') || 'marvins.eu';
-
-  const isAuthCheck =
-    searchParams.get('check') === '1';
 
   // ==========================================
   // BACKGROUND SHOPIFY LOGIN CHECK
