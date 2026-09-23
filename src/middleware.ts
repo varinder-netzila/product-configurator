@@ -67,7 +67,8 @@ async function handleConfiguratorAccess(
   // logged out, don't trust a leftover/stale mc_session cookie to let
   // them straight back in. Force them through Shopify's login form.
   if (loggedOut && !token) {
-    const returnUrl = encodeURIComponent("/apps/sso-pro");
+     const locale = getPreferredLocale(request);
+    const returnUrl = encodeURIComponent(`/apps/sso-pro?locale=${locale}`);
     return NextResponse.redirect(
       `https://www.marvins.eu/account/login?return_url=${returnUrl}`
     );

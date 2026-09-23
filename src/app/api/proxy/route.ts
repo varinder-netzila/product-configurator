@@ -9,13 +9,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Credentials': 'true',
   'Cache-Control': 'no-store',
 };
-const locales = ["nl", "en", "fr", "de", "cs", "es"];
-const defaultLocale = "nl";
 
-function getLocaleFromPath(pathname: string): string {
-  const segment = pathname.split('/')[1]; // e.g. "en" from "/en/apps/sso-pro"
-  return locales.includes(segment) ? segment : defaultLocale;
-}
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
@@ -28,13 +22,11 @@ export async function OPTIONS() {
 }
 
 export async function GET(req: NextRequest) {
-   const { searchParams, pathname } = req.nextUrl;
-     console.log('🔍 Full proxy request:', {
-    pathname,
-    params: Object.fromEntries(searchParams.entries()),
-    acceptLanguage: req.headers.get('accept-language'),
-  });
-  const locale = getLocaleFromPath(pathname);
+   const { searchParams } = req.nextUrl;
+  const locales = ["nl", "en", "fr", "de", "cs", "es"];
+  const defaultLocale = "nl";
+  const requestedLocale = searchParams.get('locale');
+  const locale = locales.includes(requestedLocale || '') ? requestedLocale! : defaultLocale;
   const loggedInCustomerId =
     searchParams.get('logged_in_customer_id');
 
@@ -44,7 +36,7 @@ export async function GET(req: NextRequest) {
   const isAuthCheck =
     searchParams.get('check') === '1';
   const returnUrl = encodeURIComponent(
-    '/apps/sso-pro'
+    '/apps/sso-pro?locale=${locale}'
   );   
   // Verify Shopify App Proxy signature
   if (!verifyProxySignature(searchParams)) {
