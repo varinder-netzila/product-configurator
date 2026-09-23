@@ -13,7 +13,6 @@ const locales = ["nl", "en", "fr", "de", "cs", "es"];
 const defaultLocale = "nl";
 
 function getLocaleFromPath(pathname: string): string {
-   console.error('🔥 TOKEN TYPE:',  pathname);
   const segment = pathname.split('/')[1]; // e.g. "en" from "/en/apps/sso-pro"
   return locales.includes(segment) ? segment : defaultLocale;
 }
@@ -30,6 +29,11 @@ export async function OPTIONS() {
 
 export async function GET(req: NextRequest) {
    const { searchParams, pathname } = req.nextUrl;
+     console.log('🔍 Full proxy request:', {
+    pathname,
+    params: Object.fromEntries(searchParams.entries()),
+    acceptLanguage: req.headers.get('accept-language'),
+  });
   const locale = getLocaleFromPath(pathname);
   const loggedInCustomerId =
     searchParams.get('logged_in_customer_id');
