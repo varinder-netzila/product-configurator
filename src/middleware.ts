@@ -8,7 +8,7 @@ const defaultLocale = "nl";
 const publicPaths = ["/api/", "/assets/", "/_next/", "/favicon", "/Favicon"];
 
 const SESSION_COOKIE = "mc_session";
-const SESSION_MAX_AGE = 60 * 60 * 24; // 1 day - tune to taste
+const SESSION_MAX_AGE = 60*15; // 1 day - tune to taste
 
 function getPreferredLocale(request: NextRequest): string {
   // 1. Check cookie
@@ -75,10 +75,10 @@ async function handleConfiguratorAccess(
 
   // No token and no existing session
   if (!token && !existingSession) {
-    const returnUrl = encodeURIComponent("/apps/sso-pro");
+    //const returnUrl = encodeURIComponent("/apps/sso-pro");
 
     return NextResponse.redirect(
-      `https://marvins.eu/account/login?return_url=${returnUrl}`
+      `https://www.marvins.eu/apps/sso-pro?check=1`
     );
   }
 
