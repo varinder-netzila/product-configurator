@@ -202,6 +202,8 @@ const ALL_BOTTLES = allBottles;
     : null;
 
 const discounts = enlargedData?.discounts || [];
+const b2bperitem = enlargedData.price ? enlargedData.price : 0;
+const compareAtPrice = enlargedData.compareAtPrice ? enlargedData.compareAtPrice : 0;
   return (
     <div className="fixed inset-0 z-[9999] bg-gray-50 overflow-y-auto">
       {/* Header */}
@@ -215,7 +217,7 @@ const discounts = enlargedData?.discounts || [];
           </div>
           <div className="flex items-center gap-3">
             {/* Accent color picker */}
-            <div className="flex items-center gap-1.5 hidden">
+            <div className="flex items-center gap-1.5">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide hidden sm:block">{t("overview.accent")}</span>
               <input
                 type="color"
@@ -380,17 +382,32 @@ const discounts = enlargedData?.discounts || [];
   }}
 /></div> */}
           {/* discounts tiers */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                {t("b2b.b2bPrice")}
+              </label>
+              <label className="w-full text-green-600 font-bold flex items-center min-h-[40px]">
+                {/* {b2bPrice ? `€${b2bPrice.toFixed(2)}` : t("common.onRequest")} */}
+                €{b2bperitem.toFixed(2)} 
+              </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                {t("b2b.retailPrice")}
+              </label>
+              <label className="w-full text-gray-900 font-bold flex items-center min-h-[40px]">
+               €{compareAtPrice.toFixed(2)}
+
+              </label>
+            </div>
+          </div>
           {discounts && (
   <div className="mb-4 p-3 bg-gray-50 rounded-xl">
   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
-    Adviesprijs per staffel
+     {t("common.recommendedPrice")}
   </label>
-      <div
-        className="px-5 py-5 rounded-lg text-xs bg-white text-gray-500 border border-gray-200"       
-      >
-        <span className="block text-[13px] mb-2">{t("b2b.retailPrice")}</span>
-        <span className="font-semibold text-[13px]">{enlargedData.price}</span>
-      </div>
+
   <div className="flex gap-2 flex-wrap">
     {discounts.map((item, index) => (
       <div
