@@ -9,7 +9,7 @@ export default async function ConfiguratorPage() {
   const session = cookieStore.get("mc_session")?.value;
 
   if (loggedOut || !session) {
-    redirect("/logged-out");
+    redirect("https://www.marvins.eu/account/login?return_url=/apps/sso-pro?locale=nl");
   }
 
   return <ConfiguratorClient />;

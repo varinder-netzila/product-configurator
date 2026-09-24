@@ -74,6 +74,7 @@ export default function ConfiguratorClient() {
   const { shop, isAuthenticated } = useShopify();
   // --- Store ---
   const store = useConfiguratorStore();
+
  const [bottleTypes, setBottleTypes] = useState<any[]>([]);
 const [productsLoading, setProductsLoading] = useState(true);
 useEffect(() => {
@@ -81,6 +82,30 @@ useEffect(() => {
     return;
   }
 }, [shop, isAuthenticated]);
+
+useEffect(() => {
+  let cancelled = false;
+
+  const checkSession = async () => {
+    try {
+      const res = await fetch("/api/auth/status", { cache: "no-store" });
+      const data = await res.json();
+      if (!cancelled && !data.isLoggedIn) {
+        window.location.href = `https://www.marvins.eu/account/login?return_url=/apps/sso-pro?locale=nl`;
+      }
+    } catch {
+      // network hiccup — don't kick the user out on a transient failure
+    }
+  };
+
+  checkSession(); // check immediately on mount
+  const interval = setInterval(checkSession, 30_000); // then every 30s
+
+  return () => {
+    cancelled = true;
+    clearInterval(interval);
+  };
+}, []);
   const {
     _hasHydrated,
     currentStep, setCurrentStep,
