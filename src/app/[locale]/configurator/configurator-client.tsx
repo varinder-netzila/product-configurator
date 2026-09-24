@@ -1,4 +1,5 @@
 "use client";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import {
   useState,
@@ -83,6 +84,8 @@ useEffect(() => {
   }
 }, [shop, isAuthenticated]);
 
+  const params = useParams();
+  const locale = (params?.locale as string) || "nl";
 useEffect(() => {
   let cancelled = false;
 
@@ -90,9 +93,10 @@ useEffect(() => {
     try {
       const res = await fetch("/api/auth/status", { cache: "no-store" });
       const data = await res.json();
-      if (!cancelled && !data.isLoggedIn) {
-        window.location.href = `https://www.marvins.eu/account/login?return_url=/apps/sso-pro?locale=nl`;
-      }
+        if (!cancelled && !data.isLoggedIn) {
+          const returnUrl = encodeURIComponent(`/apps/sso-pro?locale=${locale}`);
+          window.location.href = `https://www.marvins.eu/account/login?return_url=${returnUrl}`;
+        }
     } catch {
       // network hiccup — don't kick the user out on a transient failure
     }
