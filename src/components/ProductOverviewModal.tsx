@@ -202,8 +202,8 @@ const ALL_BOTTLES = allBottles;
     : null;
 
 const discounts = enlargedData?.discounts || [];
-const b2bperitem = enlargedData.price ? enlargedData.price : 0;
-const compareAtPrice = enlargedData.compareAtPrice ? enlargedData.compareAtPrice : 0;
+const b2bperitem = enlargedData?.price ? enlargedData.price : 0;
+const compareAtPrice = enlargedData?.compareAtPrice ? enlargedData.compareAtPrice : 0;
   return (
     <div className="fixed inset-0 z-[9999] bg-gray-50 overflow-y-auto">
       {/* Header */}
