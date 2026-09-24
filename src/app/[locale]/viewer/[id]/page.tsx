@@ -265,7 +265,7 @@ export default function ViewerPage() {
             </span>
           )}
 
-          {colorPalette.length > 0 && editableComponents.length > 0 && (
+          {/* {colorPalette.length > 0 && editableComponents.length > 0 && (
             <button
               onClick={() => { setShowPanel(!showPanel); setShowFeedbackPanel(false); setShowAnglePreviews(false); }}
               className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full transition-all ${
@@ -277,7 +277,7 @@ export default function ViewerPage() {
               </svg>
               {t("viewer.colors")}
             </button>
-          )}
+          )} */}
 
           {!submitted && (
             <button

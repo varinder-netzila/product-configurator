@@ -216,25 +216,6 @@ const compareAtPrice = enlargedData?.compareAtPrice ? enlargedData.compareAtPric
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {/* Accent color picker */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide hidden sm:block">{t("overview.accent")}</span>
-              <input
-                type="color"
-                value={accentColor?.hex || "#FFFFFF"}
-                onChange={(e) => setAccentColor({ hex: e.target.value, name: e.target.value })}
-                className="w-7 h-7 rounded-full border-2 border-gray-200 cursor-pointer"
-                title={t("overview.pickAccentColor")}
-              />
-              {accentColor && (
-                <button
-                  onClick={() => setAccentColor(null)}
-                  className="text-[10px] font-semibold text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {t("common.reset")}
-                </button>
-              )}
-            </div>
             <button
               onClick={onClose}
               className="flex items-center gap-1.5 px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-800 transition-colors"
