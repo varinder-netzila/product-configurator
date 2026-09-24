@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const uploadForm = new FormData();
     uploadForm.append('file', buffer.toString('base64'));
     uploadForm.append('fileName', fileName);
-    uploadForm.append('folder', '/bottle-designs/');
+    uploadForm.append('folder', '/board-designs/');
 
     const ikRes = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
       method: 'POST',

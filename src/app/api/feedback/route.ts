@@ -10,7 +10,7 @@ async function uploadToImageKit(content: string, fileName: string): Promise<void
   const formData = new FormData();
   formData.append('file', Buffer.from(content).toString('base64'));
   formData.append('fileName', fileName);
-  formData.append('folder', '/bottle-designs/shared/');
+  formData.append('folder', '/board-designs/shared/');
   formData.append('useUniqueFileName', 'false');
   const res = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
     method: 'POST',
@@ -43,7 +43,7 @@ export interface DesignFeedback {
 async function fetchFeedbackFromImageKit(designId: string): Promise<DesignFeedback | null> {
   if (!urlEndpoint) return null;
   try {
-    const url = `${urlEndpoint}/bottle-designs/shared/feedback-${designId}.json`;
+    const url = `${urlEndpoint}/board-designs/shared/feedback-${designId}.json`;
     const res = await fetch(url, {
       signal: AbortSignal.timeout(5000),
       cache: 'no-store',

@@ -17,7 +17,7 @@ export async function GET(
       return NextResponse.json({ error: 'Storage not configured' }, { status: 500 });
     }
 
-    const configUrl = `${urlEndpoint}/bottle-designs/shared/design-${id}.json`;
+    const configUrl = `${urlEndpoint}/board-designs/shared/design-${id}.json`;
     const res = await fetch(configUrl, {
       signal: AbortSignal.timeout(10000),
       next: { revalidate: 0 },

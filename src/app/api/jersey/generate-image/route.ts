@@ -129,7 +129,7 @@ async function uploadDataUrlToImageKit(dataUrl: string): Promise<string | null> 
   const formData = new FormData();
   formData.append("file", base64);
   formData.append("fileName", `jersey-ai-${Date.now()}.png`);
-  formData.append("folder", "/bottle-designs/jerseys/");
+  formData.append("folder", "/board-designs/jerseys/");
   const res = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
     method: "POST",
     headers: { Authorization: `Basic ${auth}` },
