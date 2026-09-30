@@ -3,6 +3,17 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': 'https://www.marvins.eu',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  });
+}
+
 export async function POST(req: Request) {
   try {
 
@@ -25,7 +36,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: 'quotes@marvinscloud.com',
-      to: ['marvin@marvins.eu'],
+      to: ['marvin@marvins.eu', 'designertest167@gmail.com'],
       subject: `Quote Request - ${data.product_title || 'Product'}`,
       html: `
         <h2>Quote Request</h2>
