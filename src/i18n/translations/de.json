@@ -27,6 +27,10 @@
     "downloadTextureDesign": "Texturdesign herunterladen",
     "preview": "Vorschau"
   },
+  "metadata": {
+    "title": "3D-Brett-Konfigurator - Marvins",
+    "description": "Gestalte dein perfektes Brett mit unserem 3D-Konfigurator und füge es deinem Shopify-Shop hinzu"
+  },
   "showToast": {
     "quoteRequest": "Angebotsanfrage gesendet! Wir melden uns innerhalb von 24 Stunden bei Ihnen.",
     "failedSubmit": "Die Anfrage konnte nicht übermittelt werden. Bitte versuchen Sie es erneut.",    

@@ -27,6 +27,10 @@
     "downloadTextureDesign": "Descargar diseño de textura",
     "preview": "Vista previa"
   },
+  "metadata": {
+    "title": "Configurador 3D de tablas - Marvins",
+    "description": "Diseña tu tabla perfecta con nuestro configurador 3D y agrégala a tu tienda de Shopify"
+  },  
   "showToast": {
     "quoteRequest": "¡Solicitud de presupuesto enviada! Nos pondremos en contacto con usted en un plazo de 24 horas.",
     "failedSubmit": "No se pudo enviar la solicitud. Inténtelo de nuevo.",    

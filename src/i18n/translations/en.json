@@ -27,6 +27,11 @@
     "downloadTextureDesign": "Download Texture Design",
     "preview": "Preview"
     },
+  "metadata": {
+    "title": "3D Board Configurator - Marvins",
+    "description": "Design your perfect board with our 3D configurator and add it to your Shopify store"
+  }
+  ,
   "showToast":{
     "quoteRequest": "Quote request submitted! We'll contact you within 24 hours.",
     "failedSubmit": "Failed to submit request. Please try again.",

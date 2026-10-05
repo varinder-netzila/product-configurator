@@ -35,8 +35,8 @@ export async function POST(req: Request) {
       .join('');
 
     await resend.emails.send({
-      from: 'quotes@marvinscloud.com',
-      to: ['marvin@marvins.eu', 'designertest167@gmail.com'],
+      from: 'info@marvinscloud.com',
+      to: ['designertest167@gmail.com'],
       subject: `Quote Request - ${data.product_title || 'Product'}`,
       html: `
         <h2>Quote Request</h2>

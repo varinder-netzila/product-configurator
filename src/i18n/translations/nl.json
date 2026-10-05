@@ -27,6 +27,10 @@
     "downloadTextureDesign": "Textuurontwerp downloaden",
     "preview": "Voorbeeld"
   },
+  "metadata": {
+    "title": "3D-plankconfigurator - Marvins",
+    "description": "Ontwerp je perfecte plank met onze 3D-configurator en voeg hem toe aan je Shopify-winkel"
+  },
   "showToast": {
     "quoteRequest": "Offerteaanvraag ingediend! We nemen binnen 24 uur contact met u op.",
     "failedSubmit": "Verzoek verzonden. Probeer het opnieuw.",

@@ -27,6 +27,10 @@
     "downloadTextureDesign": "Télécharger le design de texture",
     "preview": "Aperçu"
   },
+    "metadata": {
+    "title": "Configurateur 3D de planches - Marvins",
+    "description": "Créez votre planche idéale avec notre configurateur 3D et ajoutez-la à votre boutique Shopify"
+  },
   "showToast": {
     "quoteRequest": "Demande de devis envoyée ! Nous vous contacterons dans les 24 heures.",
     "failedSubmit": "Échec de l'envoi de la requête. Veuillez réessayer.",    
