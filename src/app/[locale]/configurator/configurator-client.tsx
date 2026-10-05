@@ -205,32 +205,24 @@ useEffect(() => {
     handleAddToCart,
   } = store;
 useEffect(() => {
-  let cancelled = false;
 
   async function loadProducts() {
-    try {
-      const data = await getBottleTypes(locale);
-      if (cancelled) return; // ignore stale responses after a quick language switch
+ 
+    const data = await getBottleTypes();
 
-      setBottleTypes(data.bottleTypes);
+    setBottleTypes(data.bottleTypes);
 
-      if (data.bottleTypes?.length > 0) {
-        handleBottleTypeSwitch(data.bottleTypes[0]);
-      }
-      if (data.bottleTypes?.length < 2) {
-        setCurrentStep(2);
-      }
-    } catch (err) {
-      if (!cancelled) console.error("Failed to load bottle types:", err);
+    if (data.bottleTypes?.length > 0) {
+      handleBottleTypeSwitch(data.bottleTypes[0]);
     }
+    if (data.bottleTypes?.length < 2) {
+      setCurrentStep(2);
+    }
+    
   }
 
   loadProducts();
-
-  return () => {
-    cancelled = true;
-  };
-}, [locale]);
+}, []);
   const [showOverview, setShowOverview] = useState(false);
   const [selectedPrintTemplate, setSelectedPrintTemplate] = useState<string | null>(null);
   const [printTemplatePrimary, setPrintTemplatePrimary] = useState("#1e3a8a");
