@@ -1,41 +1,29 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { getTranslations } from 'next-intl/server'
 import { ShopifyProvider } from '@/components/ShopifyProvider'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { Toaster } from '@/components/Toast'
+import DocumentMeta from '@/components/DocumentMeta'
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}): Promise<Metadata> {
-  const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'metadata' })
-
-  return {
-    title: t('title'),
-    description: t('description'),
-    icons: {
-      icon: '/Favicon.png',
-    },
-  }
+export const metadata: Metadata = {
+  title: '3D-plankconfigurator - Marvins',
+  description: 'Ontwerp je perfecte plank met onze 3D-configurator en voeg hem toe aan je Shopify-winkel',
+  icons: {
+    icon: '/Favicon.png',
+  },
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode
-  params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params
-
   return (
-    <html lang={locale}>
+    <html lang="nl">
       <body className="font-sans h-screen w-screen overflow-hidden">
         <ErrorBoundary>
           <ShopifyProvider>
+            <DocumentMeta />
             {children}
           </ShopifyProvider>
           <Toaster />
