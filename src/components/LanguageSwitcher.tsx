@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, startTransition } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { locales, localeNames, localeFlags, Locale, defaultLocale } from "@/i18n/config";
 
@@ -21,28 +21,30 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-const switchLocale = (newLocale: Locale) => {
-  let newPath: string;
-  if (pathname.startsWith(`/${currentLocale}/`)) {
-    newPath = pathname.replace(`/${currentLocale}/`, `/${newLocale}/`);
-  } else if (pathname === `/${currentLocale}`) {
-    newPath = `/${newLocale}`;
-  } else {
-    newPath = `/${newLocale}${pathname === "/" ? "" : pathname}`;
-  }
+  const switchLocale = (newLocale: Locale) => {
+    // Replace the current locale with the new locale using the detected currentLocale
+    // This is more reliable than parsing segments
+    let newPath: string;
+    if (pathname.startsWith(`/${currentLocale}/`)) {
+      newPath = pathname.replace(`/${currentLocale}/`, `/${newLocale}/`);
+    } else if (pathname === `/${currentLocale}`) {
+      newPath = `/${newLocale}`;
+    } else {
+      // Fallback: prepend the new locale if the current one isn't found
+      newPath = `/${newLocale}${pathname}`;
+    }
 
-  const search = window.location.search;
-  const hash = window.location.hash;
-
-  document.cookie = `locale=${newLocale};path=/;max-age=31536000;samesite=lax`;
-
-  startTransition(() => {
-    router.push(newPath + search + hash);
-    router.refresh(); // drops the client router cache so server data is refetched
-  });
-
-  setOpen(false);
-};
+    // Preserve the query string (e.g. ?reseller=tailwind) so white-label
+    // branding survives a language switch.
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    document.cookie = `locale=${newLocale};path=/;max-age=31536000`;
+    router.push(newPath + search);
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+    
+    setOpen(false);
+  };
 
   return (
     <div ref={ref} className="relative">
