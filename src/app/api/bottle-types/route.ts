@@ -357,7 +357,11 @@ const translatedTitle =
               Body: "Board",
               Frame: "Plastic",
             },
-
+            size: {
+              width: 190,
+              height: 370,
+              unit: "mm"
+            },
             productType:
               product.productType,
 
