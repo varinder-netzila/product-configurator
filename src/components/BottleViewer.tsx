@@ -140,7 +140,7 @@ const applyTextureToMaterial = (
 
     textureLoader.load(textureUrl, (texture) => {
 const printWidth = 1;
-const printHeight = 1.5;
+const printHeight = 1.9;
 const targetAspect = printWidth / printHeight; // ~0.714
 
 const texAspect = texture.image.width / texture.image.height;
@@ -930,13 +930,23 @@ const BottleModel = ({
     // Standardize all models to appear the same size
     const targetHeight = 2; // All models will have height of 2 units
     const scale = size.y !== 0 ? targetHeight / size.y : 1;
-    baseBodyScene.scale.setScalar(scale);
+ 
+    // Stretch the board TALLER only (Y axis) without making it wider (X/Z).
+    // setScalar(scale) applied the exact same factor to all three axes, so
+    // there was no way to change proportions — only overall size. Tune
+    // HEIGHT_STRETCH_FACTOR to taste: 1.0 = no change (original behavior),
+    // 1.1 = 10% taller, etc. Text/logo layers get the SAME non-uniform scale
+    // so they stay aligned to the board surface instead of drifting once
+    // the board itself is stretched.
+    const HEIGHT_STRETCH_FACTOR = 1.05;
+    baseBodyScene.scale.set(scale, scale * HEIGHT_STRETCH_FACTOR, scale);
     if (textEngravings.length > 0) {
-      textLayerScene.scale.setScalar(scale);
+      textLayerScene.scale.set(scale, scale * HEIGHT_STRETCH_FACTOR, scale);
     }
     if (logoDecals.length > 0) {
-      logoLayerScene.scale.setScalar(scale);
+      logoLayerScene.scale.set(scale, scale * HEIGHT_STRETCH_FACTOR, scale);
     }
+
 
     return {
       baseBodyScene,
