@@ -23,18 +23,18 @@ const previewCacheByAspectRatio = new Map<number, PreviewCacheEntry>();
 	const mapFontsimg = {
 		title: {
 		family: 'Arial, sans-serif',
-		size: 100,
+		size: 150,
 		weight: 'bold',
 		style: 'normal',
 		},
 
 		subtitle: {
 		family: 'Georgia, serif',
-		size: 80,
+		size: 120,
 		weight: 'normal',
 		style: 'italic',
 		},
-			coordinates: { family: '"Courier New", monospace', size: 80, weight: 'bold', style: 'normal' }
+			coordinates: { family: '"Courier New", monospace', size: 120, weight: 'bold', style: 'normal' }
 		};
 /** Reset cached state so the next call generates fresh from Mapbox API */
 export function resetMapTextureCache() {
@@ -478,10 +478,10 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-const rectX = 530;
-const rectY = scrimTop+50;
-const rectW = baseCanvasWidth - 1060;
-const rectH = scrimBottom - scrimTop - 120;
+const rectX = 305;
+const rectY = scrimTop+130;
+const rectW = baseCanvasWidth - 600;
+const rectH = scrimBottom - scrimTop - 300;
 
 // Background
 ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
@@ -530,19 +530,19 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY -100, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY -180, letterSpacing);
 		}
 
 		if (mapFonts.subtitle && mapSubtitle) {
 			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY + 0, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY - 20, letterSpacing);
 		}
 
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 105, letterSpacing);
+			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 150, letterSpacing);
 		}
 
 	}
