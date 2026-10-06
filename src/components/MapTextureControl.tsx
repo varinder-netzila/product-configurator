@@ -721,13 +721,13 @@ mapControlMap.current.on("load", () => {
 const point = map2.project(center);
 
 const newCenter = map2.unproject([
-  point.x + map2.getCanvas().width * 0.3,
+  point.x + map2.getCanvas().width * 0.6,
   point.y,
 ]);
 
       try {
-        const mapTextureUrl = await generateMapTexture({ lat: center.lat, lng: center.lng }, { lat: center.lat, lng: center.lng }, zoom);
-        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: center.lat, lng: center.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
+        const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, { lat: center.lat, lng: center.lng }, zoom);
+        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
         if (currentSnapshot) {
           lastTextureDetailsRef.current = currentSnapshot;
         }
