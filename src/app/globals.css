@@ -80,6 +80,4 @@ body{
   height:auto!important;
   max-height:none!important;
 }
-@media screen and (max-height: 780px) and (min-width: 768px) {
  .mov-height{ height: 420px !important; }
-}
