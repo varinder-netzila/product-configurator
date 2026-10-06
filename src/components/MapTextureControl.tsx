@@ -726,8 +726,8 @@ const newCenter = map2.unproject([
 ]);
 
       try {
-        const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, { lat: center.lat, lng: center.lng }, zoom);
-        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
+        const mapTextureUrl = await generateMapTexture({ lat: center.lat, lng: center.lng }, { lat: center.lat, lng: center.lng }, zoom);
+        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: center.lat, lng: center.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
         if (currentSnapshot) {
           lastTextureDetailsRef.current = currentSnapshot;
         }
