@@ -975,7 +975,7 @@ const newCenter = map2.unproject([
                   <div className='w-full sm:w-1/3 content-end justify-end'>
                       <button 
                         onClick={handleApplyChanges}
-                        disabled={isGeneratingTexture || !hasChanges}
+                        disabled={ isGeneratingTexture }
                         className="bg-black text-white w-full px-3 py-2 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-2 touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed mt-1 sm:mt-6"
                       >
                       {isGeneratingTexture ? (
