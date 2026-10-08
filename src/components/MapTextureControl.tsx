@@ -631,8 +631,8 @@ mapControlMap.current.on("load", () => {
     if (mapControlMap.current) {
       const canvas = mapControlMap.current.getCanvas();
       if (canvas) {
-        mapCanvasWidth = 1188;//canvas.width * 2;
-        mapCanvasHeight = 836//canvas.height * 2;
+        mapCanvasWidth = 500; //canvas.width;
+        mapCanvasHeight = mapCanvasWidth / aspectRatio;
         if ((mapCanvasWidth ?? 0) > 2048 || (mapCanvasHeight ?? 0) > 2048) {
           try {
             mapPreviewDataUrl = canvas.toDataURL('image/png', 1.0);
@@ -720,11 +720,11 @@ mapControlMap.current.on("load", () => {
 
 const point = map2.project(center);
 
-const newCenter = map2.unproject([
-  point.x + map2.getCanvas().width * 0.75,
-  point.y,
-]);
-
+// const newCenter = map2.unproject([
+//   point.x + map2.getCanvas().width * 0.75,
+//   point.y,
+// ]);
+      const newCenter = center;
       try {
         const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, { lat: center.lat, lng: center.lng }, zoom);
         onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);

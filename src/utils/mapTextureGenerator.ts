@@ -307,7 +307,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 				? { mapH: targetMapHeight, mapW: targetMapHeight * imageAspectRatio }
 				: { mapW: targetMapWidth, mapH: targetMapWidth / imageAspectRatio };
 
-		const mapX = 0; //baseCanvasWidth / 3;
+		const mapX = Math.round((baseCanvasWidth - mapDimensions.mapW) / 2); //-1600; //baseCanvasWidth / 3;
 		const topSpacingPx = baseCanvasHeight * spacing.top;
 		const mapY = topSpacingPx;
 		ctx.drawImage(processedImg, mapX, mapY, mapDimensions.mapW, mapDimensions.mapH);
@@ -479,9 +479,9 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		ctx.save();
 
 const rectX = 305;
-const rectY = scrimTop+130;
+const rectY = scrimTop+100;
 const rectW = baseCanvasWidth - 600;
-const rectH = scrimBottom - scrimTop - 300;
+const rectH = scrimBottom - scrimTop - 230;
 
 // Background
 ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';

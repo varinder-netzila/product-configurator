@@ -358,8 +358,8 @@ const translatedTitle =
               Frame: "Plastic",
             },
             size: {
-              width: 190,
-              height: 370,
+              width: 158,
+              height: 258,
               unit: "mm"
             },
             productType:

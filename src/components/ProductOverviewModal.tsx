@@ -108,7 +108,7 @@ const ALL_BOTTLES = allBottles;
         const spacing = settings?.spacing || { top: 0, bottom: 0 };
 
         // Compute explicit canvas dimensions per board (don't rely on cache)
-        const baseCanvasW = 2048;
+        const baseCanvasW = 500;
         const baseCanvasH = baseCanvasW / ar;
         const mapCanvasWidth = Math.round((baseCanvasW * 2) / 2);
         const mapCanvasHeight = Math.round(baseCanvasH * (1 - spacing.top - spacing.bottom));
