@@ -1,6 +1,6 @@
 {
   "bottleSettings": {
-    "IZY Bottle": {
+    "Board": {
       "scale": 1,
       "contactShadow": {
         "position": [0, 0, 0],
@@ -14,7 +14,7 @@
         "position": [3, 0.9, 0]
       },
       "spacing":  {
-        "top": 0.15,
+        "top": 100,
         "bottom": 0.15
       },
       "mapTextPosition": 0.95,
@@ -131,7 +131,7 @@
         "position": [3, 0.8, 0]
       },
       "spacing":  {
-        "top": 0,
+        "top": 200,
         "bottom": 0.14      
       },
       "mapTextPosition": 0.95,

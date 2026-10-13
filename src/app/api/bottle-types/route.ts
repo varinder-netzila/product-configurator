@@ -359,9 +359,9 @@ const translatedTitle =
             },
             size: {
               width: 158,
-              height: 258,
+              height: 203,
               unit: "mm"
-            },
+            },          
             productType:
               product.productType,
 

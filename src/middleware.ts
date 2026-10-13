@@ -77,8 +77,8 @@ async function handleConfiguratorAccess(
   if (!token && !existingSession) {
     const returnUrl = encodeURIComponent("/apps/sso-pro");
     return NextResponse.redirect(
-      `https://www.marvins.eu/account/login?return_url=${returnUrl}`
-    );
+        `https://www.marvins.eu/account/login?return_url=${returnUrl}`
+      );  
   }
 
   // Existing session is valid, user hasn't logged out

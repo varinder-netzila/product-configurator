@@ -285,9 +285,9 @@ useEffect(() => {
 
   // Explicit canvas dimensions for the current board (bypass module-level cache)
 const mapCanvasDims = useMemo(() => {
-  const sp = bottleSettings?.spacing || { top: 0, bottom: 0 };
+  const sp = bottleSettings?.spacing || { top: 0.2, bottom: 0 };
 
-  let baseCanvasW = 500;
+  let baseCanvasW = 520;
   let baseCanvasH = baseCanvasW / aspectRatio;
 
   if (map.current) {
@@ -655,11 +655,14 @@ const mapCanvasDims = useMemo(() => {
   }, [selectedBottleType, setColors, setIsLoadingColors, setMeshColors]);
 
   // Load board settings
+
   useEffect(() => {
+    const itemName = "Board";
     if (selectedBottleType && importedBottleSettings?.bottleSettings) {
       const settings = importedBottleSettings.bottleSettings[
         selectedBottleType.name as keyof typeof importedBottleSettings.bottleSettings
-      ];
+       ];
+     // const settings = importedBottleSettings.bottleSettings["Board"];
       if (settings) setBottleSettings(settings);
     }
   }, [selectedBottleType, setBottleSettings]);
@@ -752,11 +755,11 @@ const mapCanvasDims = useMemo(() => {
             }
             logoWidth *= mapLogoScale;
             logoHeight *= mapLogoScale;
-            const canvasWidth = width * 2;
+            const canvasWidth = width * 1.2;
             const mapWidth = canvasWidth * 2 / 3;
             const emptySpaceCenterX = mapWidth + (canvasWidth - mapWidth) / 2;
             const logoX = emptySpaceCenterX - logoWidth / 2;
-            const logoY = (height * 2) / 2 - logoHeight / 2;
+            const logoY = (height) / 5 - logoHeight / 2;
             if (mapDirection === "vertical") {
               ctx.save();
               ctx.translate(logoX + logoWidth / 2, logoY + logoHeight / 2);
@@ -973,7 +976,7 @@ const mapCanvasDims = useMemo(() => {
           location: newLocation2, locationmodel: newLocation, zoom: newZoom, aspectRatio,
           mapTitle: title || "", mapSubtitle: subtitle || "",
           selectedMapLineColor, bottleColor: meshColors.Body?.hex || "#ffffff",
-          spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
+          spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
           mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
           mapFonts: bottleSettings?.mapFonts, includeGradient: false,
           pinLocation: pin || null,
@@ -1013,7 +1016,7 @@ const mapCanvasDims = useMemo(() => {
                 location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
                 selectedMapLineColor: '#000000',
-                spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
+                spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, pinLocation: mapPinLocation, pinColor: mapPinColor,
                 mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
@@ -1023,7 +1026,7 @@ const mapCanvasDims = useMemo(() => {
                 location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
                 selectedMapLineColor: '#000000',
-                spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
+                spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, includeGradient: false, pinLocation: mapPinLocation, pinColor: mapPinColor,
                 mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
@@ -1102,7 +1105,7 @@ const mapCanvasDims = useMemo(() => {
           generateMapTextureWithText({
             location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
             mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
+            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
             mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
             mapFonts: bottleSettings?.mapFonts, bottleColor,
             pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -1112,7 +1115,7 @@ const mapCanvasDims = useMemo(() => {
           generateMapTextureWithText({
             location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
             mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
+            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
             mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
             mapFonts: bottleSettings?.mapFonts, bottleColor,
             includeGradient: false, pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -1858,7 +1861,7 @@ const mapCanvasDims = useMemo(() => {
         bottleColor={meshColors.Body?.hex || '#ffffff'}
         onZoomChange={setCurrentMapZoom}
         currentZoom={currentMapZoom}
-        spacing={bottleSettings?.spacing || { top: 0, bottom: 0 }}
+        spacing={bottleSettings?.spacing || { top: 0.2, bottom: 0 }}
         mapTextPosition={bottleSettings?.mapTextPosition || 0.9}
         mapFonts={bottleSettings?.mapFonts}
         pinColor='#000000'

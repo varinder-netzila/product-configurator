@@ -23,18 +23,18 @@ const previewCacheByAspectRatio = new Map<number, PreviewCacheEntry>();
 	const mapFontsimg = {
 		title: {
 		family: 'Arial, sans-serif',
-		size: 150,
+		size: 130,
 		weight: 'bold',
 		style: 'normal',
 		},
 
 		subtitle: {
 		family: 'Georgia, serif',
-		size: 120,
+		size: 100,
 		weight: 'normal',
 		style: 'italic',
 		},
-			coordinates: { family: '"Courier New", monospace', size: 120, weight: 'bold', style: 'normal' }
+			coordinates: { family: '"Courier New", monospace', size: 70, weight: 'bold', style: 'normal' }
 		};
 /** Reset cached state so the next call generates fresh from Mapbox API */
 export function resetMapTextureCache() {
@@ -104,7 +104,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 			coordinates: { family: '"Courier New", monospace', size: 40, weight: 'normal', style: 'normal' }
 		},
 		mapLogoUrl,
-		mapLogoOptions = { direction: 'horizontal', scale: 1, position: { x: 0.75, y: 0.5 } },
+		mapLogoOptions = { direction: 'horizontal', scale: 2, position: { x: 0.50, y: 0 } },
 		mapCanvasWidth,
 		mapCanvasHeight,
 		mapPreviewDataUrl: incomingPreviewDataUrl,
@@ -308,6 +308,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 				: { mapW: targetMapWidth, mapH: targetMapWidth / imageAspectRatio };
 
 		const mapX = Math.round((baseCanvasWidth - mapDimensions.mapW) / 2); //-1600; //baseCanvasWidth / 3;
+	    console.log(spacing.top);   
 		const topSpacingPx = baseCanvasHeight * spacing.top;
 		const mapY = topSpacingPx;
 		ctx.drawImage(processedImg, mapX, mapY, mapDimensions.mapW, mapDimensions.mapH);
@@ -408,7 +409,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		// rotating the offset vector by -bearing converts a world-space
 		// (north-up) delta into the screen-space delta for a map that has
 		// been rotated clockwise by `bearing`.
-		const bearingRad = (bearing * Math.PI) / 180;
+		const bearingRad = (bearing * Math.PI) / 120;
 		const cosB = Math.cos(-bearingRad);
 		const sinB = Math.sin(-bearingRad);
 		const offsetX = rawOffsetX * cosB - rawOffsetY * sinB;
@@ -423,7 +424,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		// (see the comment above `maxMapboxDim`), so mapW/width converts
 		// world-pixel offsets into canvas pixels correctly regardless of
 		// whether the source came from the live preview or a fresh fetch.
-		const scaleToCanvas = (mapW * 1.5) / width;
+		const scaleToCanvas = (mapW * 1.284) / width;
 
 		const pinCanvasX = mapX + mapW / 2 + offsetX * scaleToCanvas;
 		const pinCanvasY = mapY + mapH / 2 + offsetY * scaleToCanvas;
@@ -478,13 +479,13 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-const rectX = 305;
-const rectY = scrimTop+100;
-const rectW = baseCanvasWidth - 600;
-const rectH = scrimBottom - scrimTop - 230;
+const rectX = 400;
+const rectY = scrimTop-5;
+const rectW = baseCanvasWidth - 800;
+const rectH = scrimBottom - scrimTop - 70;
 
 // Background
-ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
 ctx.fillRect(rectX, rectY, rectW, rectH);
 
 // Border
@@ -530,7 +531,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY -180, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY -150, letterSpacing);
 		}
 
 		if (mapFonts.subtitle && mapSubtitle) {
@@ -542,7 +543,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 150, letterSpacing);
+			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 90, letterSpacing);
 		}
 
 	}
