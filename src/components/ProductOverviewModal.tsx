@@ -7,6 +7,7 @@ import bottleSettingsData from "@/data/bottleSettings.json";
 import colorsBottleMug from "@/data/colors-500ml-bottle-350ml-mug.json";
 import colorsTravelTumbler from "@/data/colors-900ml-bottle-500ml-mug.json";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { MAP_POPUP_HEIGHT } from "@/components/MapTextureControl";
 import { generateMapTextureWithText } from "@/utils/mapTextureGenerator";
 import { composeBaseTexture } from "@/utils/layeredTextureComposer";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -108,16 +109,28 @@ const ALL_BOTTLES = allBottles;
         const spacing = settings?.spacing || { top: 0, bottom: 0 };
 
         // Compute explicit canvas dimensions per board (don't rely on cache)
-        const baseCanvasW = 1024;
+        const baseCanvasW = 2048;
         const baseCanvasH = baseCanvasW / ar;
-        const mapCanvasWidth = Math.round((baseCanvasW * 2) / 2);
-        const mapCanvasHeight = Math.round(baseCanvasH * (1 - spacing.top - spacing.bottom));
+        // Same dimensions as the configurator: 2048px wide, full height (spacing is
+        // applied by the generator itself, not by shrinking the canvas).
+        const mapCanvasWidth = baseCanvasW;
+        const mapCanvasHeight = Math.round(baseCanvasH);
+
+        // mapParams.zoom is the RAW zoom from the map popup. The popup canvas is
+        // MAP_POPUP_HEIGHT tall and (MAP_POPUP_HEIGHT * source aspect ratio) wide, so
+        // add log2(2048 / popupWidth) to show the same area on the 2048px texture.
+        const sourceBoard = ALL_BOTTLES.find((b: any) => b.name === sourceBottleName);
+        const sourceAr = (sourceBoard?.size?.width && sourceBoard?.size?.height)
+          ? sourceBoard.size.width / sourceBoard.size.height
+          : ar;
+        const popupWidth = MAP_POPUP_HEIGHT * sourceAr;
+        const textureZoom = mapParams!.zoom + Math.log2(baseCanvasW / popupWidth);
 
         try {
           const mapOverlay = await generateMapTextureWithText({
             location: mapParams!.location,
             locationmodel: mapParams!.locationmodel,
-            zoom: mapParams!.zoom,
+            zoom: textureZoom,
             aspectRatio: ar,
             mapTitle: mapParams!.title,
             mapSubtitle: mapParams!.subtitle,
@@ -153,7 +166,7 @@ const ALL_BOTTLES = allBottles;
 
     regenerateAll();
     return () => { cancelled = true; };
-  }, [isOpen, activeTab, mapParams, globalColors]);
+  }, [isOpen, activeTab, mapParams, globalColors, sourceBottleName, allBottles]);
 
   const getTextureForBottle = useCallback(
     (bottleName: string) => {
