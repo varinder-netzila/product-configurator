@@ -276,9 +276,9 @@ export default function MapTextureControl({
   mapTextHorizontalPosition = 0.7, // center
   pinColor,
   mapFonts = {
-    title: { family: 'Arial, sans-serif', size: 72, weight: 'bold', style: 'normal' },
-    subtitle: { family: 'Georgia, serif', size: 48, weight: 'normal', style: 'italic' },
-    coordinates: { family: '"Courier New", monospace', size: 40, weight: 'normal', style: 'normal' }
+    title: { family: 'Arial, sans-serif', size: 100, weight: 'bold', style: 'normal' },
+    subtitle: { family: 'Georgia, serif', size: 80, weight: 'normal', style: 'italic' },
+    coordinates: { family: '"Courier New", monospace', size: 80, weight: 'normal', style: 'normal' }
   }
 }: MapTextureControlProps) {
   const { t } = useTranslation();
