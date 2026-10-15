@@ -95,7 +95,7 @@ useEffect(() => {
       const data = await res.json();
         if (!cancelled && !data.isLoggedIn) {
           const returnUrl = encodeURIComponent(`/apps/sso-pro?locale=${locale}`);
-      //    window.location.href = `https://www.marvins.eu/account/login?return_url=${returnUrl}`;
+          window.location.href = `https://www.marvins.eu/account/login?return_url=${returnUrl}`;
         }
     } catch {
       // network hiccup — don't kick the user out on a transient failure
