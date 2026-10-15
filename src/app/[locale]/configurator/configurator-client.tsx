@@ -17,7 +17,7 @@ import { showToast } from "@/components/Toast";
 import { CustomProduct } from "@/types/shopify";
 const BottleViewer = lazy(() => import("@/components/BottleViewer"));
 import ConfiguratorNavigation from "@/components/ConfiguratorNavigation";
-import MapTextureControl from "@/components/MapTextureControl";
+import MapTextureControl, { MAP_POPUP_HEIGHT } from "@/components/MapTextureControl";
 import ImageAreaSelector from "@/components/ImageAreaSelector";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import OptionTabs from "@/components/OptionTabs";
@@ -283,14 +283,17 @@ useEffect(() => {
   }, [currentLocation, currentCenter, currentMapZoom, mapTextureTitle, mapTextureSubtitle, selectedMapLineColor, meshColors.Body?.hex, mapPinLocation, mapPinColor]);
 
 const MAP_TEXTURE_WIDTH = 2048;
-// Popup canvas CSS width (updated whenever the popup applies changes)
-const mapPreviewWidthRef = useRef(256);
-// Popup zoom -> zoom for the 2048px texture (256px popup = +3 levels)
+
+// Popup canvas is a fixed height, and its width follows the product's aspect ratio
+const mapPreviewWidth = MAP_POPUP_HEIGHT * aspectRatio; // 417.5 * 0.6124 = about 255.7
+const mapPreviewWidthRef = useRef(MAP_POPUP_HEIGHT * aspectRatio);
+// Popup zoom -> zoom for the 2048px texture (about +3 levels)
 const toTextureZoom = useCallback(
   (z: number) => z + Math.log2(MAP_TEXTURE_WIDTH / mapPreviewWidthRef.current),
   []
 );
-  // Explicit canvas dimensions for the current board (bypass module-level cache)
+
+// Explicit canvas dimensions for the current board
 const mapCanvasDims = useMemo(() => ({
   mapCanvasWidth: MAP_TEXTURE_WIDTH,
   mapCanvasHeight: Math.round(MAP_TEXTURE_WIDTH / aspectRatio),

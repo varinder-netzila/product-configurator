@@ -13,6 +13,11 @@ import { useTranslation } from '@/i18n/useTranslation';
 // 2048 px across 158 mm is roughly 330 dpi, which is plenty for print.
 const TEXTURE_WIDTH = 2048;
 
+// Popup preview canvas: fixed height, width follows the product's aspect ratio.
+// 417.5 * (158 / 258) is about 255.7 px wide, so the zoom compensation is
+// log2(2048 / 255.7) = about 3 levels.
+export const MAP_POPUP_HEIGHT = 417.5;
+
 type MapTextureSnapshot = {
   lat: number;
   lng: number;
@@ -762,17 +767,18 @@ export default function MapTextureControl({
                 backgroundRepeat: 'repeat'
               }}
             >
+              {/* Fixed-size stage: canvas and text overlay share the same box */}
+              <div
+                className="relative flex-shrink-0"
+                style={{
+                  height: `${MAP_POPUP_HEIGHT}px`,
+                  width: `${MAP_POPUP_HEIGHT * aspectRatio}px`,
+                }}
+              >
               <div 
                 ref={mapControlContainer} 
-                className="transition-all duration-300 touch-manipulation"
-                style={{
-                  aspectRatio: `${aspectRatio}`,
-                  width: '100%',
-                  maxHeight: '100%',
-                  minWidth: 0,
-                  minHeight: 0
-
-                }}
+                className="touch-manipulation"
+                style={{ width: '100%', height: '100%' }}
               />
               <ProportionalOverlay
                 aspectRatio={aspectRatio}
@@ -787,6 +793,7 @@ export default function MapTextureControl({
                 titleOffsetFactor={60 / (((TEXTURE_WIDTH / aspectRatio) * (1 - spacing.top - spacing.bottom)) * 1.7)}
                 coordsOffsetFactor={136 / (((TEXTURE_WIDTH / aspectRatio) * (1 - spacing.top - spacing.bottom)) * 2)}
               />
+              </div>
               
               <style jsx>{`
                 :global(.mapboxgl-ctrl-bottom-right),
