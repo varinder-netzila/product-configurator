@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="nl">
-      <body className="font-sans h-screen w-screen overflow-hidden">
+      <body className="font-sans h-screen w-screen overflow-auto">
         <ErrorBoundary>
           <ShopifyProvider>
             <DocumentMeta />

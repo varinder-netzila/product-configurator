@@ -108,13 +108,10 @@ const ALL_BOTTLES = allBottles;
         const spacing = settings?.spacing || { top: 0, bottom: 0 };
 
         // Compute explicit canvas dimensions per board (don't rely on cache)
-        const baseCanvasW = 2048;
+        const baseCanvasW = 1024;
         const baseCanvasH = baseCanvasW / ar;
-        // Same framing as the configurator: full texture size, NOT reduced by spacing.
-        // (The generator applies spacing itself when it lays the map out.)
-        // mapParams.zoom must already be the 2048px-texture zoom (toTextureZoom).
-        const mapCanvasWidth = baseCanvasW;
-        const mapCanvasHeight = Math.round(baseCanvasH);
+        const mapCanvasWidth = Math.round((baseCanvasW * 2) / 2);
+        const mapCanvasHeight = Math.round(baseCanvasH * (1 - spacing.top - spacing.bottom));
 
         try {
           const mapOverlay = await generateMapTextureWithText({

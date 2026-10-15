@@ -84,3 +84,4 @@ body{
 .touch-manipulation.mapboxgl-map {
 	max-width: 256px !important;
 }
+.scroll_mob{ overflow: auto !important; }

@@ -152,6 +152,7 @@ export default function EmbedAdminPage() {
           saveConfigs(next);
           return next;
         });
+        console.log(data.url);
         setPreviewKey((k) => k + 1);
       } catch (err) {
         alert("Upload failed. Please try again.");
