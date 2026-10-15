@@ -1307,6 +1307,7 @@ const generatePrintTextureWithLogo = useCallback(
           window.open(screenshotUrl, '_blank');
        }
   }
+   window.addEventListener("downloadDesign", handleDownloadDesign as EventListener);
   useEffect(() => {
     const handleShareDesign = async () => {
       if (captureScreenshotRef.current) {
