@@ -77,7 +77,8 @@
     "startOver": "Recommencer",
     "shareDesign": "Partager le design",
     "allProducts": "Tous les produits",
-    "reviews": "avis"
+    "reviews": "avis",
+    "extract": "Extraire"
   },
   "tabs": {
     "allOverPrint": "Impression totale",
