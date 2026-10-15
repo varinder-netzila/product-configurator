@@ -1284,7 +1284,7 @@ export default function BottleViewer({
   return (
     <div
       ref={canvasContainerRef}
-      className="viewer-canvas relative h-full bg-white border border-gray-200 rounded-2xl mb-4 md:mb-0"
+      className="viewer-canvas relative h-full bg-white border border-gray-200 mb-4 md:mb-0"
     >
       {canvasContent}
 
