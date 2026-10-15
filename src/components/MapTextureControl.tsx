@@ -8,16 +8,10 @@ import { MdSearch, MdClose, MdLocationOn } from "react-icons/md";
 import { generateMapTextureWithText } from '@/utils/mapTextureGenerator';
 import { useTranslation } from '@/i18n/useTranslation';
 
-// Max height of the map frame inside the popup, as a share of the viewport
-// height. The frame width is derived from this and the product ratio, so the
-// popup always has the product's exact shape instead of stretching to fill
-// the dialog.
-const POPUP_MAX_HEIGHT_VH = 62;
-
-// Width (in CSS px) the texture is generated at. The zoom is compensated
-// against the popup's real width so the generated image shows the same area
-// as the popup, while still being requested at a good resolution.
-const TEXTURE_GEN_WIDTH = 620;
+// Fixed output texture width (px). The popup is only a preview of this.
+// Board is 158 x 258 mm -> aspect ratio 158 / 258 = 0.6124
+// 2048 px across 158 mm is roughly 330 dpi, which is plenty for print.
+const TEXTURE_WIDTH = 2048;
 
 type MapTextureSnapshot = {
   lat: number;
@@ -132,7 +126,7 @@ function ProportionalOverlay({
   const previewHeight = dims.height;
   const contentScale = useMemo(() => {
     if (!previewWidth || !previewHeight) return 1;
-    const ratioFactor = (previewWidth / 2048) * 1.2;
+    const ratioFactor = (previewWidth / TEXTURE_WIDTH) * 1.2;
     return ratioFactor <= 0 ? 1 : ratioFactor;
   }, [previewWidth, previewHeight]);
 
@@ -147,8 +141,8 @@ function ProportionalOverlay({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: `${70}%`,
-    height: `${30}%`,
+    top: `${66}%`,
+    height: `${34}%`,
     backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 20%, rgba(255,255,255,1) 100%)`,
     mixBlendMode: 'normal',
   };
@@ -169,12 +163,32 @@ function ProportionalOverlay({
       <div className="relative w-full h-full">
         <div style={gradientStyle} />
 
+        <div
+          className="absolute font-semibold text-center"
+          style={{
+            left: '50%',
+            top: `calc(${baseYPercent-6}% - ${coordsOffsetPx}px - ${coordsPx / 2}px)`,
+            transform: 'translateX(-50%)',
+            color: '#000000',
+            fontSize: `${coordsPx}px`,
+            fontFamily: mapFonts?.coordinates?.family || '"Courier New", monospace',
+            fontWeight: mapFonts?.coordinates?.weight || 'normal',
+            fontStyle: mapFonts?.coordinates?.style || 'normal',
+            lineHeight: 1.1,
+            whiteSpace: 'nowrap',
+            maxWidth: '100%',
+            textAlign: 'center',
+          }}
+        >
+          {`${(mapControlLocation?.lat ?? 0).toFixed(3)}°N ${(mapControlLocation?.lng ?? 0).toFixed(3)}°E`}
+        </div>
+
         {mapTitle ? (
           <div
             className="absolute font-bold text-center"
             style={{
               left: '50%',
-              top: `calc(${baseYPercent-5}% - ${titleOffsetPx}px - ${titlePx / 2}px)`,
+              top: `calc(${baseYPercent-4}% - ${titleOffsetPx}px - ${titlePx / 2}px)`,
               transform: 'translateX(-50%)',
               color: '#000000',
               fontSize: `${titlePx}px`,
@@ -196,7 +210,7 @@ function ProportionalOverlay({
             className="absolute font-semibold text-center"
             style={{
               left: '50%',
-              top: `calc(${baseYPercent-4}% - ${subtitlePx / 2}px)`,
+              top: `calc(${baseYPercent}% - ${subtitlePx / 2}px)`,
               transform: 'translateX(-50%)',
               color: '#000000',
               fontSize: `${subtitlePx}px`,
@@ -212,25 +226,6 @@ function ProportionalOverlay({
             {mapSubtitle}
           </div>
         ) : null}
-            <div
-          className="absolute font-semibold text-center"
-          style={{
-            left: '50%',
-            top: `calc(${baseYPercent+6}% - ${coordsOffsetPx}px - ${coordsPx / 2}px)`,
-            transform: 'translateX(-50%)',
-            color: '#000000',
-            fontSize: `${coordsPx}px`,
-            fontFamily: mapFonts?.coordinates?.family || '"Courier New", monospace',
-            fontWeight: mapFonts?.coordinates?.weight || 'normal',
-            fontStyle: mapFonts?.coordinates?.style || 'normal',
-            lineHeight: 1.1,
-            whiteSpace: 'nowrap',
-            maxWidth: '100%',
-            textAlign: 'center',
-          }}
-        >
-          {`${(mapControlLocation?.lat ?? 0).toFixed(3)}°N ${(mapControlLocation?.lng ?? 0).toFixed(3)}°E`}
-        </div>    
       </div>
     </div>
   );
@@ -240,7 +235,7 @@ interface MapTextureControlProps {
   isOpen: boolean;
   onClose: () => void;
   currentLocation: { lat: number; lng: number } | null;
-  onApplyChanges: (newLocation: { lat: number; lng: number }, newLocation2: { lat: number; lng: number }, newZoom: number, mapTextureUrl: string, title?: string, subtitle?: string, pinLocation?: { lat: number; lng: number } | null) => void;
+  onApplyChanges: (newLocation: { lat: number; lng: number }, newLocation2: { lat: number; lng: number }, newZoom: number, mapTextureUrl: string, title?: string, subtitle?: string, pinLocation?: { lat: number; lng: number } | null, previewCssWidth?: number) => void;
   aspectRatio?: number;
   mapTitle?: string;
   mapSubtitle?: string;
@@ -264,7 +259,7 @@ export default function MapTextureControl({
   onClose, 
   currentLocation, 
   onApplyChanges,
-  aspectRatio = 1,
+  aspectRatio = 158 / 258, // board is 158 x 258 mm (popup canvas is ~256 x 417.5 px)
   mapTitle = "",
   mapSubtitle = "",
   selectedMapLineColor,
@@ -291,7 +286,6 @@ export default function MapTextureControl({
   const [showSearchResults, setShowSearchResults] = useState(false);
   const mapControlContainer = useRef<HTMLDivElement>(null);
   const mapControlMap = useRef<mapboxgl.Map | null>(null);
-  const mapPreviewCacheRef = useRef<string | undefined>(undefined);
   const [pinLocation, setPinLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [pinMode, setPinMode] = useState(false);
   const pinModeRef = useRef(false);
@@ -412,7 +406,7 @@ export default function MapTextureControl({
     };
   }, []);
 
-  // FIXED: Only initialize state when dialog opens for the first time
+  // Only initialize state when dialog opens for the first time
   useEffect(() => {
     if (!isOpen) {
       // Reset the initialization flag when dialog closes
@@ -440,7 +434,6 @@ export default function MapTextureControl({
     }
     if (!mapControlLocation || !mapControlContainer.current || mapControlMap.current || mapInitializedForSession.current) return;
     mapInitializedForSession.current = true;
-   // console.log(mapZoom);
     mapControlMap.current = new mapboxgl.Map({
       container: mapControlContainer.current,
       style: mapStyle,
@@ -452,14 +445,9 @@ export default function MapTextureControl({
       preserveDrawingBuffer: true,
       attributionControl: false,
     });
-mapControlMap.current.on("load", () => {
-  console.log("Bearing:", mapControlMap.current?.getBearing());
 
- // mapControlMap.current.setBearing(45);
-});
     mapControlMap.current.on('zoom', () => {
       if (mapControlMap.current) {
-        console.log('Current Zoom', mapControlMap.current.getZoom());
         const newZoom = Math.round(mapControlMap.current.getZoom() * 100) / 100;
         setMapZoom(newZoom);
         if (onZoomChange) {
@@ -518,9 +506,10 @@ mapControlMap.current.on("load", () => {
         <circle cx="16" cy="16" r="6" fill="white"/>
       </svg>`;
       el.style.cursor = 'pointer';
-      el.style.transform = 'translate(-50%, -100%)';
 
-      pinMarkerRef.current = new mapboxgl.Marker({ element: el })
+      // anchor 'bottom' puts the pin TIP on the lat/lng (Mapbox overwrites any
+      // custom transform on the element), matching the tip drawn in the texture.
+      pinMarkerRef.current = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([pinLocation.lng, pinLocation.lat])
         .addTo(mapControlMap.current);
     };
@@ -637,45 +626,22 @@ mapControlMap.current.on("load", () => {
   }, [fetchLocationInfo]);
 
   const generateMapTexture = useCallback(async (location: { lat: number; lng: number }, locationmodel: { lat: number; lng: number }, zoom: number): Promise<string> => {
-    let mapCanvasWidth: number | undefined;
-    let mapCanvasHeight: number | undefined;
-    // Zoom actually sent to the generator. Starts as the popup zoom and is
-    // compensated below so the generated image covers the same area.
-    let genZoom = zoom;
-    let mapPreviewDataUrl: string | undefined = mapPreviewCacheRef.current;
-    if (mapControlMap.current) {
-      const canvas = mapControlMap.current.getCanvas();
-      if (canvas) {
-        // Generate at a fixed, good-resolution width, but compensate the
-        // zoom so the SAME geographic area is captured as what the popup
-        // shows. Same area means GEN_W / 2^genZoom == popupW / 2^zoom, so
-        // genZoom = zoom + log2(GEN_W / popupW). This only works because the
-        // popup frame has the product ratio, so popup height / width equals
-        // generated height / width.
-        const popupW = canvas.clientWidth || TEXTURE_GEN_WIDTH;
-        genZoom = zoom + Math.log2(TEXTURE_GEN_WIDTH / popupW);
-        mapCanvasWidth = TEXTURE_GEN_WIDTH;
-        mapCanvasHeight = TEXTURE_GEN_WIDTH / aspectRatio;
-        if ((mapCanvasWidth ?? 0) > 2048 || (mapCanvasHeight ?? 0) > 2048) {
-          try {
-            mapPreviewDataUrl = canvas.toDataURL('image/png', 1.0);
-            mapPreviewCacheRef.current = mapPreviewDataUrl;
-          } catch {
-            mapPreviewDataUrl = mapPreviewCacheRef.current;
-          }
-        } else {
-          mapPreviewCacheRef.current = undefined;
-          mapPreviewDataUrl = undefined;
-        }
-      }
-    } else if (mapPreviewCacheRef.current) {
-      mapPreviewDataUrl = mapPreviewCacheRef.current;
-    }
+    // The popup is only a preview. The texture is always rendered at a fixed size.
+    const textureWidth = TEXTURE_WIDTH;
+    const textureHeight = Math.round(TEXTURE_WIDTH / aspectRatio);
+
+    // Mapbox zoom is relative to CSS pixels. Rendering the same view at a wider
+    // canvas needs extra zoom so the visible area matches the popup.
+    // e.g. popup 256 css px wide -> log2(2048 / 256) = +3 zoom levels.
+    // IMPORTANT: use clientWidth (CSS px), NOT canvas.width (device px).
+    const previewCssWidth =
+      mapControlMap.current?.getCanvas()?.clientWidth || mapControlContainer.current?.clientWidth || textureWidth;
+    const effectiveZoom = zoom + Math.log2(textureWidth / previewCssWidth);
 
     return generateMapTextureWithText({
       location,
       locationmodel,
-      zoom: genZoom,
+      zoom: effectiveZoom,
       aspectRatio,
       mapTitle: localMapTitle,
       mapSubtitle: localMapSubtitle,
@@ -685,12 +651,13 @@ mapControlMap.current.on("load", () => {
       spacing,
       mapTextPosition,
       mapFonts,
-      mapCanvasWidth,
-      mapCanvasHeight,
-      mapPreviewDataUrl,
+      mapCanvasWidth: textureWidth,
+      mapCanvasHeight: textureHeight,
+      // Always render fresh at full size; never reuse the low-res popup screenshot.
+      mapPreviewDataUrl: undefined,
       pinLocation,
       pinColor,
-    } as any);
+    });
   }, [aspectRatio, localMapTitle, localMapSubtitle, customMapStyle, selectedMapLineColor, bottleColor, spacing, mapTextPosition, mapFonts, pinLocation, pinColor]);
 
   const currentSnapshot = useMemo(() => {
@@ -734,23 +701,15 @@ mapControlMap.current.on("load", () => {
   const handleApplyChanges = useCallback(async () => {
     if (mapControlMap.current) {
       const center = mapControlMap.current.getCenter();
+      // Raw popup zoom. The texture generator gets the compensated zoom
+      // inside generateMapTexture; the parent keeps the popup zoom.
       const zoom = mapControlMap.current.getZoom();
       
       setIsGeneratingTexture(true);
-      const map2 = mapControlMap.current;
-
-// const center = map.getCenter();
-
-const point = map2.project(center);
-
-// const newCenter = map2.unproject([
-//   point.x + map2.getCanvas().width * 0.75,
-//   point.y,
-// ]);
       const newCenter = center;
       try {
         const mapTextureUrl = await generateMapTexture({ lat: newCenter.lat, lng: newCenter.lng }, { lat: center.lat, lng: center.lng }, zoom);
-        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation);
+        onApplyChanges({ lat: center.lat, lng: center.lng }, { lat: newCenter.lat, lng: newCenter.lng }, zoom, mapTextureUrl, localMapTitle, localMapSubtitle, pinLocation, mapControlMap.current?.getCanvas()?.clientWidth || mapControlContainer.current?.clientWidth || undefined);
         if (currentSnapshot) {
           lastTextureDetailsRef.current = currentSnapshot;
         }
@@ -803,43 +762,31 @@ const point = map2.project(center);
                 backgroundRepeat: 'repeat'
               }}
             >
-              {/* Product-shaped frame. Width = min(available width, the width
-                  that makes the frame POPUP_MAX_HEIGHT_VH tall at the product
-                  ratio); height then follows from aspect-ratio. The old
-                  version used width:100% + maxHeight:100%, and as soon as
-                  maxHeight clamped, the aspect ratio was lost, so the popup
-                  never really had the product's shape. The overlay lives
-                  INSIDE this frame so its text/gradient are sized to the map,
-                  not to the whole checker area. */}
-              <div
-                className="relative shrink-0"
+              <div 
+                ref={mapControlContainer} 
+                className="transition-all duration-300 touch-manipulation"
                 style={{
                   aspectRatio: `${aspectRatio}`,
-                  width: `min(100%, calc(${POPUP_MAX_HEIGHT_VH}vh * ${aspectRatio}))`,
+                  width: '100%',
+                  maxHeight: '100%',
+                  minWidth: 0,
+                  minHeight: 0
+
                 }}
-              >
-                {/* Inline position: mapbox-gl.css sets .mapboxgl-map to
-                    position:relative, which can override a Tailwind
-                    "absolute" class and collapse the map to 0 height. */}
-                <div
-                  ref={mapControlContainer}
-                  className="touch-manipulation"
-                  style={{ position: 'absolute', inset: 0 }}
-                />
-                <ProportionalOverlay
-                  aspectRatio={aspectRatio}
-                  spacing={spacing}
-                  mapTextPosition={mapTextPosition}
-                  bottleColor={bottleColor}
-                  selectedMapLineColor={selectedMapLineColor}
-                  mapControlLocation={mapControlLocation}
-                  mapTitle={localMapTitle}
-                  mapSubtitle={localMapSubtitle}
-                  mapFonts={mapFonts}
-                  titleOffsetFactor={60 / (((2048 / aspectRatio) * (1 - spacing.top - spacing.bottom)) * 1.7)}
-                  coordsOffsetFactor={136 / (((2048 / aspectRatio) * (1 - spacing.top - spacing.bottom)) * 2)}
-                />
-              </div>
+              />
+              <ProportionalOverlay
+                aspectRatio={aspectRatio}
+                spacing={spacing}
+                mapTextPosition={mapTextPosition}
+                bottleColor={bottleColor}
+                selectedMapLineColor={selectedMapLineColor}
+                mapControlLocation={mapControlLocation}
+                mapTitle={localMapTitle}
+                mapSubtitle={localMapSubtitle}
+                mapFonts={mapFonts}
+                titleOffsetFactor={60 / (((TEXTURE_WIDTH / aspectRatio) * (1 - spacing.top - spacing.bottom)) * 1.7)}
+                coordsOffsetFactor={136 / (((TEXTURE_WIDTH / aspectRatio) * (1 - spacing.top - spacing.bottom)) * 2)}
+              />
               
               <style jsx>{`
                 :global(.mapboxgl-ctrl-bottom-right),
@@ -954,16 +901,16 @@ const point = map2.project(center);
                   onClick={handleFindMyLocation}
                   disabled={isLocating}
                   className="bg-white text-gray-800 border border-gray-300 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full text-[10px] sm:text-xs font-semibold shadow-lg hover:bg-gray-50 transition-colors touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
-                title={t("map.findMyLocationTitle")}
-              >
-                {isLocating ? (
-                  'LOCATING...'
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 sm:gap-2">
-                    <MdLocationOn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    FIND MY LOCATION
-                  </span>
-                )}
+                  title={t("map.findMyLocationTitle")}
+                >
+                  {isLocating ? (
+                    'LOCATING...'
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 sm:gap-2">
+                      <MdLocationOn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      FIND MY LOCATION
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

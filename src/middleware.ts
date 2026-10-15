@@ -69,16 +69,16 @@ async function handleConfiguratorAccess(
   if (loggedOut && !token) {
      const locale = getPreferredLocale(request);
     const returnUrl = encodeURIComponent(`/apps/sso-pro?locale=${locale}`);
-    return NextResponse.redirect(
-      `https://www.marvins.eu/account/login?return_url=${returnUrl}`
-    );
+    // return NextResponse.redirect(
+    //   `https://www.marvins.eu/account/login?return_url=${returnUrl}`
+    // );
   }
 
   if (!token && !existingSession) {
     const returnUrl = encodeURIComponent("/apps/sso-pro");
-    return NextResponse.redirect(
-        `https://www.marvins.eu/account/login?return_url=${returnUrl}`
-      );  
+    // return NextResponse.redirect(
+    //   `https://www.marvins.eu/account/login?return_url=${returnUrl}`
+    // );
   }
 
   // Existing session is valid, user hasn't logged out

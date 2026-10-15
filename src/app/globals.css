@@ -81,3 +81,6 @@ body{
   max-height:none!important;
 }
  .mov-height{ height: 420px !important; }
+.touch-manipulation.mapboxgl-map {
+	max-width: 256px !important;
+}

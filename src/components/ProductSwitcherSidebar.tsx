@@ -130,6 +130,7 @@ const otherBottles = selectedBottleType
             selectedMapLineColor: mapParams!.lineColor,
             bottleColor: mapParams!.bottleColor,
             spacing,
+            mapLogoUrl: logoDecals,
             mapTextPosition: settings?.mapTextPosition || 0.9,
             mapFonts: settings?.mapFonts,
             pinLocation: mapParams!.pinLocation,

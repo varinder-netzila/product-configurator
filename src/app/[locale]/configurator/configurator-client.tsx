@@ -95,7 +95,7 @@ useEffect(() => {
       const data = await res.json();
         if (!cancelled && !data.isLoggedIn) {
           const returnUrl = encodeURIComponent(`/apps/sso-pro?locale=${locale}`);
-          window.location.href = `https://www.marvins.eu/account/login?return_url=${returnUrl}`;
+      //    window.location.href = `https://www.marvins.eu/account/login?return_url=${returnUrl}`;
         }
     } catch {
       // network hiccup — don't kick the user out on a transient failure
@@ -282,30 +282,19 @@ useEffect(() => {
     };
   }, [currentLocation, currentCenter, currentMapZoom, mapTextureTitle, mapTextureSubtitle, selectedMapLineColor, meshColors.Body?.hex, mapPinLocation, mapPinColor]);
 
-
+const MAP_TEXTURE_WIDTH = 2048;
+// Popup canvas CSS width (updated whenever the popup applies changes)
+const mapPreviewWidthRef = useRef(256);
+// Popup zoom -> zoom for the 2048px texture (256px popup = +3 levels)
+const toTextureZoom = useCallback(
+  (z: number) => z + Math.log2(MAP_TEXTURE_WIDTH / mapPreviewWidthRef.current),
+  []
+);
   // Explicit canvas dimensions for the current board (bypass module-level cache)
-const mapCanvasDims = useMemo(() => {
-  const sp = bottleSettings?.spacing || { top: 0.2, bottom: 0 };
-
-  let baseCanvasW = 520;
-  let baseCanvasH = baseCanvasW / aspectRatio;
-
-  if (map.current) {
-    const canvas = map.current.getCanvas();
-
-    if (canvas) {
-      baseCanvasW = canvas.width;
-      baseCanvasH = canvas.height;
-    }
-  }
-
-  return {
-    mapCanvasWidth: Math.round((baseCanvasW * 2) / 2),
-     mapCanvasHeight: baseCanvasH, // Math.round(
-    //   baseCanvasH * (1 - sp.top - sp.bottom)
-    // ), 
-  };
-}, [aspectRatio, bottleSettings]);
+const mapCanvasDims = useMemo(() => ({
+  mapCanvasWidth: MAP_TEXTURE_WIDTH,
+  mapCanvasHeight: Math.round(MAP_TEXTURE_WIDTH / aspectRatio),
+}), [aspectRatio]);
 
   const currentTexture = useMemo(() => {
     if (!mapImage && !allOverPrintTexture && !selectedTexture) return null;
@@ -711,157 +700,211 @@ const mapCanvasDims = useMemo(() => {
     return () => window.removeEventListener("downloadTextureDesign", handler);
   }, [setShowTextureDesignManager]);
 
-  // Generate map texture with logo
-  const generateMapTextureWithLogo = useCallback(
-    async (baseTextureUrl: string) => {
-      if (!mapLogo || !currentLocation) return baseTextureUrl;
-      try {
-        const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-        if (!accessToken) throw new Error("Mapbox access token not found");
-        const baseSize = 2048;
-        const width = Math.round(baseSize);
-        const height = Math.round(baseSize / aspectRatio);
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        if (!ctx) throw new Error("Failed to create canvas context");
-        canvas.width = width * 2;
-        canvas.height = height * 2;
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
+  // Put this helper outside the component (or at the top of it)
+const drawFullWidthBand = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  color = "#ffffff",
+  alpha = 0.7 // 30% opacity
+) => {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.fillRect(x, 0, w, 1200);
+  ctx.restore();
+};
 
-        const baseImg = new window.Image();
-        baseImg.crossOrigin = "anonymous";
-        await new Promise((resolve, reject) => {
-          baseImg.onload = () => { ctx.drawImage(baseImg, 0, 0, width * 2, height * 2); resolve(void 0); };
-          baseImg.onerror = () => reject(new Error("Failed to load base map texture"));
-          baseImg.src = baseTextureUrl;
-        });
+// Generate map texture with logo
+const generateMapTextureWithLogo = useCallback(
+  async (baseTextureUrl: string) => {
+    if (!mapLogo || !currentLocation) return baseTextureUrl;
+    try {
+      const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+      if (!accessToken) throw new Error("Mapbox access token not found");
+      const baseSize = 2048;
+      const width = Math.round(baseSize);
+      const height = Math.round(baseSize / aspectRatio);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Failed to create canvas context");
+      canvas.width = width * 2;
+      canvas.height = height * 2;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
 
-        const logoImg = new window.Image();
-        logoImg.crossOrigin = "anonymous";
-        await new Promise((resolve) => {
-          logoImg.onload = () => {
-            const logoMaxWidth = width * 2 * 0.2;
-            const logoMaxHeight = height * 2 * 0.2;
-            let logoWidth: number, logoHeight: number;
-            if (mapDirection === "horizontal") {
-              logoWidth = Math.min(logoMaxWidth, logoImg.width * 2);
-              logoHeight = (logoWidth / logoImg.width) * logoImg.height;
-              if (logoHeight > logoMaxHeight) { logoHeight = logoMaxHeight; logoWidth = (logoHeight / logoImg.height) * logoImg.width; }
-            } else {
-              logoHeight = Math.min(logoMaxHeight, logoImg.height * 2);
-              logoWidth = (logoHeight / logoImg.height) * logoImg.width;
-              if (logoWidth > logoMaxWidth) { logoWidth = logoMaxWidth; logoHeight = (logoWidth / logoImg.width) * logoImg.height; }
-            }
-            logoWidth *= mapLogoScale;
-            logoHeight *= mapLogoScale;
-            const canvasWidth = width * 1.2;
-            const mapWidth = canvasWidth * 2 / 3;
-            const emptySpaceCenterX = mapWidth + (canvasWidth - mapWidth) / 2;
-            const logoX = emptySpaceCenterX - logoWidth / 2;
-            const logoY = (height) / 5 - logoHeight / 2;
-            if (mapDirection === "vertical") {
-              ctx.save();
-              ctx.translate(logoX + logoWidth / 2, logoY + logoHeight / 2);
-              ctx.rotate(Math.PI / 2);
-              ctx.drawImage(logoImg, -logoWidth / 2, -logoHeight / 2, logoWidth, logoHeight);
-              ctx.restore();
-            } else {
-              ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
-            }
-            resolve(void 0);
-          };
-          logoImg.onerror = () => resolve(void 0);
-          logoImg.src = mapLogo;
-        });
+      const baseImg = new window.Image();
+      baseImg.crossOrigin = "anonymous";
+      await new Promise((resolve, reject) => {
+        baseImg.onload = () => {
+          ctx.drawImage(baseImg, 0, 0, width * 2, height * 2);
+          resolve(void 0);
+        };
+        baseImg.onerror = () => reject(new Error("Failed to load base map texture"));
+        baseImg.src = baseTextureUrl;
+      });
 
-        return canvas.toDataURL("image/png", 1.0);
-      } catch (error) {
-       // console.error("Failed to generate map texture with logo:", error);
-        return baseTextureUrl;
-      }
-    },
-    [mapLogo, mapDirection, mapLogoScale, currentLocation, aspectRatio]
-  );
-
-  // Compose all-over print texture with logo overlay (centered on board front)
-  const generatePrintTextureWithLogo = useCallback(
-    async (baseImageUrl: string): Promise<string> => {
-      if (!printLogo) return baseImageUrl;
-      try {
-        const baseImg = await new Promise<HTMLImageElement>((resolve, reject) => {
-          const img = new window.Image();
-          img.crossOrigin = "anonymous";
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(new Error("Failed to load base image"));
-          img.src = baseImageUrl;
-        });
-
-        const logoImg = await new Promise<HTMLImageElement>((resolve, reject) => {
-          const img = new window.Image();
-          img.crossOrigin = "anonymous";
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(new Error("Failed to load logo"));
-          img.src = printLogo;
-        });
-
-        const canvas = document.createElement("canvas");
-        canvas.width = baseImg.width;
-        canvas.height = baseImg.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return baseImageUrl;
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
-
-        // Draw the base image
-        ctx.drawImage(baseImg, 0, 0);
-
-        // Compute logo dimensions (max 25% of canvas, scaled by user)
-        const logoMaxWidth = canvas.width * 0.25;
-        const logoMaxHeight = canvas.height * 0.25;
-        let logoWidth: number, logoHeight: number;
-        if (printLogoDirection === "horizontal") {
-          logoWidth = Math.min(logoMaxWidth, logoImg.width);
-          logoHeight = (logoWidth / logoImg.width) * logoImg.height;
-          if (logoHeight > logoMaxHeight) {
-            logoHeight = logoMaxHeight;
-            logoWidth = (logoHeight / logoImg.height) * logoImg.width;
-          }
-        } else {
-          logoHeight = Math.min(logoMaxHeight, logoImg.height);
-          logoWidth = (logoHeight / logoImg.height) * logoImg.width;
-          if (logoWidth > logoMaxWidth) {
-            logoWidth = logoMaxWidth;
+      const logoImg = new window.Image();
+      logoImg.crossOrigin = "anonymous";
+      await new Promise((resolve) => {
+        logoImg.onload = () => {
+          const logoMaxWidth = width * 2 * 0.2;
+          const logoMaxHeight = height * 2 * 0.2;
+          let logoWidth: number, logoHeight: number;
+          if (mapDirection === "horizontal") {
+            logoWidth = Math.min(logoMaxWidth, logoImg.width * 2);
             logoHeight = (logoWidth / logoImg.width) * logoImg.height;
+            if (logoHeight > logoMaxHeight) {
+              logoHeight = logoMaxHeight;
+              logoWidth = (logoHeight / logoImg.height) * logoImg.width;
+            }
+          } else {
+            logoHeight = Math.min(logoMaxHeight, logoImg.height * 2);
+            logoWidth = (logoHeight / logoImg.height) * logoImg.width;
+            if (logoWidth > logoMaxWidth) {
+              logoWidth = logoMaxWidth;
+              logoHeight = (logoWidth / logoImg.width) * logoImg.height;
+            }
           }
+          logoWidth *= mapLogoScale;
+          logoHeight *= mapLogoScale;
+          const canvasWidth = width * 1.2;
+          const mapWidth = (canvasWidth * 2) / 3;
+          const emptySpaceCenterX = mapWidth + (canvasWidth - mapWidth) / 2;
+          const logoX = emptySpaceCenterX - logoWidth / 2;
+          const logoY = height / 5 - logoHeight / 2;
+
+          // 30% transparent band across the full texture width
+          const padding = 24; // canvas is 2x scale
+          const isVertical = mapDirection === "vertical";
+          // A rotated logo's visual height is its width
+          const bandHeight = (isVertical ? logoWidth : logoHeight) + padding * 2;
+          const bandCenterY = logoY + logoHeight / 2;
+          drawFullWidthBand(
+            ctx,
+            0,
+            bandCenterY - bandHeight / 2,
+            canvas.width,
+            bandHeight
+          );
+
+          if (isVertical) {
+            ctx.save();
+            ctx.translate(logoX + logoWidth / 2, logoY + logoHeight / 2);
+            ctx.rotate(Math.PI / 2);
+            ctx.drawImage(logoImg, -logoWidth / 2, -logoHeight / 2, logoWidth, logoHeight);
+            ctx.restore();
+          } else {
+            ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+          }
+          resolve(void 0);
+        };
+        logoImg.onerror = () => resolve(void 0);
+        logoImg.src = mapLogo;
+      });
+
+      return canvas.toDataURL("image/png", 1.0);
+    } catch (error) {
+      // console.error("Failed to generate map texture with logo:", error);
+      return baseTextureUrl;
+    }
+  },
+  [mapLogo, mapDirection, mapLogoScale, currentLocation, aspectRatio]
+);
+
+// Compose all-over print texture with logo overlay (centered on board front)
+const generatePrintTextureWithLogo = useCallback(
+  async (baseImageUrl: string): Promise<string> => {
+    if (!printLogo) return baseImageUrl;
+    try {
+      const baseImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new window.Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error("Failed to load base image"));
+        img.src = baseImageUrl;
+      });
+
+      const logoImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new window.Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error("Failed to load logo"));
+        img.src = printLogo;
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = baseImg.width;
+      canvas.height = baseImg.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return baseImageUrl;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
+      // Draw the base image
+      ctx.drawImage(baseImg, 0, 0);
+
+      // Compute logo dimensions (max 25% of canvas, scaled by user)
+      const logoMaxWidth = canvas.width * 0.25;
+      const logoMaxHeight = canvas.height * 0.25;
+      let logoWidth: number, logoHeight: number;
+      if (printLogoDirection === "horizontal") {
+        logoWidth = Math.min(logoMaxWidth, logoImg.width);
+        logoHeight = (logoWidth / logoImg.width) * logoImg.height;
+        if (logoHeight > logoMaxHeight) {
+          logoHeight = logoMaxHeight;
+          logoWidth = (logoHeight / logoImg.height) * logoImg.width;
         }
-        logoWidth *= printLogoScale;
-        logoHeight *= printLogoScale;
-
-        // Center the logo on the board front (left half = front, right half = back)
-        const frontCenterX = canvas.width * 0.25;
-        const centerY = canvas.height / 2;
-        const logoX = frontCenterX - logoWidth / 2;
-        const logoY = centerY - logoHeight / 2;
-
-        if (printLogoDirection === "vertical") {
-          ctx.save();
-          ctx.translate(logoX + logoWidth / 2, logoY + logoHeight / 2);
-          ctx.rotate(Math.PI / 2);
-          ctx.drawImage(logoImg, -logoWidth / 2, -logoHeight / 2, logoWidth, logoHeight);
-          ctx.restore();
-        } else {
-          ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+      } else {
+        logoHeight = Math.min(logoMaxHeight, logoImg.height);
+        logoWidth = (logoHeight / logoImg.height) * logoImg.width;
+        if (logoWidth > logoMaxWidth) {
+          logoWidth = logoMaxWidth;
+          logoHeight = (logoWidth / logoImg.width) * logoImg.height;
         }
-
-        return canvas.toDataURL("image/png", 1.0);
-      } catch (error) {
-        console.error("Failed to compose print texture with logo:", error);
-        return baseImageUrl;
       }
-    },
-    [printLogo, printLogoScale, printLogoDirection]
-  );
+      logoWidth *= printLogoScale;
+      logoHeight *= printLogoScale;
+
+      // Center the logo on the board front (left half = front, right half = back)
+      const frontCenterX = canvas.width * 0.25;
+      const centerY = canvas.height / 2;
+      const logoX = frontCenterX - logoWidth / 2;
+      const logoY = centerY - logoHeight / 2;
+
+      // 30% transparent band across the full board-front width (left half)
+      const padding = 12;
+      const isVertical = printLogoDirection === "vertical";
+      const bandHeight = (isVertical ? logoWidth : logoHeight) + padding * 2;
+      const bandCenterY = logoY + logoHeight / 2;
+      drawFullWidthBand(
+        ctx,
+        0,
+        bandCenterY - bandHeight / 2,
+        canvas.width * 0.5, // use canvas.width to cover front + back
+        bandHeight
+      );
+
+      if (isVertical) {
+        ctx.save();
+        ctx.translate(logoX + logoWidth / 2, logoY + logoHeight / 2);
+        ctx.rotate(Math.PI / 2);
+        ctx.drawImage(logoImg, -logoWidth / 2, -logoHeight / 2, logoWidth, logoHeight);
+        ctx.restore();
+      } else {
+        ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+      }
+
+      return canvas.toDataURL("image/png", 1.0);
+    } catch (error) {
+      console.error("Failed to compose print texture with logo:", error);
+      return baseImageUrl;
+    }
+  },
+  [printLogo, printLogoScale, printLogoDirection]
+);
 
   // Print logo upload handler
   const handlePrintLogoUpload = useCallback(
@@ -959,11 +1002,15 @@ const mapCanvasDims = useMemo(() => {
       mapTextureUrl: string,
       title?: string,
       subtitle?: string,
-      pin?: { lat: number; lng: number } | null
+      pin?: { lat: number; lng: number } | null,
+      previewCssWidth?: number // popup canvas CSS width, sent by MapTextureControl
     ) => {
+      // Remember the popup width so later regenerations use the same zoom compensation
+      if (previewCssWidth) mapPreviewWidthRef.current = previewCssWidth;
+
       setCurrentLocation(newLocation);
       setCurrentCenter(newLocation2);
-      setCurrentMapZoom(newZoom);
+      setCurrentMapZoom(newZoom); // keep the RAW popup zoom in the store
       setShowMapControl(false);
       setMapTextureTitle(title || "");
       setMapTextureSubtitle(subtitle || "");
@@ -973,17 +1020,26 @@ const mapCanvasDims = useMemo(() => {
       let flatTextureUrl: string | null = null;
       try {
         flatTextureUrl = await generateMapTextureWithText({
-          location: newLocation2, locationmodel: newLocation, zoom: newZoom, aspectRatio,
-          mapTitle: title || "", mapSubtitle: subtitle || "",
-          selectedMapLineColor, bottleColor: meshColors.Body?.hex || "#ffffff",
-          spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
+          location: newLocation2,
+          locationmodel: newLocation,
+          zoom: toTextureZoom(newZoom), // compensated for the 2048px texture
+          aspectRatio,
+          mapTitle: title || "",
+          mapSubtitle: subtitle || "",
+          selectedMapLineColor,
+          bottleColor: meshColors.Body?.hex || "#ffffff",
+          spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
           mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
-          mapFonts: bottleSettings?.mapFonts, includeGradient: false,
+          mapFonts: bottleSettings?.mapFonts,
+          includeGradient: false,
           pinLocation: pin || null,
+          pinColor: mapPinColor, // was missing here, the other calls pass it
           mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
           mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
         });
-      } catch (error) { console.error("Failed to generate flat map texture:", error); }
+      } catch (error) {
+        console.error("Failed to generate flat map texture:", error);
+      }
 
       try {
         const textureWithLogo = await generateMapTextureWithLogo(mapTextureUrl);
@@ -1001,9 +1057,15 @@ const mapCanvasDims = useMemo(() => {
       setAllOverPrintTexture(null);
       setTextureImageUrl(null);
     },
-    [aspectRatio, bottleSettings, generateMapTextureWithLogo, meshColors.Body?.hex, selectedMapLineColor, switchToMapTextureMode, setCurrentLocation, setCurrentCenter, setCurrentMapZoom, setShowMapControl, setMapTextureTitle, setMapTextureSubtitle, setMapPinLocation, setMapImage, setMapImageWithLogo, setSelectedTexture, setMapImageDesign, setMapImageDesignWithLogo, setAllOverPrintTexture, setTextureImageUrl, mapCanvasDims]
+    [
+      aspectRatio, bottleSettings, generateMapTextureWithLogo, meshColors.Body?.hex,
+      selectedMapLineColor, switchToMapTextureMode, setCurrentLocation, setCurrentCenter,
+      setCurrentMapZoom, setShowMapControl, setMapTextureTitle, setMapTextureSubtitle,
+      setMapPinLocation, setMapImage, setMapImageWithLogo, setSelectedTexture,
+      setMapImageDesign, setMapImageDesignWithLogo, setAllOverPrintTexture,
+      setTextureImageUrl, mapCanvasDims, toTextureZoom, mapPinColor,
+    ]
   );
-
   // Map line color change with regeneration
   const handleMapLineColorChange = useCallback(
     (color: any) => {
@@ -1013,20 +1075,20 @@ const mapCanvasDims = useMemo(() => {
           try {
             const [gradientUrl, flatUrl] = await Promise.all([
               generateMapTextureWithText({
-                location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
+                location: currentCenter, locationmodel: currentLocation, zoom: toTextureZoom(currentMapZoom), aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
                 selectedMapLineColor: '#000000',
-                spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
+                spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, pinLocation: mapPinLocation, pinColor: mapPinColor,
                 mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
                 mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
               }),
               generateMapTextureWithText({
-                location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
+                location: currentCenter, locationmodel: currentLocation, zoom: toTextureZoom(currentMapZoom), aspectRatio,
                 mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
                 selectedMapLineColor: '#000000',
-                spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
+                spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
                 mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
                 mapFonts: bottleSettings?.mapFonts, includeGradient: false, pinLocation: mapPinLocation, pinColor: mapPinColor,
                 mapCanvasWidth: mapCanvasDims.mapCanvasWidth,
@@ -1103,9 +1165,9 @@ const mapCanvasDims = useMemo(() => {
       try {
         const [gradientUrl, flatUrl] = await Promise.all([
           generateMapTextureWithText({
-            location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
+            location: currentCenter, locationmodel: currentLocation, zoom: toTextureZoom(currentMapZoom), aspectRatio,
             mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
+            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
             mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
             mapFonts: bottleSettings?.mapFonts, bottleColor,
             pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -1113,9 +1175,9 @@ const mapCanvasDims = useMemo(() => {
             mapCanvasHeight: mapCanvasDims.mapCanvasHeight,
           }),
           generateMapTextureWithText({
-            location: currentCenter, locationmodel: currentLocation, zoom: currentMapZoom, aspectRatio,
+            location: currentCenter, locationmodel: currentLocation, zoom: toTextureZoom(currentMapZoom), aspectRatio,
             mapTitle: mapTextureTitle, mapSubtitle: mapTextureSubtitle,
-            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0.2, bottom: 0 },
+            selectedMapLineColor, spacing: bottleSettings?.spacing || { top: 0, bottom: 0 },
             mapTextPosition: bottleSettings?.mapTextPosition || 0.9,
             mapFonts: bottleSettings?.mapFonts, bottleColor,
             includeGradient: false, pinLocation: mapPinLocation, pinColor: mapPinColor,
@@ -1861,7 +1923,7 @@ const mapCanvasDims = useMemo(() => {
         bottleColor={meshColors.Body?.hex || '#ffffff'}
         onZoomChange={setCurrentMapZoom}
         currentZoom={currentMapZoom}
-        spacing={bottleSettings?.spacing || { top: 0.2, bottom: 0 }}
+        spacing={bottleSettings?.spacing || { top: 0, bottom: 0 }}
         mapTextPosition={bottleSettings?.mapTextPosition || 0.9}
         mapFonts={bottleSettings?.mapFonts}
         pinColor='#000000'

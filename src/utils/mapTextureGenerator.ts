@@ -23,18 +23,18 @@ const previewCacheByAspectRatio = new Map<number, PreviewCacheEntry>();
 	const mapFontsimg = {
 		title: {
 		family: 'Arial, sans-serif',
-		size: 130,
+		size: 150,
 		weight: 'bold',
 		style: 'normal',
 		},
 
 		subtitle: {
 		family: 'Georgia, serif',
-		size: 100,
+		size: 120,
 		weight: 'normal',
 		style: 'italic',
 		},
-			coordinates: { family: '"Courier New", monospace', size: 70, weight: 'bold', style: 'normal' }
+			coordinates: { family: '"Courier New", monospace', size: 120, weight: 'bold', style: 'normal' }
 		};
 /** Reset cached state so the next call generates fresh from Mapbox API */
 export function resetMapTextureCache() {
@@ -113,7 +113,13 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		pitch = 0,
 	} = params;
 	let mapPreviewDataUrl = incomingPreviewDataUrl;
-
+// Logo uploaded  -> top 20% reserved for the logo, map fills the rest.
+// No logo        -> map uses the full height.
+const LOGO_BAND_RATIO = 0.2;
+const hasLogo = !!mapLogoUrl;
+const effectiveSpacing = hasLogo
+	? { top: LOGO_BAND_RATIO, bottom: 0 }
+	: { top: 0, bottom: 0 };
 	const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 	if (!accessToken) {
 		throw new Error('Mapbox access token not found');
@@ -308,7 +314,6 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 				: { mapW: targetMapWidth, mapH: targetMapWidth / imageAspectRatio };
 
 		const mapX = Math.round((baseCanvasWidth - mapDimensions.mapW) / 2); //-1600; //baseCanvasWidth / 3;
-	    console.log(spacing.top);   
 		const topSpacingPx = baseCanvasHeight * spacing.top;
 		const mapY = topSpacingPx;
 		ctx.drawImage(processedImg, mapX, mapY, mapDimensions.mapW, mapDimensions.mapH);
@@ -387,7 +392,9 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 	if (pinLocation && ctx) {
 		// Convert lat/lng offset from map center to pixel offset
 		// Using Web Mercator projection
-		const scale = Math.pow(2.035, zoom) * 256; // pixels per world at this zoom
+		// Mapbox (GL JS + Static Images API) uses 512px world tiles: world width = 512 * 2^zoom.
+		// `zoom` here is the zoom matching `width` (already compensated by the caller).
+		const scale = Math.pow(2, zoom) * 512; // pixels per world at this zoom
 		const degToRad = Math.PI / 180;
 
 		// Center of map in pixels
@@ -409,7 +416,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		// rotating the offset vector by -bearing converts a world-space
 		// (north-up) delta into the screen-space delta for a map that has
 		// been rotated clockwise by `bearing`.
-		const bearingRad = (bearing * Math.PI) / 120;
+		const bearingRad = (bearing * Math.PI) / 180;
 		const cosB = Math.cos(-bearingRad);
 		const sinB = Math.sin(-bearingRad);
 		const offsetX = rawOffsetX * cosB - rawOffsetY * sinB;
@@ -424,7 +431,7 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 		// (see the comment above `maxMapboxDim`), so mapW/width converts
 		// world-pixel offsets into canvas pixels correctly regardless of
 		// whether the source came from the live preview or a fresh fetch.
-		const scaleToCanvas = (mapW * 1.284) / width;
+		const scaleToCanvas = mapW / width;
 
 		const pinCanvasX = mapX + mapW / 2 + offsetX * scaleToCanvas;
 		const pinCanvasY = mapY + mapH / 2 + offsetY * scaleToCanvas;
@@ -479,10 +486,10 @@ export const generateMapTextureWithText = async (params: MapTextureGenerationPar
 
 		ctx.save();
 
-const rectX = 400;
-const rectY = scrimTop-5;
-const rectW = baseCanvasWidth - 800;
-const rectH = scrimBottom - scrimTop - 70;
+const rectX = 300;
+const rectY = scrimTop+150;
+const rectW = baseCanvasWidth - 600;
+const rectH = scrimBottom - scrimTop - 250;
 
 // Background
 ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
@@ -531,19 +538,19 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.title && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.title;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapTitle, textCenterX, textBaseY -150, letterSpacing);
+			drawText(mapTitle, textCenterX, textBaseY -120, letterSpacing);
 		}
 
 		if (mapFonts.subtitle && mapSubtitle) {
 			const { family, size, weight, style, letterSpacing = 0 } = mapFontsimg.subtitle;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(mapSubtitle, textCenterX, textBaseY - 20, letterSpacing);
+			drawText(mapSubtitle, textCenterX, textBaseY + 20, letterSpacing);
 		}
 
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 90, letterSpacing);
+			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 160, letterSpacing);
 		}
 
 	}
@@ -552,7 +559,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 	if (mapLogoUrl) {
 		try {
 			const logoImg = await loadImage(mapLogoUrl);
-			const maxW = Math.min(outputCanvas.width * 0.3, 200);
+			const maxW = Math.min(outputCanvas.width * 1, 200);
 			const maxH = Math.min(outputCanvas.height * 0.3, 200);
 			let logoW: number;
 			let logoH: number;
