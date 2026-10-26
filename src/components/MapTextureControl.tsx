@@ -562,6 +562,12 @@ export default function MapTextureControl({
     }
   }, []);
 
+  useEffect(() => {
+    if (!searchQuery) {
+        setSearchQuery('Marconibaan 42e, 3439 MS Nieuwegein, Netherlands');
+     }
+  }, [searchQuery, setSearchQuery]);     
+
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
