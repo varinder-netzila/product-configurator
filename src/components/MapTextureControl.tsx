@@ -423,7 +423,7 @@ export default function MapTextureControl({
     if (!hasInitialized.current && currentLocation) {
       hasInitialized.current = true;
       setMapControlLocation(currentLocation);
-      setMapZoom(currentZoom);
+      setMapZoom(12);
       setLocalMapTitle(mapTitle);
       setLocalMapSubtitle(mapSubtitle);
       fetchLocationInfo(currentLocation);
@@ -562,15 +562,7 @@ export default function MapTextureControl({
     }
   }, []);
 
-  useEffect(() => {
-    const query = 'Marconibaan 42e, 3439 MS Nieuwegein, Netherlands';
-    if (!searchQuery) {    
-        setSearchQuery(query);
-     }
-      searchDebounceTimeoutRef.current = setTimeout(() => {
-        searchLocation(query);
-      }, 500); 
-  }, [searchQuery, setSearchQuery, searchLocation]);     
+      
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -609,6 +601,7 @@ export default function MapTextureControl({
     
     fetchLocationInfo(newLocation);
   }, [fetchLocationInfo]);
+
 
   const handleFindMyLocation = useCallback(async () => {
     if (!navigator.geolocation) return;
