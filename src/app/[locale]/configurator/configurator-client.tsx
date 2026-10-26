@@ -684,15 +684,15 @@ const mapCanvasDims = useMemo(() => ({
   // Detect geolocation
   useEffect(() => {
     if (!currentLocation) {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => setCurrentLocation({ lat: position.coords.latitude, lng: position.coords.longitude }),
-          () => setCurrentLocation({ lat: 40.7128, lng: -74.006 }),
-          { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
-        );
-      } else {
-        setCurrentLocation({ lat: 40.7128, lng: -74.006 });
-      }
+      // if (navigator.geolocation) {
+      //   navigator.geolocation.getCurrentPosition(
+      //     (position) => setCurrentLocation({ lat: position.coords.latitude, lng: position.coords.longitude }),
+      //     () => setCurrentLocation({ lat: 40.7128, lng: -74.006 }),
+      //     { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+      //   );
+      // } else {
+        setCurrentLocation({ lat: 52.027, lng: 5.102 });
+     // }
     }
   }, [currentLocation, setCurrentLocation]);
 
