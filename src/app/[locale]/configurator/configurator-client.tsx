@@ -216,7 +216,7 @@ useEffect(() => {
       handleBottleTypeSwitch(data.bottleTypes[0]);
     }
     if (data.bottleTypes?.length < 2) {
-      setCurrentStep(2);
+      setCurrentStep(1);
     }
     
   }

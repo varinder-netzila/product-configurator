@@ -80,6 +80,20 @@ export async function GET(request: NextRequest) {
               value
             }
 
+            width: metafield(
+              namespace: "custom"
+              key: "width"
+            ) {
+              value
+            }
+
+            height: metafield(
+              namespace: "custom"
+              key: "height"
+            ) {
+              value
+            }
+
             media(first: 20) {
               nodes {
                 mediaContentType
@@ -358,8 +372,8 @@ const translatedTitle =
               Frame: "Plastic",
             },
             size: {
-              width: 158,
-              height: 258,
+              width: Number(product.width?.value || 158),
+              height: Number(product.height?.value || 258),
               unit: "mm"
             },          
             productType:

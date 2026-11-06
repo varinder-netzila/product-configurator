@@ -349,8 +349,14 @@ const applyColorsToScene = (
   //  console.log('Mesh name: ', meshName);
   if (mesh.name.toLowerCase() === "imagepanel") {
     //  mesh.position.z -= 0.05;
-     mesh.position.y -= 0.075;
-     mesh.position.x += 0.029;
+    console.log(selectedBottleType);
+    if(selectedBottleType?.id === "gid://shopify/Product/8157347709227"){
+       mesh.position.y -= 0.11;
+       mesh.position.x += 0.049;
+    }else{
+       mesh.position.y -= 0.075;
+       mesh.position.x += 0.029;
+    }
    //   mesh.scale.z -= 0.35;
       mesh.scale.x += 0;
       mesh.material.transparent = true;
