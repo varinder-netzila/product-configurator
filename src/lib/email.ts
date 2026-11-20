@@ -68,7 +68,6 @@ export async function sendB2BNotification(
   const T = emailStrings(formData.locale);
 
   // ImageKit force-download URL (sets Content-Disposition: attachment).
-import jsPDF from "jspdf";
 
 const asDownload = async (url: string): Promise<string> => {
   const response = await fetch(url);
