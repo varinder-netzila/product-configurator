@@ -860,7 +860,7 @@ export default function MapTextureControl({
               </div>
 
               <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10">
-                <div className="bg-black bg-opacity-75 text-white text-[10px] sm:text-xs px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full shadow-lg">
+                <div className="bg-black bg-opacity-75 text-white text-[10px] sm:text-xs px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full shadow-lg hidden">
                   {mapControlLocation ? (
                     <div className="flex gap-2 font-mono">
                       <div>{mapControlLocation.lat.toFixed(3)}°N</div>
