@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 import { emailStrings } from './emailTranslations';
-import jsPDF from "jspdf";
+import PDFDocument from "pdfkit";
+import sharp from "sharp";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface B2BFormData {
@@ -69,38 +70,95 @@ export async function sendB2BNotification(
 
   // ImageKit force-download URL (sets Content-Disposition: attachment).
 
-const asDownload = async (url: string): Promise<string> => {
+
+const asDownload = async (
+  url: string,
+  label: string
+): Promise<string> => {
   const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error("Unable to fetch image");
   }
 
-  const blob = await response.blob();
+  const imageBuffer = Buffer.from(await response.arrayBuffer());
 
-  const imageUrl = URL.createObjectURL(blob);
+  const metadata = await sharp(imageBuffer).metadata();
 
-  try {
-    const img = new Image();
-    img.src = imageUrl;
+  const jpegBuffer = await sharp(imageBuffer)
+    .jpeg({ quality: 95 })
+    .toBuffer();
 
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve();
-      img.onerror = reject;
+  const layout =
+    (metadata.width ?? 1) > (metadata.height ?? 1)
+      ? "landscape"
+      : "portrait";
+
+  const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
+    const doc = new PDFDocument({
+      size: "A4",
+      layout,
+      margin: 0,
     });
 
-    const pdf = new jsPDF({
-      orientation: img.width > img.height ? "landscape" : "portrait",
-      unit: "px",
-      format: [img.width, img.height],
+    const chunks: Buffer[] = [];
+
+    doc.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+
+    doc.image(jpegBuffer, 0, 0, {
+      fit: [doc.page.width, doc.page.height],
+      align: "center",
+      valign: "center",
     });
 
-    pdf.addImage(img, "JPEG", 0, 0, img.width, img.height);
+    doc.end();
+  });
 
-    return pdf.output("bloburl").toString();
-  } finally {
-    URL.revokeObjectURL(imageUrl);
+  const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+
+  if (!privateKey) {
+    throw new Error("Missing IMAGEKIT_PRIVATE_KEY");
   }
+
+  const fileName = `${label.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
+
+  const formData = new FormData();
+
+  formData.append(
+    "file",
+    new Blob([new Uint8Array(pdfBuffer)], {
+      type: "application/pdf",
+    }),
+    fileName
+  );
+
+  formData.append("fileName", fileName);
+  formData.append("folder", "/b2b-pdfs");
+
+  const uploadResponse = await fetch(
+    "https://upload.imagekit.io/api/v1/files/upload",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${privateKey}:`
+        ).toString("base64")}`,
+      },
+      body: formData,
+    }
+  );
+
+  if (!uploadResponse.ok) {
+    throw new Error(
+      `ImageKit upload failed: ${await uploadResponse.text()}`
+    );
+  }
+
+  const result = await uploadResponse.json();
+
+  return result.url;
 };
 
   // The advice (B2B volume) price is what the quote is based on. Fall back to
@@ -110,7 +168,11 @@ const asDownload = async (url: string): Promise<string> => {
 
   // Build a "Design assets" block: 3D mockup + flat print design, each shown as
   // a thumbnail with a download link. Either may be absent.
-const assetCard = (label: string, url: string, pdfUrl: string) => `
+const assetCard = (
+  label: string,
+  url: string,
+  pdfUrl: string
+) => `
   <td style="padding: 8px 12px 8px 0; vertical-align: top;">
     <a href="${url}" target="_blank">
       <img src="${url}" alt="${label}" width="220"
@@ -118,13 +180,11 @@ const assetCard = (label: string, url: string, pdfUrl: string) => `
     </a>
     <div style="margin-top:6px;font-size:13px;">
       <strong>${label}</strong> —
-      <a href="${pdfUrl}" style="color:#2563eb;">
-        ${T.download} PDF
-      </a>
+      <a href="${pdfUrl}" style="color:#2563eb;">${T.download} PDF</a>
     </div>
   </td>`;
-    const mockupLink = await asDownload(formData.mockupLink ? formData.mockupLink: '');
-    const designLink = await asDownload(formData.designLink? formData.designLink: '');
+    const mockupLink = await asDownload(formData.mockupLink ? formData.mockupLink: '', T.mockup);
+    const designLink = await asDownload(formData.designLink? formData.designLink: '', T.flatDesign);
   const assetCells = [
     formData.mockupLink ? assetCard(T.mockup, formData.mockupLink, mockupLink) : '',
     formData.designLink ? assetCard(T.flatDesign, formData.designLink, designLink) : '',
