@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import { emailStrings } from './emailTranslations';
-
+import jsPDF from "jspdf";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface B2BFormData {
@@ -68,8 +68,41 @@ export async function sendB2BNotification(
   const T = emailStrings(formData.locale);
 
   // ImageKit force-download URL (sets Content-Disposition: attachment).
-  const asDownload = (url: string) =>
-    url + (url.includes('?') ? '&' : '?') + 'ik-attachment=true';
+import jsPDF from "jspdf";
+
+const asDownload = async (url: string): Promise<string> => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Unable to fetch image");
+  }
+
+  const blob = await response.blob();
+
+  const imageUrl = URL.createObjectURL(blob);
+
+  try {
+    const img = new Image();
+    img.src = imageUrl;
+
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = reject;
+    });
+
+    const pdf = new jsPDF({
+      orientation: img.width > img.height ? "landscape" : "portrait",
+      unit: "px",
+      format: [img.width, img.height],
+    });
+
+    pdf.addImage(img, "JPEG", 0, 0, img.width, img.height);
+
+    return pdf.output("bloburl").toString();
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+};
 
   // The advice (B2B volume) price is what the quote is based on. Fall back to
   // the retail price only if the advice price wasn't provided.
@@ -78,7 +111,7 @@ export async function sendB2BNotification(
 
   // Build a "Design assets" block: 3D mockup + flat print design, each shown as
   // a thumbnail with a download link. Either may be absent.
-  const assetCard = (label: string, url: string) => `
+  const assetCard = (label: string, url: string, pdfUrl: string) => `
     <td style="padding: 8px 12px 8px 0; vertical-align: top;">
       <a href="${url}" target="_blank" style="text-decoration: none; color: #1a1a1a;">
         <img src="${url}" alt="${label}" width="220" style="display: block; width: 220px; height: auto; border: 1px solid #e5e5e5; border-radius: 8px;" />
@@ -88,9 +121,11 @@ export async function sendB2BNotification(
         <a href="${asDownload(url)}" style="color: #2563eb;">${T.download}</a>
       </div>
     </td>`;
+    const mockupLink = await asDownload(formData.mockupLink);
+    const designLink = await asDownload(formData.designLink);
   const assetCells = [
-    formData.mockupLink ? assetCard(T.mockup, formData.mockupLink) : '',
-    formData.designLink ? assetCard(T.flatDesign, formData.designLink) : '',
+    formData.mockupLink ? assetCard(T.mockup, mockupLink, pdfUrl) : '',
+    formData.designLink ? assetCard(T.flatDesign, designLink, pdfUrl) : '',
   ].join('');
 
   const designAssetsBlock = assetCells
