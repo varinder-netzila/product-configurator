@@ -780,7 +780,6 @@ export const useConfiguratorStore = create<ConfiguratorState & ConfiguratorActio
                 ...formData,
                 designLink: uploadedDesignLink || formData.designLink || '',
                 mockupLink: uploadedMockupLink || formData.mockupLink || '',
-                shop: shop,
               },
               configuration: {
                 bottleType: selectedBottleType,
