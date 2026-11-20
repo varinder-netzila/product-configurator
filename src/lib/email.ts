@@ -123,8 +123,8 @@ const assetCard = (label: string, url: string, pdfUrl: string) => `
       </a>
     </div>
   </td>`;
-    const mockupLink = await asDownload(formData.mockupLink);
-    const designLink = await asDownload(formData.designLink);
+    const mockupLink = await asDownload(formData.mockupLink ? formData.mockupLink: '');
+    const designLink = await asDownload(formData.designLink? formData.designLink: '');
   const assetCells = [
     formData.mockupLink ? assetCard(T.mockup, formData.mockupLink, mockupLink) : '',
     formData.designLink ? assetCard(T.flatDesign, formData.designLink, designLink) : '',
