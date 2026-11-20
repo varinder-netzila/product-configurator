@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import { emailStrings } from './emailTranslations';
-import PDFDocument from "pdfkit";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import sharp from "sharp";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
