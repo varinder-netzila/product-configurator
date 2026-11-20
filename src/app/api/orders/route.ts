@@ -1,9 +1,8 @@
-export const runtime = "nodejs";
 import { NextRequest, NextResponse } from 'next/server';
 import { getShopifyClient } from '@/lib/shopify';
 import { sendB2BNotification } from '@/lib/email';
 import { saveLead } from '@/lib/leads';
-
+export const runtime = "nodejs";
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
