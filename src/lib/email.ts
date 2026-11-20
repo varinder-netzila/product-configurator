@@ -111,21 +111,24 @@ const asDownload = async (url: string): Promise<string> => {
 
   // Build a "Design assets" block: 3D mockup + flat print design, each shown as
   // a thumbnail with a download link. Either may be absent.
-  const assetCard = (label: string, url: string, pdfUrl: string) => `
-    <td style="padding: 8px 12px 8px 0; vertical-align: top;">
-      <a href="${url}" target="_blank" style="text-decoration: none; color: #1a1a1a;">
-        <img src="${url}" alt="${label}" width="220" style="display: block; width: 220px; height: auto; border: 1px solid #e5e5e5; border-radius: 8px;" />
+const assetCard = (label: string, url: string, pdfUrl: string) => `
+  <td style="padding: 8px 12px 8px 0; vertical-align: top;">
+    <a href="${url}" target="_blank">
+      <img src="${url}" alt="${label}" width="220"
+        style="display:block;width:220px;height:auto;border:1px solid #e5e5e5;border-radius:8px;" />
+    </a>
+    <div style="margin-top:6px;font-size:13px;">
+      <strong>${label}</strong> —
+      <a href="${pdfUrl}" style="color:#2563eb;">
+        ${T.download} PDF
       </a>
-      <div style="margin-top: 6px; font-size: 13px;">
-        <strong>${label}</strong> —
-        <a href="${asDownload(url)}" style="color: #2563eb;">${T.download}</a>
-      </div>
-    </td>`;
+    </div>
+  </td>`;
     const mockupLink = await asDownload(formData.mockupLink);
     const designLink = await asDownload(formData.designLink);
   const assetCells = [
-    formData.mockupLink ? assetCard(T.mockup, mockupLink, pdfUrl) : '',
-    formData.designLink ? assetCard(T.flatDesign, designLink, pdfUrl) : '',
+    formData.mockupLink ? assetCard(T.mockup, formData.mockupLink, mockupLink) : '',
+    formData.designLink ? assetCard(T.flatDesign, formData.designLink, designLink) : '',
   ].join('');
 
   const designAssetsBlock = assetCells
