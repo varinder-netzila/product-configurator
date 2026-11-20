@@ -202,16 +202,21 @@ const whiteThreshold = isMap ? 10 : 400;
             for (let i = 0; i < data.length; i += 4) {
               data[i] = Math.pow(data[i] / 255, 1 / gamma) * 255; // R
               data[i + 1] = Math.pow(data[i + 1] / 255, 1 / gamma) * 255; // G
-              data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B  
+              data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B
 
-                if ( 
-                  data[i] > whiteThreshold &&
-                  data[i + 1] > whiteThreshold &&
-                  data[i + 2] > whiteThreshold
-                ) {
-                  data[i + 3] = 0; // punch alpha so wood shows through
-                }
+              const isLight =
+                data[i] > whiteThreshold &&
+                data[i + 1] > whiteThreshold &&
+                data[i + 2] > whiteThreshold;
 
+              if (isLight) {
+                data[i + 3] = 0; // punch alpha so wood shows through
+              } else if (isMap && data[i + 3] > 0) {
+                // Surviving pixels are ink (logo / map lines / text). Push them
+                // toward full opacity so they don't blend brown with the wood.
+                // Tune: raise 2.2 / 40 for bolder ink, lower for thinner edges.
+                data[i + 3] = Math.min(255, data[i + 3] * 2.2 + 40);
+              }
             }
 
             ctx.putImageData(imageData, 0, 0);
@@ -228,6 +233,12 @@ const whiteThreshold = isMap ? 10 : 400;
       // Improve mapping: set anisotropy for better quality
       texture.anisotropy = Math.min(16, (texture.anisotropy || 1) * 2);
       mat.transparent = true; // required for the punched-alpha background to blend
+      if (isMap) {
+        // Environment reflections / specular lift black toward grey-brown.
+        mat.envMapIntensity = 0;
+        mat.roughness = 1;
+        mat.metalness = 0;
+      }
       mat.needsUpdate = true;
     });
   }
@@ -794,7 +805,7 @@ const BottleModel = ({
                       transparent: true,
                       metalness: engravingMask ? 0.8 : 0.0,
                       roughness: engravingMask ? 0.2 : 0.5,
-                      envMapIntensity: 1.0,
+                      envMapIntensity: engravingMask ? 1.0 : 0, // colour-mode ink: no env reflections,
                       side: THREE.DoubleSide,
                       depthWrite: false,
                       polygonOffset: true,
@@ -876,7 +887,7 @@ const BottleModel = ({
                       transparent: true,
                       metalness: engravingMask ? 0.8 : 0.0,
                       roughness: engravingMask ? 0.2 : 0.5,
-                      envMapIntensity: 1.0,
+                      envMapIntensity: engravingMask ? 1.0 : 0, // colour-mode ink: no env reflections,
                       side: THREE.DoubleSide,
                       depthWrite: false,
                       polygonOffset: true,

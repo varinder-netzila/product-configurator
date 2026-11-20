@@ -194,6 +194,51 @@ const effectiveSpacing = hasLogo
 			img.src = src;
 		});
 
+	// Dark "burnt ink" colour for uploaded logos. Use { r: 0, g: 0, b: 0 } for pure black.
+	const LOGO_INK = { r: 20, g: 12, b: 6 };
+
+	// Converts an uploaded logo to a one-colour ink mask: dark + opaque pixels become
+	// solid ink, white/transparent background drops out, edges stay smooth.
+	const toInkCanvas = (img: HTMLImageElement, w: number, h: number): HTMLCanvasElement => {
+		const c = document.createElement('canvas');
+		c.width = Math.max(1, Math.round(w));
+		c.height = Math.max(1, Math.round(h));
+		const g = c.getContext('2d')!;
+		g.imageSmoothingEnabled = true;
+		g.imageSmoothingQuality = 'high';
+		g.drawImage(img, 0, 0, c.width, c.height);
+
+		const id = g.getImageData(0, 0, c.width, c.height);
+		const d = id.data;
+
+		// Light logos (e.g. white on transparent) must not vanish: use alpha only for them.
+		let lumSum = 0;
+		let opaque = 0;
+		let transparent = 0;
+		for (let i = 0; i < d.length; i += 4) {
+			if (d[i + 3] > 40) {
+				lumSum += d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+				opaque++;
+			} else {
+				transparent++;
+			}
+		}
+		const lightLogo = opaque > 0 && transparent > 0 && lumSum / opaque / 255 > 0.8;
+
+		for (let i = 0; i < d.length; i += 4) {
+			const lum = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114) / 255;
+			const opacity = d[i + 3] / 255;
+			let a = lightLogo ? opacity : opacity * (1 - lum);
+			a = Math.min(1, Math.max(0, (a - 0.08) / 0.5)); // contrast curve
+			d[i] = LOGO_INK.r;
+			d[i + 1] = LOGO_INK.g;
+			d[i + 2] = LOGO_INK.b;
+			d[i + 3] = a * 255;
+		}
+		g.putImageData(id, 0, 0);
+		return c;
+	};
+
 	const previewKey = [
 		location.lat.toFixed(5),
 		location.lng.toFixed(5),
@@ -572,14 +617,15 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 			}
 			const x = Math.round(mapLogoOptions.position.x * (outputCanvas.width - logoW));
 			const y = Math.round(mapLogoOptions.position.y * (outputCanvas.height - logoH));
+			const inkLogo = toInkCanvas(logoImg, logoW, logoH);
 			if (mapLogoOptions.direction === 'vertical') {
 				ctx.save();
 				ctx.translate(x + logoW / 2, y + logoH / 2);
 				ctx.rotate(Math.PI / 2);
-				ctx.drawImage(logoImg, -logoW / 2, -logoH / 2, logoW, logoH);
+				ctx.drawImage(inkLogo, -logoW / 2, -logoH / 2, logoW, logoH);
 				ctx.restore();
 			} else {
-				ctx.drawImage(logoImg, x, y, logoW, logoH);
+				ctx.drawImage(inkLogo, x, y, logoW, logoH);
 			}
 		} catch {
 			// Ignore logo drawing errors
