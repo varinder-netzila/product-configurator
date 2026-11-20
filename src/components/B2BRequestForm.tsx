@@ -136,7 +136,7 @@ const B2BRequestForm = forwardRef<B2BRequestFormRef, B2BRequestFormProps>(({
     if (!formData.name.trim()) newErrors.name = t("b2b.validationName");
     const emailError = validateEmail(formData.email);
     if (emailError) newErrors.email = emailError;
-    if (!formData.phone.trim()) newErrors.phone = t("b2b.validationPhone");
+   // if (!formData.phone.trim()) newErrors.phone = t("b2b.validationPhone");
     if (!formData.companyName.trim()) newErrors.companyName = t("b2b.validationCompany");
     if (!formData.streetAddress.trim()) newErrors.streetAddress = t("b2b.validationStreet");
     if (!formData.city.trim()) newErrors.city = t("b2b.validationCity");
@@ -533,7 +533,7 @@ const b2bperitem = b2bPrice
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-bold text-gray-900 mb-2">
                 {t("b2b.phone")}
               </label>
@@ -547,7 +547,7 @@ const b2bperitem = b2bPrice
                 placeholder={t("b2b.placeholderPhone")}
               />
               {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-            </div>
+            </div> */}
             <div>
               <label className="block text-sm font-bold text-gray-900 mb-2">
                 {t("b2b.companyName")}
