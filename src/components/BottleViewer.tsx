@@ -141,7 +141,7 @@ const applyTextureToMaterial = (
     textureLoader.load(textureUrl, (texture) => {
 const printWidth = 1;
 
-const printHeight = 1.633; 
+const printHeight = texture.image.height / texture.image.width; //1.633; 
 
 const targetAspect = printWidth / printHeight; // ~0.714
 
