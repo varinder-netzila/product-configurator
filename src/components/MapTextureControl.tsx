@@ -292,6 +292,7 @@ export default function MapTextureControl({
   const mapControlContainer = useRef<HTMLDivElement>(null);
   const mapControlMap = useRef<mapboxgl.Map | null>(null);
   const [pinLocation, setPinLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [displayLocation, setDisplayLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [pinMode, setPinMode] = useState(false);
   const pinModeRef = useRef(false);
   pinModeRef.current = pinMode;
@@ -468,6 +469,7 @@ export default function MapTextureControl({
       const lngLat = e.lngLat;
       const newPin = { lat: lngLat.lat, lng: lngLat.lng };
       setPinLocation(newPin);
+      setDisplayLocation(newPin);
       setPinMode(false);
 
     });
@@ -477,6 +479,7 @@ export default function MapTextureControl({
         const center = mapControlMap.current.getCenter();
         const newLocation = { lat: center.lat, lng: center.lng };
         setMapControlLocation(newLocation);
+        setDisplayLocation(newLocation);
         debouncedFetchLocationInfo(newLocation);
       }
     });
@@ -861,15 +864,15 @@ const location = pinLocation ?? mapControlLocation;
 
               <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10">
                 <div className="bg-black bg-opacity-75 text-white text-[10px] sm:text-xs px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full shadow-lg hidden">
-{location ? (
-  <div className="flex gap-2 font-mono">
-    <div>{Math.abs(location.lat).toFixed(3)}°{location.lat >= 0 ? 'N' : 'S'}</div>
-    <div className="text-gray-500">|</div>
-    <div>{Math.abs(location.lng).toFixed(3)}°{location.lng >= 0 ? 'E' : 'W'}</div>
-  </div>
-) : (
-  <div>No location selected</div>
-)}
+                  {displayLocation ? (
+                    <div className="flex gap-2 font-mono">
+                      <div>{displayLocation.lat.toFixed(3)}°N</div>
+                      <div className='text-gray-500'>|</div>
+                      <div>{displayLocation.lng.toFixed(3)}°E</div>
+                    </div>
+                  ) : (
+                    <div>No location selected</div>
+                  )}
                 </div>
               </div>
 
