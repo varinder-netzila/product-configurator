@@ -479,7 +479,7 @@ export default function MapTextureControl({
         const center = mapControlMap.current.getCenter();
         const newLocation = { lat: center.lat, lng: center.lng };
         setMapControlLocation(newLocation);
-        setDisplayLocation(newLocation);
+       // setDisplayLocation(newLocation);
         debouncedFetchLocationInfo(newLocation);
       }
     });
