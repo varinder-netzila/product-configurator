@@ -24,6 +24,13 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ["pdfkit", "sharp"],
+    outputFileTracingIncludes: {
+      "/api/orders": [
+        "./node_modules/@img/**/*",
+        "./node_modules/sharp/**/*",
+        "./node_modules/pdfkit/**/*",
+      ],
+    },
   },
 };
 
