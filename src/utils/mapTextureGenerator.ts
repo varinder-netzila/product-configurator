@@ -595,7 +595,7 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 160, letterSpacing);
+			drawText(`${pinLocation ? pinLocation.lat.toFixed(3) : locationmodel.lat.toFixed(3)}°N ${(pinLocation ? pinLocation.lng : locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 160, letterSpacing);
 		}
 
 	}
