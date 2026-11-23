@@ -21,7 +21,10 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
-  }
+  },
+  experimental: {
+    serverComponentsExternalPackages: ["pdfkit", "sharp"],
+  },
 };
 
 const { withSentryConfig } = require('@sentry/nextjs');
