@@ -1,7 +1,8 @@
-import { Resend } from 'resend';
-import { emailStrings } from './emailTranslations';
+import { Resend } from "resend";
+import { emailStrings } from "./emailTranslations";
 import PDFDocument from "pdfkit";
 import sharp from "sharp";
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface B2BFormData {
@@ -40,77 +41,74 @@ interface B2BConfiguration {
   [key: string]: any;
 }
 
-export async function sendB2BNotification(
-  formData: B2BFormData,
-  configuration: B2BConfiguration
-): Promise<{ success: boolean; error?: string }> {
-  const salesEmail = process.env.B2B_SALES_EMAIL;
-  console.log('mockupLink: ', formData.mockupLink);
-  if (!salesEmail) {
-    console.warn('B2B_SALES_EMAIL not configured — skipping email notification');
-    return { success: false, error: 'Sales email not configured' };
-  }
-
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not configured — skipping email notification');
-    return { success: false, error: 'Resend API key not configured' };
-  }
-
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-
-  // Reseller-routed requests go to BOTH the reseller and IZY (sales) so both
-  // parties have the lead. De-duplicate in case they're the same address.
-  const recipients = Array.from(
-    new Set([salesEmail, formData.resellerEmail].filter((e): e is string => !!e)),
-  );
-  const resellerTag = formData.resellerName ? ` [via ${formData.resellerName}]` : '';
-
-  // Both emails follow the customer's selected language.
-  const T = emailStrings(formData.locale);
-
-  // ImageKit force-download URL (sets Content-Disposition: attachment).
-
-
+/**
+ * Downloads an ImageKit image, converts it to JPEG for PDF embedding,
+ * creates a single-page A4 PDF, uploads that PDF to ImageKit, and returns
+ * the PDF URL.
+ */
 const asDownload = async (
-  url: string,
+  imageUrl: string,
   label: string
 ): Promise<string> => {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error("Unable to fetch image");
+  if (!imageUrl) {
+    throw new Error(`Missing image URL for ${label}`);
   }
 
-  const imageBuffer = Buffer.from(await response.arrayBuffer());
+  const imageResponse = await fetch(imageUrl);
 
-  const metadata = await sharp(imageBuffer).metadata();
+  if (!imageResponse.ok) {
+    throw new Error(
+      `Unable to fetch ${label} image: ${imageResponse.status} ${imageResponse.statusText}`
+    );
+  }
 
+  const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+
+  // PDFKit embeds JPEG reliably. Sharp also decodes ImageKit WebP responses.
   const jpegBuffer = await sharp(imageBuffer)
+    .rotate()
     .jpeg({ quality: 95 })
     .toBuffer();
 
+  const metadata = await sharp(jpegBuffer).metadata();
+
+  if (!metadata.width || !metadata.height) {
+    throw new Error(`Unable to read dimensions for ${label}`);
+  }
+
   const layout =
-    (metadata.width ?? 1) > (metadata.height ?? 1)
-      ? "landscape"
-      : "portrait";
+    metadata.width > metadata.height ? "landscape" : "portrait";
 
   const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
     const doc = new PDFDocument({
       size: "A4",
       layout,
-      margin: 0,
+      margin: 20,
     });
 
     const chunks: Buffer[] = [];
 
-    doc.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
-    doc.image(jpegBuffer, 0, 0, {
-      fit: [doc.page.width, doc.page.height],
-      align: "center",
-      valign: "center",
+    const pageWidth = doc.page.width - 40;
+    const pageHeight = doc.page.height - 40;
+
+    const scale = Math.min(
+      pageWidth / metadata.width!,
+      pageHeight / metadata.height!
+    );
+
+    const imageWidth = metadata.width! * scale;
+    const imageHeight = metadata.height! * scale;
+
+    const x = (doc.page.width - imageWidth) / 2;
+    const y = (doc.page.height - imageHeight) / 2;
+
+    doc.image(jpegBuffer, x, y, {
+      width: imageWidth,
+      height: imageHeight,
     });
 
     doc.end();
@@ -122,20 +120,20 @@ const asDownload = async (
     throw new Error("Missing IMAGEKIT_PRIVATE_KEY");
   }
 
-  const fileName = `${label.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
+  const safeLabel = label.replace(/[^a-zA-Z0-9_-]/g, "_");
+  const fileName = `${safeLabel}-${Date.now()}.pdf`;
 
-  const formData = new FormData();
+  const uploadData = new FormData();
 
-  formData.append(
+  uploadData.append(
     "file",
     new Blob([new Uint8Array(pdfBuffer)], {
       type: "application/pdf",
     }),
     fileName
   );
-
-  formData.append("fileName", fileName);
-  formData.append("folder", "/b2b-pdfs");
+  uploadData.append("fileName", fileName);
+  uploadData.append("folder", "/b2b-pdfs");
 
   const uploadResponse = await fetch(
     "https://upload.imagekit.io/api/v1/files/upload",
@@ -146,173 +144,258 @@ const asDownload = async (
           `${privateKey}:`
         ).toString("base64")}`,
       },
-      body: formData,
+      body: uploadData,
     }
   );
 
   if (!uploadResponse.ok) {
     throw new Error(
-      `ImageKit upload failed: ${await uploadResponse.text()}`
+      `ImageKit PDF upload failed: ${await uploadResponse.text()}`
     );
   }
 
-  const result = await uploadResponse.json();
+  const uploadResult = await uploadResponse.json();
 
-  return result.url;
+  if (!uploadResult.url) {
+    throw new Error("ImageKit upload succeeded but did not return a PDF URL");
+  }
+
+  return uploadResult.url as string;
 };
 
-  // The advice (B2B volume) price is what the quote is based on. Fall back to
-  // the retail price only if the advice price wasn't provided.
+export async function sendB2BNotification(
+  formData: B2BFormData,
+  configuration: B2BConfiguration
+): Promise<{ success: boolean; error?: string }> {
+  const salesEmail = process.env.B2B_SALES_EMAIL;
+
+  console.log("mockupLink:", formData.mockupLink);
+
+  if (!salesEmail) {
+    console.warn(
+      "B2B_SALES_EMAIL not configured — skipping email notification"
+    );
+    return { success: false, error: "Sales email not configured" };
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    console.warn(
+      "RESEND_API_KEY not configured — skipping email notification"
+    );
+    return { success: false, error: "Resend API key not configured" };
+  }
+
+  const fromEmail =
+    process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+
+  // Reseller-routed requests go to BOTH the reseller and IZY (sales).
+  // De-duplicate in case they are the same address.
+  const recipients = Array.from(
+    new Set(
+      [salesEmail, formData.resellerEmail].filter(
+        (email): email is string => !!email
+      )
+    )
+  );
+
+  const resellerTag = formData.resellerName
+    ? ` [via ${formData.resellerName}]`
+    : "";
+
+  // Both emails follow the customer's selected language.
+  const T = emailStrings(formData.locale);
+
+  // The advice (B2B volume) price is what the quote is based on.
+  // Fall back to the retail price only if the advice price wasn't provided.
   const unitPrice = formData.advicePrice ?? formData.bottlePrice;
   const totalPrice = formData.advicePriceTotal ?? formData.totalPrice;
 
-  // Build a "Design assets" block: 3D mockup + flat print design, each shown as
-  // a thumbnail with a download link. Either may be absent.
-const assetCard = (
-  label: string,
-  url: string,
-  pdfUrl: string
-) => `
-  <td style="padding: 8px 12px 8px 0; vertical-align: top;">
-    <a href="${url}" target="_blank">
-      <img src="${url}" alt="${label}" width="220"
-        style="display:block;width:220px;height:auto;border:1px solid #e5e5e5;border-radius:8px;" />
-    </a>
-    <div style="margin-top:6px;font-size:13px;">
-      <strong>${label}</strong> —
-      <a href="${pdfUrl}" style="color:#2563eb;">${T.download} PDF</a>
-    </div>
-  </td>`;
-    const mockupLink = await asDownload(formData.mockupLink ? formData.mockupLink: '', T.mockup);
-    const designLink = await asDownload(formData.designLink? formData.designLink: '', T.flatDesign);
-  const assetCells = [
-    formData.mockupLink ? assetCard(T.mockup, formData.mockupLink, mockupLink) : '',
-    formData.designLink ? assetCard(T.flatDesign, formData.designLink, designLink) : '',
-  ].join('');
+  // Build the email asset card. The thumbnail links to the original image;
+  // the download link points to the generated PDF.
+  const assetCard = (
+    label: string,
+    imageUrl: string,
+    pdfUrl: string
+  ) => `
+    <td style="padding: 8px 12px 8px 0; vertical-align: top;">
+      <a href="${imageUrl}" target="_blank" style="text-decoration:none;">
+        <img
+          src="${imageUrl}"
+          alt="${label}"
+          width="220"
+          style="display:block;width:220px;height:auto;border:1px solid #e5e5e5;border-radius:8px;"
+        />
+      </a>
+      <div style="margin-top:6px;font-size:13px;">
+        <strong>${label}</strong> —
+        <a href="${pdfUrl}" target="_blank" style="color:#2563eb;">
+          ${T.download} PDF
+        </a>
+      </div>
+    </td>
+  `;
 
-  const designAssetsBlock = assetCells
-    ? `
-      <h2 style="color: #333; margin-top: 24px;">${T.design}</h2>
-      <table style="border-collapse: collapse;"><tr>${assetCells}</tr></table>`
-    : '';
+  // Customer-facing branding.
+  const brandName =
+    formData.resellerName || "3D Board Configurator - Marvins";
+  const brandAccent = formData.resellerAccentColor || "#1a1a1a";
 
-  // Customer-facing branding: use the reseller's name, accent colour and logo
-  // when the request came through a white-label embed, otherwise neutral.
-  const brandName = formData.resellerName || '3D Board Configurator - Marvins';
-  const brandAccent = formData.resellerAccentColor || '#1a1a1a';
   const brandHeader = formData.resellerLogoUrl
-    ? `<img src="${formData.resellerLogoUrl}" alt="${brandName}" style="max-height: 48px; width: auto; display: block; margin-bottom: 16px;" />`
-    : `<div style="font-size: 20px; font-weight: bold; color: ${brandAccent}; margin-bottom: 16px;">${brandName}</div>`;
+    ? `<img src="${formData.resellerLogoUrl}" alt="${brandName}" style="max-height:48px;width:auto;display:block;margin-bottom:16px;" />`
+    : `<div style="font-size:20px;font-weight:bold;color:${brandAccent};margin-bottom:16px;">${brandName}</div>`;
 
   try {
+    // Generate PDFs only for images that actually exist. Keep this inside the
+    // try block so fetch, conversion, and upload errors are caught below.
+    const mockupPdfUrl = formData.mockupLink
+      ? await asDownload(formData.mockupLink, T.mockup)
+      : "";
+
+    const designPdfUrl = formData.designLink
+      ? await asDownload(formData.designLink, T.flatDesign)
+      : "";
+
+    const assetCells = [
+      formData.mockupLink
+        ? assetCard(T.mockup, formData.mockupLink, mockupPdfUrl)
+        : "",
+      formData.designLink
+        ? assetCard(T.flatDesign, formData.designLink, designPdfUrl)
+        : "",
+    ].join("");
+
+    const designAssetsBlock = assetCells
+      ? `
+        <h2 style="color:#333;margin-top:24px;">${T.design}</h2>
+        <table style="border-collapse:collapse;">
+          <tr>${assetCells}</tr>
+        </table>
+      `
+      : "";
+
     await resend.emails.send({
       from: `3D Board Configurator - Marvins <${fromEmail}>`,
       to: recipients,
       replyTo: formData.email,
       subject: `${T.newRequest}${resellerTag}: ${formData.companyName} — ${formData.numberOfBottles}x ${formData.bottleName}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #1a1a1a; border-bottom: 2px solid #e5e5e5; padding-bottom: 12px;">
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <h1 style="color:#1a1a1a;border-bottom:2px solid #e5e5e5;padding-bottom:12px;">
             ${T.newRequest}
           </h1>
 
-          <h2 style="color: #333; margin-top: 24px;">${T.productDetails}</h2>
-          <table style="width: 100%; border-collapse: collapse;">
+          <h2 style="color:#333;margin-top:24px;">${T.productDetails}</h2>
+          <table style="width:100%;border-collapse:collapse;">
             <tr>
-              <td style="padding: 8px 0; color: #666; width: 140px;">${T.product}</td>
-              <td style="padding: 8px 0; font-weight: bold;">${formData.bottleName}</td>
+              <td style="padding:8px 0;color:#666;width:140px;">${T.product}</td>
+              <td style="padding:8px 0;font-weight:bold;">${formData.bottleName}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; color: #666;">${T.quantity}</td>
-              <td style="padding: 8px 0; font-weight: bold;">${formData.numberOfBottles} ${T.units}</td>
+              <td style="padding:8px 0;color:#666;">${T.quantity}</td>
+              <td style="padding:8px 0;font-weight:bold;">${formData.numberOfBottles} ${T.units}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; color: #666;">${T.adviceUnitPrice}</td>
-              <td style="padding: 8px 0;">&euro;${unitPrice.toFixed(2)}</td>
+              <td style="padding:8px 0;color:#666;">${T.adviceUnitPrice}</td>
+              <td style="padding:8px 0;">&euro;${unitPrice.toFixed(2)}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; color: #666;">${T.estimatedTotal}</td>
-              <td style="padding: 8px 0; font-weight: bold;">&euro;${totalPrice.toFixed(2)}</td>
+              <td style="padding:8px 0;color:#666;">${T.estimatedTotal}</td>
+              <td style="padding:8px 0;font-weight:bold;">&euro;${totalPrice.toFixed(2)}</td>
             </tr>
           </table>
 
           ${designAssetsBlock}
 
-          <h2 style="color: #333; margin-top: 24px;">${T.contactInfo}</h2>
-          <table style="width: 100%; border-collapse: collapse;">
+          <h2 style="color:#333;margin-top:24px;">${T.contactInfo}</h2>
+          <table style="width:100%;border-collapse:collapse;">
             <tr>
-              <td style="padding: 8px 0; color: #666; width: 140px;">${T.name}</td>
-              <td style="padding: 8px 0; font-weight: bold;">${formData.name}</td>
+              <td style="padding:8px 0;color:#666;width:140px;">${T.name}</td>
+              <td style="padding:8px 0;font-weight:bold;">${formData.name}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; color: #666;">${T.company}</td>
-              <td style="padding: 8px 0; font-weight: bold;">${formData.companyName}</td>
+              <td style="padding:8px 0;color:#666;">${T.company}</td>
+              <td style="padding:8px 0;font-weight:bold;">${formData.companyName}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; color: #666;">${T.email}</td>
-              <td style="padding: 8px 0;"><a href="mailto:${formData.email}" style="color: #2563eb;">${formData.email}</a></td>
+              <td style="padding:8px 0;color:#666;">${T.email}</td>
+              <td style="padding:8px 0;">
+                <a href="mailto:${formData.email}" style="color:#2563eb;">${formData.email}</a>
+              </td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; color: #666;">${T.phone}</td>
-              <td style="padding: 8px 0;">${formData.phone}</td>
+              <td style="padding:8px 0;color:#666;">${T.phone}</td>
+              <td style="padding:8px 0;">${formData.phone}</td>
             </tr>
           </table>
 
-          <h2 style="color: #333; margin-top: 24px;">${T.shippingAddress}</h2>
-          <p style="margin: 4px 0; color: #333;">
+          <h2 style="color:#333;margin-top:24px;">${T.shippingAddress}</h2>
+          <p style="margin:4px 0;color:#333;">
             ${formData.streetAddress}<br>
             ${formData.postalCode} ${formData.city}<br>
             ${formData.country}
           </p>
 
-          ${formData.notes ? `
-          <h2 style="color: #333; margin-top: 24px;">${T.additionalNotes}</h2>
-          <p style="margin: 4px 0; color: #333; white-space: pre-wrap;">${formData.notes}</p>
-          ` : ''}
+          ${
+            formData.notes
+              ? `
+                <h2 style="color:#333;margin-top:24px;">${T.additionalNotes}</h2>
+                <p style="margin:4px 0;color:#333;white-space:pre-wrap;">${formData.notes}</p>
+              `
+              : ""
+          }
 
-          <hr style="margin-top: 32px; border: none; border-top: 1px solid #e5e5e5;">
-          <p style="color: #999; font-size: 12px; margin-top: 12px;">
+          <hr style="margin-top:32px;border:none;border-top:1px solid #e5e5e5;">
+          <p style="color:#999;font-size:12px;margin-top:12px;">
             ${T.automatedFooter}
           </p>
         </div>
       `,
     });
 
-    // Also send a confirmation to the customer
+    // Also send a confirmation to the customer.
     await resend.emails.send({
       from: `${brandName} <${fromEmail}>`,
       to: [formData.email],
-      subject: T.custSubject.replace('{brand}', brandName),
+      subject: T.custSubject.replace("{brand}", brandName),
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
           ${brandHeader}
-          <h1 style="color: ${brandAccent};">${T.thankYou}</h1>
-          <p style="color: #333; line-height: 1.6;">
-            ${T.hi.replace('{name}', formData.name)}
+          <h1 style="color:${brandAccent};">${T.thankYou}</h1>
+
+          <p style="color:#333;line-height:1.6;">
+            ${T.hi.replace("{name}", formData.name)}
           </p>
-          <p style="color: #333; line-height: 1.6;">
+
+          <p style="color:#333;line-height:1.6;">
             ${T.received
-              .replace('{qty}', String(formData.numberOfBottles))
-              .replace('{product}', `<strong>${formData.bottleName}</strong>`)}
+              .replace("{qty}", String(formData.numberOfBottles))
+              .replace(
+                "{product}",
+                `<strong>${formData.bottleName}</strong>`
+              )}
           </p>
 
           ${designAssetsBlock}
 
-          <p style="color: #333; line-height: 1.6;">
+          <p style="color:#333;line-height:1.6;">
             ${T.questions}
           </p>
 
-          <p style="color: #333; line-height: 1.6; margin-top: 24px;">
+          <p style="color:#333;line-height:1.6;margin-top:24px;">
             ${T.regards}<br>
-            ${T.team.replace('{brand}', brandName)}
+            ${T.team.replace("{brand}", brandName)}
           </p>
         </div>
       `,
     });
 
     return { success: true };
-  } catch (error: any) {
-    console.error('Resend email error:', error);
-    return { success: false, error: error.message || 'Failed to send email' };
+  } catch (error: unknown) {
+    console.error("B2B notification error:", error);
+
+    const message =
+      error instanceof Error ? error.message : "Failed to send email";
+
+    return { success: false, error: message };
   }
 }
