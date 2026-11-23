@@ -18,6 +18,10 @@ const TEXTURE_WIDTH = 2048;
 // log2(2048 / 255.7) = about 3 levels.
 export const MAP_POPUP_HEIGHT = 417.5;
 
+// Coordinate formatting helpers (handle N/S and E/W hemispheres)
+const formatLat = (lat: number) => `${Math.abs(lat).toFixed(3)}°${lat >= 0 ? 'N' : 'S'}`;
+const formatLng = (lng: number) => `${Math.abs(lng).toFixed(3)}°${lng >= 0 ? 'E' : 'W'}`;
+
 type MapTextureSnapshot = {
   lat: number;
   lng: number;
@@ -104,6 +108,7 @@ function ProportionalOverlay({
   mapTextPosition: number;
   bottleColor: string;
   selectedMapLineColor?: { hex?: string };
+  // The location whose coordinates are printed: the pin if set, else the map center
   mapControlLocation?: { lat: number; lng: number } | null;
   mapTitle?: string;
   mapSubtitle?: string;
@@ -154,6 +159,9 @@ function ProportionalOverlay({
 
   const baseYPercent = Math.max(0, Math.min(100, mapTextPosition * 100));
 
+  const coordsLat = mapControlLocation?.lat ?? 0;
+  const coordsLng = mapControlLocation?.lng ?? 0;
+
   return (
     <div
       className="pointer-events-none absolute left-0 right-0 mx-auto"
@@ -185,7 +193,7 @@ function ProportionalOverlay({
             textAlign: 'center',
           }}
         >
-          {`${(mapControlLocation?.lat ?? 0).toFixed(3)}°N ${(mapControlLocation?.lng ?? 0).toFixed(3)}°E`}
+          {`${formatLat(coordsLat)} ${formatLng(coordsLng)}`}
         </div>
 
         {mapTitle ? (
@@ -292,7 +300,6 @@ export default function MapTextureControl({
   const mapControlContainer = useRef<HTMLDivElement>(null);
   const mapControlMap = useRef<mapboxgl.Map | null>(null);
   const [pinLocation, setPinLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [displayLocation, setDisplayLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [pinMode, setPinMode] = useState(false);
   const pinModeRef = useRef(false);
   pinModeRef.current = pinMode;
@@ -469,7 +476,6 @@ export default function MapTextureControl({
       const lngLat = e.lngLat;
       const newPin = { lat: lngLat.lat, lng: lngLat.lng };
       setPinLocation(newPin);
-      setDisplayLocation(newPin);
       setPinMode(false);
 
     });
@@ -479,7 +485,6 @@ export default function MapTextureControl({
         const center = mapControlMap.current.getCenter();
         const newLocation = { lat: center.lat, lng: center.lng };
         setMapControlLocation(newLocation);
-       // setDisplayLocation(newLocation);
         debouncedFetchLocationInfo(newLocation);
       }
     });
@@ -564,8 +569,6 @@ export default function MapTextureControl({
       setIsSearching(false);
     }
   }, []);
-
-      
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -748,7 +751,10 @@ export default function MapTextureControl({
   }, [isOpen, currentSnapshot]);
 
   if (!isOpen) return null;
-const location = pinLocation ?? mapControlLocation;
+
+  // Location shown/printed in the popup: the pin if one is placed, otherwise the map center
+  const location = pinLocation ?? mapControlLocation;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-2 sm:p-4 scroll_mob" >
       <div className="bg-white rounded-2xl w-full sm:w-auto sm:h-auto sm:max-w-12xl sm:max-h-[95vh] overflow-auto relative">
@@ -792,7 +798,7 @@ const location = pinLocation ?? mapControlLocation;
                 mapTextPosition={mapTextPosition}
                 bottleColor={bottleColor}
                 selectedMapLineColor={selectedMapLineColor}
-                mapControlLocation={mapControlLocation}
+                mapControlLocation={location}
                 mapTitle={localMapTitle}
                 mapSubtitle={localMapSubtitle}
                 mapFonts={mapFonts}
@@ -864,11 +870,11 @@ const location = pinLocation ?? mapControlLocation;
 
               <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10">
                 <div className="bg-black bg-opacity-75 text-white text-[10px] sm:text-xs px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full shadow-lg hidden">
-                  {displayLocation ? (
+                  {location ? (
                     <div className="flex gap-2 font-mono">
-                      <div>{displayLocation.lat.toFixed(3)}°N</div>
+                      <div>{formatLat(location.lat)}</div>
                       <div className='text-gray-500'>|</div>
-                      <div>{displayLocation.lng.toFixed(3)}°E</div>
+                      <div>{formatLng(location.lng)}</div>
                     </div>
                   ) : (
                     <div>No location selected</div>
