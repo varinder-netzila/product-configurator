@@ -1,7 +1,6 @@
 import { Resend } from "resend";
 import { emailStrings } from "./emailTranslations";
 import PDFDocument from "pdfkit";
-import sharp from "sharp";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -54,7 +53,12 @@ const asDownload = async (
     throw new Error(`Missing image URL for ${label}`);
   }
 
-  const imageResponse = await fetch(imageUrl);
+  // Ask ImageKit to serve a JPEG (it also applies EXIF orientation), so no
+  // native image library is needed. PDFKit embeds JPEG reliably.
+  const jpgUrl = new URL(imageUrl);
+  jpgUrl.searchParams.set("tr", "f-jpg");
+
+  const imageResponse = await fetch(jpgUrl.toString());
 
   if (!imageResponse.ok) {
     throw new Error(
@@ -62,22 +66,20 @@ const asDownload = async (
     );
   }
 
-  const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+  const jpegBuffer = Buffer.from(await imageResponse.arrayBuffer());
 
-  // PDFKit embeds JPEG reliably. Sharp also decodes ImageKit WebP responses.
-  const jpegBuffer = await sharp(imageBuffer)
-    .rotate()
-    .jpeg({ quality: 95 })
-    .toBuffer();
+  // Read dimensions with PDFKit itself instead of sharp.
+  const probe = new PDFDocument();
+  const img = (probe as any).openImage(jpegBuffer) as {
+    width: number;
+    height: number;
+  };
 
-  const metadata = await sharp(jpegBuffer).metadata();
-
-  if (!metadata.width || !metadata.height) {
+  if (!img?.width || !img?.height) {
     throw new Error(`Unable to read dimensions for ${label}`);
   }
 
-  const layout =
-    metadata.width > metadata.height ? "landscape" : "portrait";
+  const layout = img.width > img.height ? "landscape" : "portrait";
 
   const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
     const doc = new PDFDocument({
@@ -96,12 +98,12 @@ const asDownload = async (
     const pageHeight = doc.page.height - 40;
 
     const scale = Math.min(
-      pageWidth / metadata.width!,
-      pageHeight / metadata.height!
+      pageWidth / img.width,
+      pageHeight / img.height
     );
 
-    const imageWidth = metadata.width! * scale;
-    const imageHeight = metadata.height! * scale;
+    const imageWidth = img.width * scale;
+    const imageHeight = img.height * scale;
 
     const x = (doc.page.width - imageWidth) / 2;
     const y = (doc.page.height - imageHeight) / 2;
@@ -247,13 +249,19 @@ export async function sendB2BNotification(
   try {
     // Generate PDFs only for images that actually exist. Keep this inside the
     // try block so fetch, conversion, and upload errors are caught below.
-    const mockupPdfUrl = formData.mockupLink
-      ? await asDownload(formData.mockupLink, T.mockup)
-      : "";
+    // A failed PDF must never block the emails: fall back to the image link.
+    const safePdf = async (url: string | undefined, label: string) => {
+      if (!url) return "";
+      try {
+        return await asDownload(url, label);
+      } catch (e) {
+        console.error(`PDF generation failed for ${label}:`, e);
+        return url;
+      }
+    };
 
-    const designPdfUrl = formData.designLink
-      ? await asDownload(formData.designLink, T.flatDesign)
-      : "";
+    const mockupPdfUrl = await safePdf(formData.mockupLink, T.mockup);
+    const designPdfUrl = await safePdf(formData.designLink, T.flatDesign);
 
     const assetCells = [
       formData.mockupLink
