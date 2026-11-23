@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getShopifyClient } from '@/lib/shopify';
-import { sendB2BNotification } from '@/lib/email';
+//import { sendB2BNotification } from '@/lib/email';
 import { saveLead } from '@/lib/leads';
 export const runtime = "nodejs";
 export async function GET(request: NextRequest) {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       const { formData, configuration } = body;
 
       // Send email notification to sales team
-      const emailResult = await sendB2BNotification(formData, configuration);
+      //const emailResult = await sendB2BNotification(formData, configuration);
 
       if (!emailResult.success) {
         console.error('Failed to send B2B notification email:', emailResult.error);
