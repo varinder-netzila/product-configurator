@@ -745,7 +745,7 @@ export default function MapTextureControl({
   }, [isOpen, currentSnapshot]);
 
   if (!isOpen) return null;
-
+const location = pinLocation ?? mapControlLocation;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-2 sm:p-4 scroll_mob" >
       <div className="bg-white rounded-2xl w-full sm:w-auto sm:h-auto sm:max-w-12xl sm:max-h-[95vh] overflow-auto relative">
@@ -861,15 +861,15 @@ export default function MapTextureControl({
 
               <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10">
                 <div className="bg-black bg-opacity-75 text-white text-[10px] sm:text-xs px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full shadow-lg hidden">
-                  {mapControlLocation ? (
-                    <div className="flex gap-2 font-mono">
-                      <div>{mapControlLocation.lat.toFixed(3)}°N</div>
-                      <div className='text-gray-500'>|</div>
-                      <div>{mapControlLocation.lng.toFixed(3)}°E</div>
-                    </div>
-                  ) : (
-                    <div>No location selected</div>
-                  )}
+{location ? (
+  <div className="flex gap-2 font-mono">
+    <div>{Math.abs(location.lat).toFixed(3)}°{location.lat >= 0 ? 'N' : 'S'}</div>
+    <div className="text-gray-500">|</div>
+    <div>{Math.abs(location.lng).toFixed(3)}°{location.lng >= 0 ? 'E' : 'W'}</div>
+  </div>
+) : (
+  <div>No location selected</div>
+)}
                 </div>
               </div>
 
