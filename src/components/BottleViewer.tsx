@@ -122,6 +122,64 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
   }
 };
 
+// Logo box in the map texture, as fractions of the image (y = 0 is the top).
+// White INSIDE the logo is kept; white connected to the box edge (the page
+// background) is still made transparent. Tune these to match your logo.
+const LOGO_REGION = { x0: 0.25, y0: 0.0, x1: 0.9, y1: 0.28 };
+
+const buildKeepWhiteMask = (
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  region: { x0: number; y0: number; x1: number; y1: number }
+): Uint8Array => {
+  const keep = new Uint8Array(w * h);
+  const x0 = Math.max(0, Math.floor(region.x0 * w));
+  const x1 = Math.min(w, Math.ceil(region.x1 * w));
+  const y0 = Math.max(0, Math.floor(region.y0 * h));
+  const y1 = Math.min(h, Math.ceil(region.y1 * h));
+  if (x1 - x0 < 2 || y1 - y0 < 2) return keep;
+
+  const isLight = (p: number) => {
+    const i = p * 4;
+    return (
+      data[i + 3] < 10 ||
+      (data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200)
+    );
+  };
+
+  // Flood-fill the light pixels connected to the box edge = background.
+  const outside = new Uint8Array(w * h);
+  const stack: number[] = [];
+  const push = (x: number, y: number) => {
+    const p = y * w + x;
+    if (!outside[p] && isLight(p)) {
+      outside[p] = 1;
+      stack.push(p);
+    }
+  };
+  for (let x = x0; x < x1; x++) { push(x, y0); push(x, y1 - 1); }
+  for (let y = y0; y < y1; y++) { push(x0, y); push(x1 - 1, y); }
+  while (stack.length) {
+    const p = stack.pop()!;
+    const x = p % w;
+    const y = (p - x) / w;
+    if (x > x0) push(x - 1, y);
+    if (x < x1 - 1) push(x + 1, y);
+    if (y > y0) push(x, y - 1);
+    if (y < y1 - 1) push(x, y + 1);
+  }
+
+  // Light, opaque, NOT connected to the background = white inside the logo.
+  for (let y = y0; y < y1; y++) {
+    for (let x = x0; x < x1; x++) {
+      const p = y * w + x;
+      if (isLight(p) && !outside[p] && data[p * 4 + 3] >= 10) keep[p] = 1;
+    }
+  }
+  return keep;
+};
+
 const applyTextureToMaterial = (
   material: THREE.Material,
   textureUrl: string,
@@ -198,7 +256,20 @@ mat.map = texture;
             const gamma = isMap ? 0.1 : 0.55;             
             const whiteThreshold = isMap ? 10 : 400;
 
+            const keepWhite = isMap
+              ? buildKeepWhiteMask(data, canvas.width, canvas.height, LOGO_REGION)
+              : null;
+
             for (let i = 0; i < data.length; i += 4) {
+              // White inside the logo: keep it as solid white.
+              if (keepWhite && keepWhite[i >> 2]) {
+                data[i] = 255;
+                data[i + 1] = 255;
+                data[i + 2] = 255;
+                data[i + 3] = 255;
+                continue;
+              }
+
               data[i] = Math.pow(data[i] / 255, 1 / gamma) * 255; // R
               data[i + 1] = Math.pow(data[i + 1] / 255, 1 / gamma) * 255; // G
               data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B
@@ -211,9 +282,6 @@ mat.map = texture;
               if (isLight) {
                 data[i + 3] = 0; // punch alpha so wood shows through
               } else if (isMap && data[i + 3] > 0) {
-                // Surviving pixels are ink (logo / map lines / text). Push them
-                // toward full opacity so they don't blend brown with the wood.
-                // Tune: raise 2.2 / 40 for bolder ink, lower for thinner edges.
                 data[i + 3] = Math.min(255, data[i + 3] * 2.2 + 40);
               }
             }
