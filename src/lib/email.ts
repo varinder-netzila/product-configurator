@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { emailStrings } from "./emailTranslations";
-import PDFDocument from "pdfkit";
+import { PDFDocument } from "pdf-lib";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -54,7 +54,7 @@ const asDownload = async (
   }
 
   // Ask ImageKit to serve a JPEG (it also applies EXIF orientation), so no
-  // native image library is needed. PDFKit embeds JPEG reliably.
+  // native image library is needed. pdf-lib embeds JPEG directly.
   const jpgUrl = new URL(imageUrl);
   jpgUrl.searchParams.set("tr", "f-jpg");
 
@@ -68,53 +68,37 @@ const asDownload = async (
 
   const jpegBuffer = Buffer.from(await imageResponse.arrayBuffer());
 
-  // Read dimensions with PDFKit itself instead of sharp.
-  const probe = new PDFDocument();
-  const img = (probe as any).openImage(jpegBuffer) as {
-    width: number;
-    height: number;
-  };
+  // pdf-lib is pure JS (no font files, no native binaries), so it works
+  // reliably in serverless environments.
+  const pdf = await PDFDocument.create();
+  const jpg = await pdf.embedJpg(jpegBuffer);
 
-  if (!img?.width || !img?.height) {
+  if (!jpg.width || !jpg.height) {
     throw new Error(`Unable to read dimensions for ${label}`);
   }
 
-  const layout = img.width > img.height ? "landscape" : "portrait";
+  // A4 in points, 20pt margin, orientation follows the image.
+  const landscape = jpg.width > jpg.height;
+  const page = pdf.addPage(
+    landscape ? [841.89, 595.28] : [595.28, 841.89]
+  );
 
-  const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
-    const doc = new PDFDocument({
-      size: "A4",
-      layout,
-      margin: 20,
-    });
+  const margin = 20;
+  const scale = Math.min(
+    (page.getWidth() - margin * 2) / jpg.width,
+    (page.getHeight() - margin * 2) / jpg.height
+  );
+  const w = jpg.width * scale;
+  const h = jpg.height * scale;
 
-    const chunks: Buffer[] = [];
-
-    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
-    doc.on("end", () => resolve(Buffer.concat(chunks)));
-    doc.on("error", reject);
-
-    const pageWidth = doc.page.width - 40;
-    const pageHeight = doc.page.height - 40;
-
-    const scale = Math.min(
-      pageWidth / img.width,
-      pageHeight / img.height
-    );
-
-    const imageWidth = img.width * scale;
-    const imageHeight = img.height * scale;
-
-    const x = (doc.page.width - imageWidth) / 2;
-    const y = (doc.page.height - imageHeight) / 2;
-
-    doc.image(jpegBuffer, x, y, {
-      width: imageWidth,
-      height: imageHeight,
-    });
-
-    doc.end();
+  page.drawImage(jpg, {
+    x: (page.getWidth() - w) / 2,
+    y: (page.getHeight() - h) / 2,
+    width: w,
+    height: h,
   });
+
+  const pdfBuffer = Buffer.from(await pdf.save());
 
   const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
 

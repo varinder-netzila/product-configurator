@@ -22,16 +22,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ["pdfkit", "sharp"],
-    outputFileTracingIncludes: {
-      "/api/orders": [
-        "./node_modules/@img/**/*",
-        "./node_modules/sharp/**/*",
-        "./node_modules/pdfkit/**/*",
-      ],
-    },
-  },
 };
 
 const { withSentryConfig } = require('@sentry/nextjs');
