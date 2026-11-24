@@ -125,7 +125,7 @@ if (isSilver && meshName && selectedBottleType && bottleTypesData) {
 // Logo box in the map texture, as fractions of the image (y = 0 is the top).
 // White INSIDE the logo is kept; white connected to the box edge (the page
 // background) is still made transparent. Tune these to match your logo.
-const LOGO_REGION = { x0: 0.25, y0: 0.0, x1: 0.9, y1: 0.28 };
+const LOGO_REGION = { x0: 0.30, y0: 0.03, x1: 0.78, y1: 0.19 };
 
 const buildKeepWhiteMask = (
   data: Uint8ClampedArray,
@@ -139,6 +139,18 @@ const buildKeepWhiteMask = (
   const y0 = Math.max(0, Math.floor(region.y0 * h));
   const y1 = Math.min(h, Math.ceil(region.y1 * h));
   if (x1 - x0 < 2 || y1 - y0 < 2) return keep;
+  // Logo is optional: only protect white if the box really contains logo ink.
+  // Dark pixels must cover at least MIN_LOGO_INK of the box, otherwise this
+  // design has no logo and we change nothing.
+  const MIN_LOGO_INK = 0.03;
+  let ink = 0;
+  for (let y = y0; y < y1; y++) {
+    for (let x = x0; x < x1; x++) {
+      const i = (y * w + x) * 4;
+      if (data[i + 3] >= 10 && data[i] < 100 && data[i + 1] < 100 && data[i + 2] < 100) ink++;
+    }
+  }
+  if (ink / ((x1 - x0) * (y1 - y0)) < MIN_LOGO_INK) return keep;
 
   const isLight = (p: number) => {
     const i = p * 4;
