@@ -191,26 +191,16 @@ mat.map = texture;
 
             // Apply gamma correction with fixed value of 0.55
             
-            // Near-white pixels (typically the map's background) become
-            // fully transparent so the board's own wood color shows
-            // through in the print area instead of a flat white block.
-              
-            const gamma = isMap ? 0.1 : 0.55;             
-            const whiteThreshold = isMap ? 10 : 400;
+            // White/background removal for the map is done in the map texture
+            // generator (mapTextureGenerator.ts), so nothing is punched out here.
+            const gamma = isMap ? 0.1 : 0.55;
 
             for (let i = 0; i < data.length; i += 4) {
               data[i] = Math.pow(data[i] / 255, 1 / gamma) * 255; // R
               data[i + 1] = Math.pow(data[i + 1] / 255, 1 / gamma) * 255; // G
               data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B
 
-              const isLight =
-                data[i] > whiteThreshold &&
-                data[i + 1] > whiteThreshold &&
-                data[i + 2] > whiteThreshold;
-
-              if (isLight) {
-                data[i + 3] = 0; // punch alpha so wood shows through
-              } else if (isMap && data[i + 3] > 0) {
+              if (isMap && data[i + 3] > 0) {
                 // Surviving pixels are ink (logo / map lines / text). Push them
                 // toward full opacity so they don't blend brown with the wood.
                 // Tune: raise 2.2 / 40 for bolder ink, lower for thinner edges.

@@ -76,6 +76,46 @@ export interface MapTextureGenerationParams {
 }
 
 /**
+ * Finds white that is ENCLOSED by a logo (highlights, letter counters, etc.).
+ * White (or transparent) pixels connected to the image border are treated as
+ * the logo's background and are NOT returned. Returns a 0/1 mask, one entry
+ * per pixel, where 1 = opaque near-white pixel fully surrounded by the logo.
+ */
+const findEnclosedWhite = (d: Uint8ClampedArray, W: number, H: number): Uint8Array => {
+	const lumAt = (p: number) =>
+		(d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
+	// Background-like = transparent or near-white.
+	const isBgLike = (p: number) => d[p * 4 + 3] <= 40 || lumAt(p) > 0.9;
+
+	const outside = new Uint8Array(W * H);
+	const stack: number[] = [];
+	const push = (x: number, y: number) => {
+		const p = y * W + x;
+		if (!outside[p] && isBgLike(p)) {
+			outside[p] = 1;
+			stack.push(p);
+		}
+	};
+	for (let x = 0; x < W; x++) { push(x, 0); push(x, H - 1); }
+	for (let y = 0; y < H; y++) { push(0, y); push(W - 1, y); }
+	while (stack.length) {
+		const p = stack.pop() as number;
+		const x = p % W;
+		const y = (p - x) / W;
+		if (x > 0) push(x - 1, y);
+		if (x < W - 1) push(x + 1, y);
+		if (y > 0) push(x, y - 1);
+		if (y < H - 1) push(x, y + 1);
+	}
+
+	const keep = new Uint8Array(W * H);
+	for (let p = 0; p < W * H; p++) {
+		if (!outside[p] && d[p * 4 + 3] > 230 && lumAt(p) > 0.9) keep[p] = 1;
+	}
+	return keep;
+};
+
+/**
  * Generates a TRANSPARENT map layer with colored lines, gradient fade, text, and optional logo
  */
 
@@ -225,7 +265,18 @@ const effectiveSpacing = hasLogo
 		}
 		const lightLogo = opaque > 0 && transparent > 0 && lumSum / opaque / 255 > 0.8;
 
+		// Keep white that sits INSIDE the logo as solid white. White connected to
+		// the outside (the logo's page background) still drops out as before.
+		const enclosedWhite = lightLogo ? null : findEnclosedWhite(d, c.width, c.height);
+
 		for (let i = 0; i < d.length; i += 4) {
+			if (enclosedWhite && enclosedWhite[i >> 2]) {
+				d[i] = 255;
+				d[i + 1] = 255;
+				d[i + 2] = 255;
+				d[i + 3] = 255;
+				continue;
+			}
 			const lum = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114) / 255;
 			const opacity = d[i + 3] / 255;
 			let a = lightLogo ? opacity : opacity * (1 - lum);
@@ -371,12 +422,18 @@ const effectiveSpacing = hasLogo
 
 		const data = imageData.data;
 
+		// 3D board (includeGradient): also clear light greys and anti-aliased
+		// fringes (anything lighter than ~184), so no pale haze sits on the wood.
+		// This is the cut-off the 3D viewer used to apply itself.
+		// Flat download keeps the original 240 cut-off.
+		const whiteCut = includeGradient ? 184 : 240;
+
 		for (let i = 0; i < data.length; i += 4) {
 			const r = data[i];
 			const g = data[i + 1];
 			const b = data[i + 2];
 
-			if (r > 240 && g > 240 && b > 240) {
+			if (r > whiteCut && g > whiteCut && b > whiteCut) {
 				data[i + 3] = 0;
 			}
 		}
@@ -537,8 +594,18 @@ const rectW = baseCanvasWidth - 600;
 const rectH = scrimBottom - scrimTop - 250;
 
 // Background
-ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-ctx.fillRect(rectX, rectY, rectW, rectH);
+if (includeGradient) {
+	// 3D board: knock the map out behind the text so it stays clean on the wood
+	// (the viewer used to make this white box see-through, which did the same).
+	ctx.globalCompositeOperation = 'destination-out';
+	ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+	ctx.fillRect(rectX, rectY, rectW, rectH);
+	ctx.globalCompositeOperation = 'source-over';
+} else {
+	// Flat download: unchanged white panel.
+	ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+	ctx.fillRect(rectX, rectY, rectW, rectH);
+}
 
 // Border
 ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; // adjust color/opacity
