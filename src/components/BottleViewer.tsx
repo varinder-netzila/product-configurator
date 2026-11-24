@@ -208,7 +208,7 @@ mat.map = texture;
                 data[i + 1] > whiteThreshold &&
                 data[i + 2] > whiteThreshold;
 
-              if (isLight && 0 != 0) {
+              if (isLight) {
                 data[i + 3] = 0; // punch alpha so wood shows through
               } else if (isMap && data[i + 3] > 0) {
                 // Surviving pixels are ink (logo / map lines / text). Push them
