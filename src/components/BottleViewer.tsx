@@ -199,9 +199,6 @@ mat.map = texture;
             const whiteThreshold = isMap ? 10 : 400;
 
             for (let i = 0; i < data.length; i += 4) {
-              if (isMap && data[i + 3] === 255 && data[i] >= 250 && data[i + 1] >= 250 && data[i + 2] >= 250) {
-                continue;
-              }
               data[i] = Math.pow(data[i] / 255, 1 / gamma) * 255; // R
               data[i + 1] = Math.pow(data[i + 1] / 255, 1 / gamma) * 255; // G
               data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B
