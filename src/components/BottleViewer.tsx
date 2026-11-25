@@ -198,7 +198,19 @@ mat.map = texture;
             const gamma = isMap ? 0.1 : 0.55;             
             const whiteThreshold = isMap ? 10 : 400;
 
-            for (let i = 0; i < data.length; i += 4) {
+               for (let i = 0; i < data.length; i += 4) {
+              // Logo white is painted by the generator as (255,255,240). Leave it alone.
+              if (
+                isMap &&
+                data[i + 3] === 255 &&
+                data[i] >= 250 &&
+                data[i + 1] >= 250 &&
+                data[i + 2] >= 232 &&
+                data[i + 2] <= 248
+              ) {
+                continue;
+              }
+
               data[i] = Math.pow(data[i] / 255, 1 / gamma) * 255; // R
               data[i + 1] = Math.pow(data[i + 1] / 255, 1 / gamma) * 255; // G
               data[i + 2] = Math.pow(data[i + 2] / 255, 1 / gamma) * 255; // B
