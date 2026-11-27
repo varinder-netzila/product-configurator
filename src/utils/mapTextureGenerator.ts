@@ -76,46 +76,6 @@ export interface MapTextureGenerationParams {
 }
 
 /**
- * Finds white that is ENCLOSED by a logo (highlights, letter counters, etc.).
- * White (or transparent) pixels connected to the image border are treated as
- * the logo's background and are NOT returned. Returns a 0/1 mask, one entry
- * per pixel, where 1 = opaque near-white pixel fully surrounded by the logo.
- */
-const findEnclosedWhite = (d: Uint8ClampedArray, W: number, H: number): Uint8Array => {
-	const lumAt = (p: number) =>
-		(d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
-	// Background-like = transparent or near-white.
-	const isBgLike = (p: number) => d[p * 4 + 3] <= 40 || lumAt(p) > 0.9;
-
-	const outside = new Uint8Array(W * H);
-	const stack: number[] = [];
-	const push = (x: number, y: number) => {
-		const p = y * W + x;
-		if (!outside[p] && isBgLike(p)) {
-			outside[p] = 1;
-			stack.push(p);
-		}
-	};
-	for (let x = 0; x < W; x++) { push(x, 0); push(x, H - 1); }
-	for (let y = 0; y < H; y++) { push(0, y); push(W - 1, y); }
-	while (stack.length) {
-		const p = stack.pop() as number;
-		const x = p % W;
-		const y = (p - x) / W;
-		if (x > 0) push(x - 1, y);
-		if (x < W - 1) push(x + 1, y);
-		if (y > 0) push(x, y - 1);
-		if (y < H - 1) push(x, y + 1);
-	}
-
-	const keep = new Uint8Array(W * H);
-	for (let p = 0; p < W * H; p++) {
-		if (!outside[p] && d[p * 4 + 3] > 230 && lumAt(p) > 0.9) keep[p] = 1;
-	}
-	return keep;
-};
-
-/**
  * Generates a TRANSPARENT map layer with colored lines, gradient fade, text, and optional logo
  */
 
@@ -233,62 +193,6 @@ const effectiveSpacing = hasLogo
 			img.onerror = () => reject(new Error('Failed to load image'));
 			img.src = src;
 		});
-
-	// Dark "burnt ink" colour for uploaded logos. Use { r: 0, g: 0, b: 0 } for pure black.
-	const LOGO_INK = { r: 20, g: 12, b: 6 };
-
-	// Converts an uploaded logo to a one-colour ink mask: dark + opaque pixels become
-	// solid ink, white/transparent background drops out, edges stay smooth.
-	const toInkCanvas = (img: HTMLImageElement, w: number, h: number): HTMLCanvasElement => {
-		const c = document.createElement('canvas');
-		c.width = Math.max(1, Math.round(w));
-		c.height = Math.max(1, Math.round(h));
-		const g = c.getContext('2d')!;
-		g.imageSmoothingEnabled = true;
-		g.imageSmoothingQuality = 'high';
-		g.drawImage(img, 0, 0, c.width, c.height);
-
-		const id = g.getImageData(0, 0, c.width, c.height);
-		const d = id.data;
-
-		// Light logos (e.g. white on transparent) must not vanish: use alpha only for them.
-		let lumSum = 0;
-		let opaque = 0;
-		let transparent = 0;
-		for (let i = 0; i < d.length; i += 4) {
-			if (d[i + 3] > 40) {
-				lumSum += d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
-				opaque++;
-			} else {
-				transparent++;
-			}
-		}
-		const lightLogo = opaque > 0 && transparent > 0 && lumSum / opaque / 255 > 0.8;
-
-		// Keep white that sits INSIDE the logo as solid white. White connected to
-		// the outside (the logo's page background) still drops out as before.
-		const enclosedWhite = lightLogo ? null : findEnclosedWhite(d, c.width, c.height);
-
-		for (let i = 0; i < d.length; i += 4) {
-			if (enclosedWhite && enclosedWhite[i >> 2]) {
-				d[i] = 255;
-				d[i + 1] = 255;
-				d[i + 2] = 255;
-				d[i + 3] = 255;
-				continue;
-			}
-			const lum = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114) / 255;
-			const opacity = d[i + 3] / 255;
-			let a = lightLogo ? opacity : opacity * (1 - lum);
-			a = Math.min(1, Math.max(0, (a - 0.08) / 0.5)); // contrast curve
-			d[i] = LOGO_INK.r;
-			d[i + 1] = LOGO_INK.g;
-			d[i + 2] = LOGO_INK.b;
-			d[i + 3] = a * 255;
-		}
-		g.putImageData(id, 0, 0);
-		return c;
-	};
 
 	const previewKey = [
 		location.lat.toFixed(5),
@@ -422,18 +326,12 @@ const effectiveSpacing = hasLogo
 
 		const data = imageData.data;
 
-		// 3D board (includeGradient): also clear light greys and anti-aliased
-		// fringes (anything lighter than ~184), so no pale haze sits on the wood.
-		// This is the cut-off the 3D viewer used to apply itself.
-		// Flat download keeps the original 240 cut-off.
-		const whiteCut = includeGradient ? 184 : 240;
-
 		for (let i = 0; i < data.length; i += 4) {
 			const r = data[i];
 			const g = data[i + 1];
 			const b = data[i + 2];
 
-			if (r > whiteCut && g > whiteCut && b > whiteCut) {
+			if (r > 240 && g > 240 && b > 240) {
 				data[i + 3] = 0;
 			}
 		}
@@ -594,18 +492,8 @@ const rectW = baseCanvasWidth - 600;
 const rectH = scrimBottom - scrimTop - 250;
 
 // Background
-if (includeGradient) {
-	// 3D board: knock the map out behind the text so it stays clean on the wood
-	// (the viewer used to make this white box see-through, which did the same).
-	ctx.globalCompositeOperation = 'destination-out';
-	ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-	ctx.fillRect(rectX, rectY, rectW, rectH);
-	ctx.globalCompositeOperation = 'source-over';
-} else {
-	// Flat download: unchanged white panel.
-	ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-	ctx.fillRect(rectX, rectY, rectW, rectH);
-}
+ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+ctx.fillRect(rectX, rectY, rectW, rectH);
 
 // Border
 ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; // adjust color/opacity
@@ -662,14 +550,19 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 		if (mapFonts.coordinates && mapTitle) {
 			const { family, size = '150', weight, style, letterSpacing = 0 } = mapFontsimg.coordinates;
 			ctx.font = `${style} ${weight} ${size}px ${family}`;
-			drawText(`${pinLocation ? pinLocation.lat.toFixed(3) : locationmodel.lat.toFixed(3)}°N ${(pinLocation ? pinLocation.lng : locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 160, letterSpacing);
+			drawText(`${locationmodel.lat.toFixed(3)}°N ${(locationmodel.lng).toFixed(3)}°E`, textCenterX, textBaseY + 160, letterSpacing);
 		}
 
 	}
 
-	// Optional: map logo on the transparent layer
+	// Optional: map logo on the transparent layer.
+	// The logo keeps its ORIGINAL pixels, including white ones. Every logo pixel is tagged
+	// with alpha = 254 so the viewer's white-removal / gamma pass (BottleViewer ->
+	// applyTextureToMaterial) skips it. The map's own white background is still removed above.
 	if (mapLogoUrl) {
 		try {
+			const LOGO_TAG_ALPHA = 254;       // keep in sync with BottleViewer.applyTextureToMaterial
+			const LOGO_TAG_MIN_SRC_ALPHA = 200; // logo pixels at least this opaque are tagged
 			const logoImg = await loadImage(mapLogoUrl);
 			const maxW = Math.min(outputCanvas.width * 1, 200);
 			const maxH = Math.min(outputCanvas.height * 0.3, 200);
@@ -684,16 +577,54 @@ ctx.strokeRect(rectX, rectY, rectW, rectH);
 			}
 			const x = Math.round(mapLogoOptions.position.x * (outputCanvas.width - logoW));
 			const y = Math.round(mapLogoOptions.position.y * (outputCanvas.height - logoH));
-			const inkLogo = toInkCanvas(logoImg, logoW, logoH);
-			if (mapLogoOptions.direction === 'vertical') {
-				ctx.save();
-				ctx.translate(x + logoW / 2, y + logoH / 2);
-				ctx.rotate(Math.PI / 2);
-				ctx.drawImage(inkLogo, -logoW / 2, -logoH / 2, logoW, logoH);
-				ctx.restore();
+
+			// 1) Render the logo (rotated if vertical) into its own small layer.
+			const vertical = mapLogoOptions.direction === 'vertical';
+			const rw = Math.max(1, Math.round(vertical ? logoH : logoW));
+			const rh = Math.max(1, Math.round(vertical ? logoW : logoH));
+			const rx = Math.round(x + logoW / 2 - rw / 2);
+			const ry = Math.round(y + logoH / 2 - rh / 2);
+
+			const layer = document.createElement('canvas');
+			layer.width = rw;
+			layer.height = rh;
+			const lctx = layer.getContext('2d')!;
+			lctx.imageSmoothingEnabled = true;
+			lctx.imageSmoothingQuality = 'high';
+			if (vertical) {
+				lctx.translate(rw / 2, rh / 2);
+				lctx.rotate(Math.PI / 2);
+				lctx.drawImage(logoImg, -logoW / 2, -logoH / 2, logoW, logoH);
 			} else {
-				ctx.drawImage(inkLogo, x, y, logoW, logoH);
+				lctx.drawImage(logoImg, 0, 0, logoW, logoH);
 			}
+			const L = lctx.getImageData(0, 0, rw, rh).data;
+
+			// 2) Merge it into the output: tagged pixels keep their original colour.
+			const M = ctx.getImageData(rx, ry, rw, rh);
+			const m = M.data;
+			for (let i = 0; i < L.length; i += 4) {
+				const la = L[i + 3];
+				if (la === 0) continue;
+				if (la >= LOGO_TAG_MIN_SRC_ALPHA) {
+					m[i] = L[i];
+					m[i + 1] = L[i + 1];
+					m[i + 2] = L[i + 2];
+					m[i + 3] = LOGO_TAG_ALPHA;
+				} else {
+					// very soft edge: ordinary source-over blend (treated like map pixels)
+					const a = la / 255;
+					const ma = m[i + 3] / 255;
+					const outA = a + ma * (1 - a);
+					if (outA > 0) {
+						m[i] = (L[i] * a + m[i] * ma * (1 - a)) / outA;
+						m[i + 1] = (L[i + 1] * a + m[i + 1] * ma * (1 - a)) / outA;
+						m[i + 2] = (L[i + 2] * a + m[i + 2] * ma * (1 - a)) / outA;
+						m[i + 3] = Math.round(outA * 255);
+					}
+				}
+			}
+			ctx.putImageData(M, rx, ry);
 		} catch {
 			// Ignore logo drawing errors
 		}

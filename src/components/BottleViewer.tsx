@@ -138,6 +138,12 @@ const applyTextureToMaterial = (
     const textureLoader = new THREE.TextureLoader();
     textureLoader.crossOrigin = "anonymous";
 
+    // Keep the panel invisible until the image is loaded and assigned.
+    // Otherwise the blank white base material shows while the texture loads
+    // (or permanently if the load fails).
+    mat.transparent = true;
+    mat.opacity = 0;
+
     textureLoader.load(textureUrl, (texture) => {
 const printWidth = 1;
 
@@ -194,20 +200,17 @@ mat.map = texture;
             // Near-white pixels (typically the map's background) become
             // fully transparent so the board's own wood color shows
             // through in the print area instead of a flat white block.
-              
-            const gamma = isMap ? 0.1 : 0.55;             
-            const whiteThreshold = isMap ? 10 : 400;
+          
+    
+const gamma = isMap ? 0.1 : 0.55;             
+const whiteThreshold = isMap ? 10 : 400;
 
-               for (let i = 0; i < data.length; i += 4) {
-              // Logo white is painted by the generator as (255,255,240). Leave it alone.
-              if (
-                isMap &&
-                data[i + 3] === 255 &&
-                data[i] >= 250 &&
-                data[i + 1] >= 250 &&
-                data[i + 2] >= 232 &&
-                data[i + 2] <= 248
-              ) {
+            for (let i = 0; i < data.length; i += 4) {
+              // Logo pixels are tagged with alpha 254 by mapTextureGenerator.
+              // Keep their ORIGINAL colour (incl. white) and make them fully opaque;
+              // skip the gamma crush and white removal that is meant for the map only.
+              if (isMap && data[i + 3] === 254) {
+                data[i + 3] = 255;
                 continue;
               }
 
@@ -243,6 +246,11 @@ mat.map = texture;
 
       // Improve mapping: set anisotropy for better quality
       texture.anisotropy = Math.min(16, (texture.anisotropy || 1) * 2);
+      if (isMap) {
+        // The tagged logo keeps its original colours, so read the map texture as sRGB.
+        // (Map lines/text are crushed to near-black above, so they are unaffected.)
+        texture.colorSpace = THREE.SRGBColorSpace;
+      }
       mat.transparent = true; // required for the punched-alpha background to blend
       if (isMap) {
         // Environment reflections / specular lift black toward grey-brown.
@@ -251,6 +259,11 @@ mat.map = texture;
         mat.metalness = 0;
       }
       mat.needsUpdate = true;
+      // Texture is assigned and processed: only now show the panel.
+      mat.opacity = 1;
+    }, undefined, () => {
+      // Load failed: stay invisible instead of showing the blank white base.
+      mat.opacity = 0;
     });
   }
 };
@@ -454,7 +467,7 @@ const applyTextureToScene = (
           } else {
             applyTextureToMaterial(mesh.material, selectedTexture, offsetX, isMap);
           }
-          mesh.material.opacity = 1;
+          // opacity is now set to 1 inside applyTextureToMaterial, after the image has loaded.
           // Was `true` — kept the punched-alpha map from blending with the
           // wood surface underneath. Must be false so the transparent
           // (near-white) pixels let the Body's texture show through.
